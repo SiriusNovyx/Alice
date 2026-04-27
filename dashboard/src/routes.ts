@@ -47,7 +47,7 @@ export const router = createRouter({
         },
         {
           path: "setup-guides/logs",
-          component: () => import("./components/docs/WorkInProgress.vue"),
+          component: () => import("./components/docs/Logs.vue"),
         },
         {
           path: "setup-guides/moderation",

@@ -1,80 +1,72 @@
 <template>
-  <!-- Loading skeleton -->
-  <div v-if="loading" class="guild-page">
-    <div class="page-header">
-      <h1 class="page-title">Your Servers</h1>
+  <!-- Loading -->
+  <div v-if="loading" class="gl-page">
+    <div class="gl-header">
+      <div class="gl-skeleton gl-skeleton--title"></div>
     </div>
-    <div class="guild-grid">
-      <div class="guild-card guild-card--skeleton" v-for="n in 6" :key="n">
-        <div class="skeleton-icon"></div>
-        <div class="skeleton-lines">
-          <div class="skeleton-line skeleton-line--wide"></div>
-          <div class="skeleton-line skeleton-line--narrow"></div>
+    <div class="gl-grid">
+      <div class="gl-card gl-card--skeleton" v-for="n in 4" :key="n">
+        <div class="gl-skeleton gl-skeleton--icon"></div>
+        <div class="gl-skeleton-lines">
+          <div class="gl-skeleton gl-skeleton--line-wide"></div>
+          <div class="gl-skeleton gl-skeleton--line-narrow"></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Loaded state -->
-  <div v-else class="guild-page">
-    <div class="page-header">
-      <h1 class="page-title">Your Servers</h1>
-      <span class="guild-count">{{ guilds.length }} server{{ guilds.length !== 1 ? 's' : '' }}</span>
+  <!-- Loaded -->
+  <div v-else class="gl-page">
+    <div class="gl-header">
+      <h1 class="gl-title">Your Servers</h1>
+      <span class="gl-count">{{ guilds.length }} {{ guilds.length === 1 ? 'server' : 'servers' }}</span>
     </div>
 
-    <div v-if="guilds.length === 0" class="empty-state">
-      <div class="empty-icon">🏠</div>
-      <div class="empty-title">No servers found</div>
-      <div class="empty-desc">You don't have access to any servers yet. Ask your server owner to add you.</div>
+    <!-- Empty -->
+    <div v-if="guilds.length === 0" class="gl-empty">
+      <div class="gl-empty-icon">🏠</div>
+      <div class="gl-empty-title">No servers found</div>
+      <div class="gl-empty-desc">You don't have access to any servers yet. Ask your server owner to grant you access.</div>
     </div>
 
-    <div v-else class="guild-grid">
-      <div
-        v-for="guild in guilds"
-        :key="guild.id"
-        class="guild-card"
-      >
-        <!-- Server icon -->
-        <div class="guild-icon-wrap">
+    <!-- Grid -->
+    <div v-else class="gl-grid">
+      <div class="gl-card" v-for="guild in guilds" :key="guild.id">
+        <!-- Icon -->
+        <div class="gl-icon-wrap">
           <img
             v-if="guild.icon"
-            class="guild-icon"
+            class="gl-icon"
             :src="guild.icon"
             :alt="guild.name"
           />
-          <div v-else class="guild-icon guild-icon--fallback">
+          <div v-else class="gl-icon gl-icon--fallback">
             {{ guild.name.charAt(0).toUpperCase() }}
           </div>
         </div>
 
-        <!-- Server info -->
-        <div class="guild-info">
-          <div class="guild-name" :title="guild.name">{{ guild.name }}</div>
-          <div class="guild-id">{{ guild.id }}</div>
+        <!-- Info -->
+        <div class="gl-info">
+          <div class="gl-name" :title="guild.name">{{ guild.name }}</div>
+          <div class="gl-id">{{ guild.id }}</div>
         </div>
 
         <!-- Actions -->
-        <div class="guild-actions">
+        <div class="gl-actions">
           <router-link
-            class="action-btn action-btn--primary"
+            class="gl-btn gl-btn--primary"
             :to="'/dashboard/guilds/' + guild.id + '/config'"
-          >
-            Config
-          </router-link>
+          >Config</router-link>
           <router-link
             v-if="canManageAccess(guild.id)"
-            class="action-btn"
+            class="gl-btn"
             :to="'/dashboard/guilds/' + guild.id + '/access'"
-          >
-            Access
-          </router-link>
+          >Access</router-link>
           <router-link
             v-if="canManageAccess(guild.id)"
-            class="action-btn"
+            class="gl-btn"
             :to="'/dashboard/guilds/' + guild.id + '/import-export'"
-          >
-            Import/Export
-          </router-link>
+          >Import/Export</router-link>
         </div>
       </div>
     </div>
@@ -125,217 +117,189 @@ export default {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap');
-
 /* ── Page ────────────────────────────────────────────────── */
-.guild-page {
-  font-family: 'DM Sans', sans-serif;
-  animation: fadeIn 0.4s ease both;
+.gl-page {
+  animation: gl-fadein 0.35s ease both;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 
-.page-header {
+.gl-header {
   display: flex;
   align-items: baseline;
-  gap: 0.85rem;
+  gap: 0.75rem;
   margin-bottom: 1.75rem;
 }
 
-.page-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 1.6rem;
+.gl-title {
+  font-size: 1.5rem;
   font-weight: 700;
-  color: #e8ecf4;
+  color: #f1f5f9;
   letter-spacing: -0.02em;
+  margin: 0;
 }
 
-.guild-count {
-  font-size: 0.85rem;
-  color: #4b5572;
+.gl-count {
+  font-size: 0.82rem;
+  color: #475569;
 }
 
 /* ── Grid ────────────────────────────────────────────────── */
-.guild-grid {
+.gl-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 0.875rem;
+  gap: 0.75rem;
 }
 
 /* ── Card ────────────────────────────────────────────────── */
-.guild-card {
+.gl-card {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 14px;
-  padding: 1.1rem 1.2rem;
+  padding: 1rem 1.1rem;
   display: flex;
   align-items: center;
-  gap: 1rem;
-  transition: all 0.18s ease;
-  animation: slideUp 0.4s ease both;
+  gap: 0.9rem;
+  transition: all 0.16s ease;
+  animation: gl-slideup 0.35s ease both;
 }
 
-.guild-card:hover {
-  background: rgba(255, 255, 255, 0.055);
-  border-color: rgba(91, 111, 255, 0.25);
+.gl-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(99, 102, 241, 0.22);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 }
 
 /* ── Icon ────────────────────────────────────────────────── */
-.guild-icon-wrap {
-  flex-shrink: 0;
-}
+.gl-icon-wrap { flex-shrink: 0; }
 
-.guild-icon {
-  width: 46px;
-  height: 46px;
-  border-radius: 12px;
+.gl-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 11px;
   object-fit: cover;
+  display: block;
 }
 
-.guild-icon--fallback {
+.gl-icon--fallback {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #2d3acc, #5b6fff);
+  background: linear-gradient(135deg, #312e81, #4f46e5);
   color: #fff;
-  font-family: 'Syne', sans-serif;
   font-weight: 700;
-  font-size: 1.1rem;
-  border-radius: 12px;
-  width: 46px;
-  height: 46px;
+  font-size: 1.05rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 11px;
 }
 
 /* ── Info ────────────────────────────────────────────────── */
-.guild-info {
-  flex: 1;
-  min-width: 0;
-}
+.gl-info { flex: 1; min-width: 0; }
 
-.guild-name {
+.gl-name {
   font-weight: 500;
-  font-size: 0.95rem;
-  color: #e8ecf4;
+  font-size: 0.9rem;
+  color: #e2e8f0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   margin-bottom: 0.15rem;
 }
 
-.guild-id {
-  font-size: 0.75rem;
-  color: #4b5572;
+.gl-id {
+  font-size: 0.72rem;
+  color: #475569;
   font-family: 'Courier New', monospace;
 }
 
 /* ── Actions ─────────────────────────────────────────────── */
-.guild-actions {
+.gl-actions {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.28rem;
   flex-shrink: 0;
 }
 
-.action-btn {
-  font-size: 0.78rem;
+.gl-btn {
+  font-size: 0.75rem;
   font-weight: 500;
-  padding: 0.3rem 0.75rem;
+  padding: 0.28rem 0.7rem;
   border-radius: 6px;
   text-decoration: none;
   text-align: center;
-  transition: all 0.15s ease;
-  background: rgba(255, 255, 255, 0.06);
-  color: #8b96b8;
+  transition: all 0.14s ease;
+  background: rgba(255, 255, 255, 0.05);
+  color: #7a8aa8;
   border: 1px solid rgba(255, 255, 255, 0.08);
   white-space: nowrap;
 }
 
-.action-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
+.gl-btn:hover {
+  background: rgba(255, 255, 255, 0.09);
   color: #c8d0e8;
 }
 
-.action-btn--primary {
-  background: rgba(91, 111, 255, 0.15);
-  color: #a8b4ff;
-  border-color: rgba(91, 111, 255, 0.25);
+.gl-btn--primary {
+  background: rgba(99, 102, 241, 0.14);
+  color: #a5b4fc;
+  border-color: rgba(99, 102, 241, 0.22);
 }
 
-.action-btn--primary:hover {
-  background: rgba(91, 111, 255, 0.25);
-  color: #c4cde8;
+.gl-btn--primary:hover {
+  background: rgba(99, 102, 241, 0.24);
+  color: #c7d2fe;
 }
 
-/* ── Empty state ─────────────────────────────────────────── */
-.empty-state {
+/* ── Empty ───────────────────────────────────────────────── */
+.gl-empty {
   text-align: center;
-  padding: 4rem 2rem;
-  color: #4b5572;
+  padding: 5rem 2rem;
+  color: #475569;
 }
 
-.empty-icon {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-}
-
-.empty-title {
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: #7a86a8;
-  margin-bottom: 0.5rem;
-}
-
-.empty-desc {
-  font-size: 0.9rem;
-  max-width: 360px;
-  margin: 0 auto;
-  line-height: 1.6;
-}
+.gl-empty-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+.gl-empty-title { font-size: 1.05rem; font-weight: 500; color: #64748b; margin-bottom: 0.5rem; }
+.gl-empty-desc { font-size: 0.875rem; max-width: 360px; margin: 0 auto; line-height: 1.65; }
 
 /* ── Skeleton ────────────────────────────────────────────── */
-.guild-card--skeleton {
-  pointer-events: none;
+.gl-card--skeleton { pointer-events: none; }
+
+.gl-skeleton {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  animation: gl-pulse 1.5s ease infinite;
 }
 
-.skeleton-icon {
-  width: 46px;
-  height: 46px;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.06);
-  flex-shrink: 0;
-  animation: pulse 1.4s ease infinite;
-}
+.gl-skeleton--title  { width: 160px; height: 22px; border-radius: 6px; }
+.gl-skeleton--icon   { width: 44px; height: 44px; border-radius: 11px; flex-shrink: 0; }
+.gl-skeleton--line-wide   { width: 55%; height: 10px; }
+.gl-skeleton--line-narrow { width: 35%; height: 8px; margin-top: 6px; }
 
-.skeleton-lines {
+.gl-skeleton-lines {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
 }
-
-.skeleton-line {
-  height: 10px;
-  border-radius: 4px;
-  background: rgba(255,255,255,0.06);
-  animation: pulse 1.4s ease infinite;
-}
-
-.skeleton-line--wide { width: 60%; }
-.skeleton-line--narrow { width: 35%; }
 
 /* ── Animations ──────────────────────────────────────────── */
-@keyframes fadeIn {
+@keyframes gl-fadein {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
 
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(10px); }
+@keyframes gl-slideup {
+  from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes pulse {
+@keyframes gl-pulse {
   0%, 100% { opacity: 0.4; }
   50%       { opacity: 0.7; }
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .gl-grid { grid-template-columns: 1fr; }
 }
 </style>

@@ -1,127 +1,142 @@
 <template>
-  <div class="dashboard-root">
+  <div class="da-root">
     <Title title="Alice — Dashboard" />
 
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-logo">
-        <img src="/img/logo.png" alt="Alice" class="sidebar-logo-img" />
-        <span class="sidebar-logo-text">Alice</span>
+    <!-- Sidebar (desktop) -->
+    <aside class="da-sidebar">
+      <div class="da-sidebar-logo">
+        <img :src="logoUrl" alt="Alice" class="da-sidebar-logo-img" />
+        <span class="da-sidebar-logo-text">Alice</span>
       </div>
 
-      <nav class="sidebar-nav" aria-label="Main navigation">
-        <router-link to="/dashboard" class="nav-item" active-class="nav-item--active">
-          <span class="nav-icon">⊞</span>
+      <nav class="da-sidebar-nav" aria-label="Main navigation">
+        <router-link to="/dashboard" class="da-nav-item" active-class="da-nav-item--active">
+          <svg class="da-nav-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><rect x="1" y="1" width="7" height="7" rx="1.5"/><rect x="10" y="1" width="7" height="7" rx="1.5"/><rect x="1" y="10" width="7" height="7" rx="1.5"/><rect x="10" y="10" width="7" height="7" rx="1.5"/></svg>
           <span>Servers</span>
         </router-link>
-        <a href="/docs" class="nav-item">
-          <span class="nav-icon">📖</span>
+        <a href="/docs" class="da-nav-item">
+          <svg class="da-nav-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M3 2h9l3 3v11H3z"/><path d="M12 2v3h3"/><path d="M6 9h6M6 12h4"/></svg>
           <span>Docs</span>
         </a>
       </nav>
 
-      <div class="sidebar-footer">
-        <button class="nav-item nav-item--danger" @click="logout">
-          <span class="nav-icon">↩</span>
+      <div class="da-sidebar-footer">
+        <button class="da-nav-item da-nav-item--logout" @click="logout">
+          <svg class="da-nav-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M7 2H3a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h4"/><path d="M13 13l3-4-3-4"/><path d="M16 9H7"/></svg>
           <span>Log out</span>
         </button>
       </div>
     </aside>
 
-    <!-- Mobile top bar -->
-    <header class="topbar">
-      <div class="topbar-left">
-        <img src="/img/logo.png" alt="Alice" class="topbar-logo" />
-        <span class="topbar-title">Alice</span>
+    <!-- Top bar (mobile) -->
+    <header class="da-topbar">
+      <div class="da-topbar-left">
+        <img :src="logoUrl" alt="Alice" class="da-topbar-logo" />
+        <span class="da-topbar-title">Alice</span>
       </div>
-      <div class="topbar-right">
-        <router-link to="/dashboard" class="topbar-link">Servers</router-link>
-        <a href="/docs" class="topbar-link">Docs</a>
-        <button class="topbar-logout" @click="logout">Log out</button>
+      <div class="da-topbar-right">
+        <router-link to="/dashboard" class="da-topbar-link">Servers</router-link>
+        <a href="/docs" class="da-topbar-link">Docs</a>
+        <button class="da-topbar-logout" @click="logout">Log out</button>
       </div>
     </header>
 
-    <!-- Main content -->
-    <main class="main-area">
-      <div class="main-content">
+    <!-- Main -->
+    <main class="da-main">
+      <div class="da-main-inner">
         <router-view></router-view>
       </div>
     </main>
   </div>
 </template>
 
-<style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap');
+<script>
+import Title from "../Title.vue";
+export default {
+  components: { Title },
+  data() {
+    return { logoUrl: '/img/logo.png' };
+  },
+  methods: {
+    async logout() {
+      await this.$store.dispatch("auth/logout");
+      window.location.pathname = '/';
+    },
+  },
+};
+</script>
 
-/* ── Root layout ─────────────────────────────────────────── */
-.dashboard-root {
+<style scoped>
+/* ── Root ────────────────────────────────────────────────── */
+.da-root {
   display: flex;
   min-height: 100vh;
-  background: #080b14;
-  color: #c8d0e8;
-  font-family: 'DM Sans', sans-serif;
+  background: #080c16;
+  color: #cbd5e1;
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 
 /* ── Sidebar ─────────────────────────────────────────────── */
-.sidebar {
+.da-sidebar {
   width: 220px;
   flex-shrink: 0;
-  background: rgba(255, 255, 255, 0.026);
+  background: rgba(255, 255, 255, 0.025);
   border-right: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
   flex-direction: column;
-  padding: 1.5rem 0.75rem;
+  padding: 0 0.625rem;
   position: fixed;
-  top: 0;
-  left: 0;
+  top: 0; left: 0;
   height: 100vh;
   z-index: 30;
 }
 
-.sidebar-logo {
+.da-sidebar-logo {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.25rem 0.75rem 1.75rem;
+  padding: 1.25rem 0.5rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 0.5rem;
 }
 
-.sidebar-logo-img {
-  width: 32px;
-  height: 32px;
+.da-sidebar-logo-img {
+  width: 30px;
+  height: 30px;
   border-radius: 8px;
+  object-fit: cover;
 }
 
-.sidebar-logo-text {
-  font-family: 'Syne', sans-serif;
+.da-sidebar-logo-text {
   font-weight: 700;
-  font-size: 1.15rem;
-  color: #fff;
+  font-size: 1.05rem;
+  color: #f1f5f9;
   letter-spacing: -0.02em;
 }
 
-.sidebar-nav {
+.da-sidebar-nav {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 2px;
 }
 
-.sidebar-footer {
-  padding-top: 1rem;
-  border-top: 1px solid rgba(255,255,255,0.06);
+.da-sidebar-footer {
+  padding: 0.75rem 0 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.nav-item {
+.da-nav-item {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
-  padding: 0.6rem 0.85rem;
+  gap: 0.6rem;
+  padding: 0.55rem 0.75rem;
   border-radius: 8px;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   font-weight: 400;
-  color: #7a86a8;
+  color: #64748b;
   text-decoration: none;
-  transition: all 0.15s ease;
+  transition: all 0.14s ease;
   cursor: pointer;
   border: none;
   background: none;
@@ -129,112 +144,102 @@
   text-align: left;
 }
 
-.nav-item:hover {
-  background: rgba(255, 255, 255, 0.06);
-  color: #c8d0e8;
+.da-nav-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #94a3b8;
 }
 
-.nav-item--active {
-  background: rgba(91, 111, 255, 0.14);
-  color: #a8b4ff;
+.da-nav-item--active {
+  background: rgba(99, 102, 241, 0.12) !important;
+  color: #818cf8 !important;
 }
 
-.nav-item--active:hover {
-  background: rgba(91, 111, 255, 0.2);
+.da-nav-item--logout:hover {
+  background: rgba(239, 68, 68, 0.08);
+  color: #fca5a5;
 }
 
-.nav-item--danger {
-  color: #7a86a8;
-}
-
-.nav-item--danger:hover {
-  background: rgba(220, 60, 60, 0.1);
-  color: #f08080;
-}
-
-.nav-icon {
-  font-size: 1rem;
-  width: 1.2rem;
-  text-align: center;
+.da-nav-icon {
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
+  opacity: 0.8;
 }
 
 /* ── Mobile topbar ───────────────────────────────────────── */
-.topbar {
+.da-topbar {
   display: none;
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 0; left: 0; right: 0;
   z-index: 40;
-  background: rgba(8, 11, 20, 0.92);
+  height: 52px;
+  background: rgba(8, 12, 22, 0.95);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   padding: 0 1rem;
-  height: 56px;
   align-items: center;
   justify-content: space-between;
 }
 
-.topbar-left {
+.da-topbar-left {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.topbar-logo {
-  width: 28px;
-  height: 28px;
+.da-topbar-logo {
+  width: 26px;
+  height: 26px;
   border-radius: 7px;
 }
 
-.topbar-title {
-  font-family: 'Syne', sans-serif;
+.da-topbar-title {
   font-weight: 700;
-  font-size: 1rem;
-  color: #fff;
+  font-size: 0.95rem;
+  color: #f1f5f9;
 }
 
-.topbar-right {
+.da-topbar-right {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.25rem;
 }
 
-.topbar-link {
-  font-size: 0.85rem;
-  color: #7a86a8;
+.da-topbar-link {
+  font-size: 0.82rem;
+  color: #64748b;
   text-decoration: none;
   padding: 0.3rem 0.6rem;
   border-radius: 6px;
-  transition: color 0.15s;
+  transition: color 0.14s;
 }
 
-.topbar-link:hover { color: #c8d0e8; }
+.da-topbar-link:hover { color: #94a3b8; }
 
-.topbar-logout {
-  font-size: 0.85rem;
-  color: #7a86a8;
+.da-topbar-logout {
+  font-size: 0.82rem;
+  color: #64748b;
   background: none;
   border: none;
   cursor: pointer;
   padding: 0.3rem 0.6rem;
   border-radius: 6px;
-  transition: color 0.15s;
+  transition: color 0.14s;
+  font-family: inherit;
 }
 
-.topbar-logout:hover { color: #f08080; }
+.da-topbar-logout:hover { color: #fca5a5; }
 
-/* ── Main content area ───────────────────────────────────── */
-.main-area {
+/* ── Main ────────────────────────────────────────────────── */
+.da-main {
   flex: 1;
   margin-left: 220px;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
 }
 
-.main-content {
+.da-main-inner {
   flex: 1;
   padding: 2.5rem 2rem;
   max-width: 1100px;
@@ -244,23 +249,9 @@
 
 /* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 768px) {
-  .sidebar { display: none; }
-  .topbar { display: flex; }
-  .main-area { margin-left: 0; padding-top: 56px; }
-  .main-content { padding: 1.5rem 1rem; }
+  .da-sidebar { display: none; }
+  .da-topbar { display: flex; }
+  .da-main { margin-left: 0; }
+  .da-main-inner { padding: 4.5rem 1rem 2rem; }
 }
 </style>
-
-<script>
-import Title from "../Title.vue";
-
-export default {
-  components: { Title },
-  methods: {
-    async logout() {
-      await this.$store.dispatch("auth/logout");
-      window.location.pathname = '/';
-    },
-  },
-};
-</script>

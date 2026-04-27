@@ -6,7 +6,7 @@
     <aside class="docs-sidebar" :class="{ 'docs-sidebar--open': mobileOpen }">
       <div class="docs-sidebar-header">
         <div class="docs-sidebar-logo">
-          <img src="/img/logo.png" alt="Alice" class="docs-sidebar-logo-img" />
+          <img :src="logoUrl" alt="Alice" class="docs-sidebar-logo-img" />
           <span class="docs-sidebar-logo-text">Alice</span>
           <span class="docs-sidebar-logo-badge">Docs</span>
         </div>
@@ -51,7 +51,7 @@
         <button class="docs-topbar-menu" @click="mobileOpen = true" aria-label="Open navigation">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4h14M2 9h14M2 14h14"/></svg>
         </button>
-        <img src="/img/logo.png" alt="Alice" class="docs-topbar-logo" />
+        <img :src="logoUrl" alt="Alice" class="docs-topbar-logo" />
         <span class="docs-topbar-title">Alice Docs</span>
       </div>
       <a class="docs-topbar-dashboard" href="/dashboard">Dashboard</a>
@@ -140,5 +140,5 @@ export default {
 </script>
 
 <style>
-@import "../style/docs.css";
+@import "../../style/docs.css";
 </style>
