@@ -13,6 +13,57 @@ import { SavedMessage } from "./entities/SavedMessage.js";
 
 const DEFAULT_EXPIRY_DAYS = 30;
 
+// ── Transcript microservice integration ──────────────────────────────────────
+const TRANSCRIPT_SERVICE_URL = process.env.TRANSCRIPT_SERVICE_URL ?? "";
+const TRANSCRIPT_SECRET      = process.env.TRANSCRIPT_SECRET ?? "";
+
+/**
+ * Send saved messages to the Python transcript service and get back an HTML URL.
+ * Falls back to undefined (plain text archive) if the service is unreachable.
+ */
+async function createHtmlTranscript(
+  messages: SavedMessage[],
+  guild: Guild,
+  expiresAt?: moment.Moment,
+): Promise<string | undefined> {
+  if (!TRANSCRIPT_SERVICE_URL) return undefined;
+
+  const payload = {
+    guild_id:   guild.id,
+    guild_name: guild.name,
+    expires_at: expiresAt?.toISOString() ?? null,
+    messages: messages.map((m) => ({
+      user_id:     m.user_id,
+      author:      m.data?.author?.username ?? m.user_id,
+      content:     m.data?.content ?? "",
+      timestamp:   m.posted_at,
+      channel_id:  m.channel_id,
+      attachments: (m.data?.attachments ?? []).map((a: any) => ({
+        url:      a.url ?? a.proxy_url ?? "",
+        filename: a.filename ?? a.name ?? "attachment",
+      })),
+    })),
+  };
+
+  try {
+    const res = await fetch(`${TRANSCRIPT_SERVICE_URL}/t/create`, {
+      method:  "POST",
+      headers: {
+        "Content-Type":  "application/json",
+        "Authorization": `Bearer ${TRANSCRIPT_SECRET}`,
+      },
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(8000),
+    });
+
+    if (!res.ok) return undefined;
+    const json = await res.json() as { id: string; url: string };
+    return `${TRANSCRIPT_SERVICE_URL}${json.url}`;
+  } catch {
+    return undefined;
+  }
+}
+
 const MESSAGE_ARCHIVE_HEADER_FORMAT = trimLines(`
   Server: {guild.name} ({guild.id})
 `);
@@ -119,6 +170,11 @@ export class GuildArchives extends BaseGuildRepository<ArchiveEntry> {
       expiresAt = moment.utc().add(DEFAULT_EXPIRY_DAYS, "days");
     }
 
+    // Try the HTML transcript service first
+    const htmlUrl = await createHtmlTranscript(savedMessages, guild, expiresAt);
+    if (htmlUrl) return htmlUrl;
+
+    // Fall back to plain-text archive stored in the database
     const headerStr = await renderTemplate(
       MESSAGE_ARCHIVE_HEADER_FORMAT,
       new TemplateSafeValueContainer({
