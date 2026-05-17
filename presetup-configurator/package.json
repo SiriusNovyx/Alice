@@ -17,5 +17,13 @@
     "js-yaml": "^4.0.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
+  },
+  "overrides": {
+    "@tootallnate/once": "3.0.1",
+    "form-data": "2.5.5",
+    "qs": "6.15.2",
+    "rollup": "2.80.0",
+    "tar": "7.5.15",
+    "tough-cookie": "4.1.4"
   }
 }
