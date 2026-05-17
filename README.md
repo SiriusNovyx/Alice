@@ -38,8 +38,6 @@ ALICE builds on Zeppelin with a significant number of bug fixes, security improv
 - **Dashboard self-permission escalation patched** — A missing check in `misc.ts` allowed a logged-in dashboard user to modify their own permission level. This has been fixed.
 - **Discord API request hardening** — The OAuth login flow now enforces a 10-second timeout on Discord API requests and safely handles malformed API responses, preventing the auth process from hanging indefinitely.
 - **Ban action no longer silently deletes messages** — The default for `deleteMessageDays` on ban was `1`, meaning every ban silently deleted 1 day of the user's messages. Changed to `0` — explicit is safer.
-- ## Security Fixes
-
 - Updated `config-checker` Vite dependency to `6.4.2` to fix arbitrary file read via Vite dev server WebSocket.
 - Updated `presetup-configurator` Rollup dependency resolution to `2.80.0` to fix DOM clobbering/XSS and arbitrary file write advisories.
 - Updated backend `multer` to `2.1.1` to fix denial-of-service vulnerabilities.
