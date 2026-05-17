@@ -26,7 +26,7 @@
     "migrate-rollback-dev": "pnpm run build && pnpm run migrate-rollback",
     "validate-active-configs": "node --enable-source-maps dist/validateActiveConfigs.js > ../config-errors.txt",
     "export-config-json-schema": "node --enable-source-maps dist/exportSchemas.js ../config-checker/public/config-schema.json",
-    "test": "pnpm run build && pnpm run run-tests",
+    "test": "tsc --build && ava",
     "run-tests": "ava",
     "test-watch": "tsc-watch --build --onSuccess \"pnpm exec ava\""
   },
@@ -90,9 +90,6 @@
   "ava": {
     "files": [
       "dist/**/*.test.js"
-    ],
-    "require": [
-      "./register-tsconfig-paths.js"
     ]
   }
 }
