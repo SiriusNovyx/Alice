@@ -303,7 +303,20 @@ async def delete_transcript(
     except HTTPException:
         return JSONResponse(status_code=404, content={"error": "Not found"})
 
+<<<<<<< HEAD
     if file_path.exists():
         file_path.unlink()
+=======
+    file_path = STORE_DIR / f"{archive_id}.html"
+    store_root = STORE_DIR.resolve()
+    resolved_path = file_path.resolve()
+    try:
+        resolved_path.relative_to(store_root)
+    except ValueError:
+        return JSONResponse(status_code=404, content={"error": "Not found"})
+
+    if resolved_path.exists():
+        resolved_path.unlink()
+>>>>>>> 94c4153981e7c939da85fe691915726ef3badaa4
         return JSONResponse(status_code=200, content={"deleted": True})
     return JSONResponse(status_code=404, content={"error": "Not found"})

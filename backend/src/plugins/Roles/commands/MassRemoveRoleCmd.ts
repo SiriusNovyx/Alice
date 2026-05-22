@@ -33,11 +33,7 @@ export const MassRemoveRoleCmd = rolesCmd({
       if (!canActOn(pluginData, authorMember, member, true)) {
         void pluginData.state.common.sendErrorMessage(
           msg,
-<<<<<<< HEAD
-          "Cannot add roles to 1 or more specified members: insufficient permissions",
-=======
           "Cannot remove roles from 1 or more specified members: insufficient permissions",
->>>>>>> a0a54da391085c24c9e28ad6ab2874adc81600a7
         );
         return;
       }
@@ -76,11 +72,7 @@ export const MassRemoveRoleCmd = rolesCmd({
     );
 
     for (const member of membersWithTheRole) {
-<<<<<<< HEAD
-      pluginData.getPlugin(RoleManagerPlugin).removeRole(member.id, roleId);
-=======
       await pluginData.getPlugin(RoleManagerPlugin).removeRole(member.id, roleId);
->>>>>>> a0a54da391085c24c9e28ad6ab2874adc81600a7
       pluginData.getPlugin(LogsPlugin).logMemberRoleRemove({
         member,
         roles: [role],
@@ -89,11 +81,7 @@ export const MassRemoveRoleCmd = rolesCmd({
       assigned++;
     }
 
-<<<<<<< HEAD
-    let resultMessage = `Removed role **${role.name}** from  ${assigned} ${assigned === 1 ? "member" : "members"}!`;
-=======
     let resultMessage = `Removed role **${role.name}** from ${assigned} ${assigned === 1 ? "member" : "members"}!`;
->>>>>>> a0a54da391085c24c9e28ad6ab2874adc81600a7
     if (didNotHaveRole) {
       resultMessage += ` ${didNotHaveRole} ${didNotHaveRole === 1 ? "member" : "members"} didn't have the role.`;
     }
