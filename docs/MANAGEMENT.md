@@ -1,38 +1,3 @@
-<<<<<<< HEAD
-# Management
-After starting Alice -- either in the [development](./DEVELOPMENT.md) or [production](./PRODUCTION.md) environment -- you have several tools available to manage it.
-
-## Note
-Make sure to add yourself to the list of staff members (`STAFF`) in `.env` and allow at least one server by default (`DEFAULT_ALLOWED_SERVERS`). Then, invite the bot to the server.
-
-In all examples below, `@Bot` refers to a user mention of the bot user. Make sure to run the commands on a server with the bot, in a channel that the bot can see.
-
-In the command parameters, `<this>` refers to a required parameter (don't include the `< >` symbols) and `[this]` refers to an optional parameter (don't include the `[ ]` symbols). `<this...>` refers to a required parameter that can be repeated multiple times.
-
-## Allow a server to invite the bot
-Run the following command:
-```
-@Bot allow_server <serverId> [userId]
-```
-When specifying a user ID, that user will be given "Bot manager" level access to the server's dashboard, allowing them to manage access for other users.
-
-## Disallow a server
-Run the following command:
-```
-@Bot disallow_server <serverId>
-```
-
-## Grant access to a server's dashboard
-Run the following command:
-```
-@Bot add_dashboard_user <serverId> <userId...>
-```
-
-## Remove access to a server's dashboard
-Run the following command:
-```
-@Bot remove_dashboard_user <serverId> <userId...>
-=======
 # Alice — Management Guide
 
 After starting Alice in either the [development](./DEVELOPMENT.md) or [production](./PRODUCTION.md) environment, you have several tools available to manage it.
@@ -238,5 +203,4 @@ docker compose -f docker-compose.standalone.yml logs -t -f
 docker compose -f docker-compose.standalone.yml down
 docker compose -f docker-compose.standalone.yml build --no-cache
 docker compose -f docker-compose.standalone.yml up -d
->>>>>>> a0a54da391085c24c9e28ad6ab2874adc81600a7
 ```
