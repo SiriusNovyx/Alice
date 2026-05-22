@@ -11,8 +11,12 @@
     "@types/node": "^14.14.21",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+<<<<<<< HEAD
     "snowpack": "^3.0.11",
     "typescript": "~4.9.5"
+=======
+    "snowpack": "^3.0.11"
+>>>>>>> a0a54da391085c24c9e28ad6ab2874adc81600a7
   },
   "dependencies": {
     "js-yaml": "^4.0.0",

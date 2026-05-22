@@ -13,6 +13,7 @@ export const TagCreateCmd = tagsCmd({
   },
 
   async run({ message: msg, args, pluginData }) {
+<<<<<<< HEAD
     // Validate tag name: no spaces, max 50 chars, only alphanumeric/hyphen/underscore
     if (args.tag.length > 50) {
       void pluginData.state.common.sendErrorMessage(msg, "Tag name must be 50 characters or less");
@@ -26,6 +27,8 @@ export const TagCreateCmd = tagsCmd({
       return;
     }
 
+=======
+>>>>>>> a0a54da391085c24c9e28ad6ab2874adc81600a7
     try {
       parseTemplate(args.body);
     } catch (e) {

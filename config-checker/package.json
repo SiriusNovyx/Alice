@@ -8,7 +8,10 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+<<<<<<< HEAD
     "@types/node": "^22.15.18",
+=======
+>>>>>>> a0a54da391085c24c9e28ad6ab2874adc81600a7
     "typescript": "~5.8.3",
     "vite": "^6.4.2"
   },

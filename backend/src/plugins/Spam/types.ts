@@ -14,10 +14,13 @@ const zBaseSingleSpamConfig = z.strictObject({
   remove_roles_on_mute: z.union([z.boolean(), z.array(zSnowflake)]).default(false),
   restore_roles_on_mute: z.union([z.boolean(), z.array(zSnowflake)]).default(false),
   clean: z.boolean().default(false),
+<<<<<<< HEAD
   // Additional actions beyond mute
   kick: z.boolean().default(false),
   ban: z.boolean().default(false),
   ban_delete_message_days: z.number().min(0).max(7).default(0),
+=======
+>>>>>>> a0a54da391085c24c9e28ad6ab2874adc81600a7
 });
 export type TBaseSingleSpamConfig = z.infer<typeof zBaseSingleSpamConfig>;
 

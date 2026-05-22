@@ -61,10 +61,13 @@ export const SendWelcomeMessageEvt = welcomeMessageEvt({
 
     if (config.send_dm) {
       try {
+<<<<<<< HEAD
         // Wait before DMing to allow Discord to sync the new member's privacy settings
         if (config.send_dm_delay > 0) {
           await new Promise((resolve) => setTimeout(resolve, config.send_dm_delay));
         }
+=======
+>>>>>>> a0a54da391085c24c9e28ad6ab2874adc81600a7
         await sendDM(member.user, formatted, "welcome message");
       } catch {
         pluginData.getPlugin(LogsPlugin).logDmFailed({

@@ -8,7 +8,10 @@ import { SavedMessage } from "../../../data/entities/SavedMessage.js";
 import { logger } from "../../../logger.js";
 import { CasesPlugin } from "../../../plugins/Cases/CasesPlugin.js";
 import { MutesPlugin } from "../../../plugins/Mutes/MutesPlugin.js";
+<<<<<<< HEAD
 import { ModActionsPlugin } from "../../../plugins/ModActions/ModActionsPlugin.js";
+=======
+>>>>>>> a0a54da391085c24c9e28ad6ab2874adc81600a7
 import { MuteResult } from "../../../plugins/Mutes/types.js";
 import { DBDateFormat, convertDelayStringToMS, noop, resolveMember, trimLines } from "../../../utils.js";
 import { LogsPlugin } from "../../Logs/LogsPlugin.js";
@@ -104,6 +107,7 @@ export async function logAndDetectMessageSpam(
           }
         }
 
+<<<<<<< HEAD
         // Kick the user if enabled and not already muted
         if (spamConfig.kick && member && !muteResult) {
           try {
@@ -139,6 +143,8 @@ export async function logAndDetectMessageSpam(
           }
         }
 
+=======
+>>>>>>> a0a54da391085c24c9e28ad6ab2874adc81600a7
         // Get the offending message IDs
         // We also get the IDs of any messages after the last offending message, to account for lag before detection
         const savedMessages = recentActions.map((a) => a.extraData as SavedMessage);
