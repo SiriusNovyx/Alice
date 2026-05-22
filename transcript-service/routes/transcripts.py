@@ -11,6 +11,7 @@ from __future__ import annotations
 import hashlib
 import html
 import os
+import re
 import secrets
 from datetime import datetime, timezone
 from pathlib import Path
@@ -260,14 +261,28 @@ async def create_transcript(
     return JSONResponse(status_code=200, content={"id": archive_id, "url": f"/t/{archive_id}"})
 
 
+def _get_safe_path(archive_id: str) -> Path:
+    """
+    Validate that archive_id is a safe hexadecimal string and verify
+    that the constructed file path lies strictly within the STORE_DIR.
+    """
+    if not archive_id or not isinstance(archive_id, str) or not re.match(r"^[0-9a-f]{16}$", archive_id):
+        raise HTTPException(status_code=404, detail="Transcript not found")
+
+    store_dir_abs = STORE_DIR.resolve()
+    file_path = (STORE_DIR / f"{archive_id}.html").resolve()
+
+    if file_path.parent != store_dir_abs:
+        raise HTTPException(status_code=404, detail="Transcript not found")
+
+    return file_path
+
+
 @router.get("/{archive_id}", response_class=HTMLResponse)
 async def serve_transcript(archive_id: str):
     """Serve a stored HTML transcript."""
-    # Sanitise ID — only hex chars allowed
-    if not archive_id or not all(c in "0123456789abcdef" for c in archive_id):
-        raise HTTPException(status_code=404, detail="Transcript not found")
+    file_path = _get_safe_path(archive_id)
 
-    file_path = STORE_DIR / f"{archive_id}.html"
     if not file_path.exists():
         raise HTTPException(status_code=404, detail="Transcript not found or expired")
 
@@ -283,10 +298,11 @@ async def delete_transcript(
     if not _check_auth(authorization):
         return JSONResponse(status_code=401, content={"error": "Unauthorized"})
 
-    if not archive_id or not all(c in "0123456789abcdef" for c in archive_id):
+    try:
+        file_path = _get_safe_path(archive_id)
+    except HTTPException:
         return JSONResponse(status_code=404, content={"error": "Not found"})
 
-    file_path = STORE_DIR / f"{archive_id}.html"
     if file_path.exists():
         file_path.unlink()
         return JSONResponse(status_code=200, content={"deleted": True})
