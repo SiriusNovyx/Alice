@@ -1,0 +1,83 @@
+@import "./components.css";
+
+.main-content {
+  & h1 {
+    @apply text-3xl;
+    @apply font-semibold;
+    @apply leading-none;
+    @apply mb-4;
+  }
+
+  & h2 {
+    @apply text-2xl;
+    @apply font-semibold;
+    @apply mt-2;
+    @apply mb-1;
+  }
+
+  & h3 {
+    @apply text-xl;
+    @apply font-semibold;
+    @apply mb-1;
+  }
+
+  & p {
+    @apply mb-4;
+  }
+
+  & a:not([class]),
+  & a[class=""] {
+    @apply text-blue-400;
+    @apply underline;
+
+    &:hover {
+      @apply text-blue-200;
+    }
+  }
+
+  & ul:not([class]) {
+    @apply list-disc;
+    @apply mb-4;
+
+    & li {
+      @apply ml-6;
+    }
+  }
+
+  & ol:not([class]) {
+    @apply list-decimal;
+    @apply mb-4;
+
+    & li {
+      @apply ml-6;
+    }
+  }
+
+  & code:not([class]) {
+    @apply inline-block;
+    @apply bg-gray-800;
+    @apply px-1;
+    @apply rounded;
+    @apply text-sm;
+  }
+
+  & .expandable:not(.wide) {
+    max-width: 600px;
+  }
+}
+
+@media (width >= theme(--breakpoint-lg)) {
+  .main-content {
+    & h1 {
+      @apply text-5xl;
+    }
+  }
+}
+@media (width >= theme(--breakpoint-xl)) {
+  .main-content {
+    & a:not([class]),
+    & a[class=""] {
+      white-space: nowrap;
+    }
+  }
+}

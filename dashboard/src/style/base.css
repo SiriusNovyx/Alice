@@ -1,0 +1,115 @@
+/* ── Design system variables ─────────────────────────────── */
+:root {
+  /* Colors */
+  --color-bg:          #080b14;
+  --color-surface:     rgba(255, 255, 255, 0.03);
+  --color-surface-2:   rgba(255, 255, 255, 0.055);
+  --color-border:      rgba(255, 255, 255, 0.07);
+  --color-border-2:    rgba(255, 255, 255, 0.12);
+
+  --color-accent:      #5b6fff;
+  --color-accent-2:    #a8b4ff;
+  --color-accent-glow: rgba(91, 111, 255, 0.35);
+
+  --color-success:     #22c55e;
+  --color-danger:      #dc3c3c;
+  --color-warning:     #f59e0b;
+
+  --color-text-1:      #e8ecf4;
+  --color-text-2:      #c8d0e8;
+  --color-text-3:      #8b96b8;
+  --color-text-4:      #4b5572;
+
+  /* Typography */
+  --font-display: 'Syne', sans-serif;
+  --font-body:    'DM Sans', sans-serif;
+  --font-mono:    'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Spacing */
+  --radius-sm:  6px;
+  --radius-md:  10px;
+  --radius-lg:  14px;
+  --radius-xl:  20px;
+
+  /* Shadows */
+  --shadow-sm:  0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-md:  0 4px 20px rgba(0, 0, 0, 0.3);
+  --shadow-lg:  0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* ── Base ────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  background: var(--color-bg);
+  color: var(--color-text-2);
+  overflow-y: scroll;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Typography ──────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  color: var(--color-text-1);
+  line-height: 1.25;
+  margin: 0;
+}
+
+a {
+  color: var(--color-accent-2);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+a:hover {
+  color: var(--color-text-1);
+}
+
+code, pre, .mono {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* ── Selection ───────────────────────────────────────────── */
+::selection {
+  background: rgba(91, 111, 255, 0.35);
+  color: #fff;
+}
+
+/* ── Focus rings ─────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}

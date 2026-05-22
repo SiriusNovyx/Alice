@@ -1,0 +1,23 @@
+@import "./reset.css";
+@import "./base.css";
+@import "./splash.css";
+
+@import "tailwindcss";
+@import "vue-material-design-icons/styles.css";
+
+@import "./content.css";
+@import "./docs.css";
+
+/* Reset some icon default styles for more predictable alignment */
+.material-design-icon > .material-design-icon__svg {
+  position: static;
+  bottom: 0;
+}
+
+body {
+  overflow-y: scroll;
+
+  @apply bg-gray-900;
+  @apply text-gray-300;
+  @apply text-base;
+}

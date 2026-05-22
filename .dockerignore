@@ -1,0 +1,12 @@
+node_modules/
+**/node_modules/
+**/dist/
+**/*.tsbuildinfo
+*.tsbuildinfo
+.env
+.env.txt
+.git/
+debug/
+docs/
+*.md
+!README.md
