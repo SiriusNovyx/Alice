@@ -41,8 +41,10 @@ export const SlowmodeDisableSlashCmd = slowmodeSlashCmd({
       return;
     }
 
-    const me = pluginData.guild.members.cache.get(pluginData.client.user!.id);
-    const missingPermissions = getMissingChannelPermissions(me!, channel, BOT_SLOWMODE_DISABLE_PERMISSIONS);
+    const me = pluginData.guild.members.cache.get(pluginData.client.user!.id) ||
+      pluginData.guild.members.me ||
+      (await pluginData.guild.members.fetchMe());
+    const missingPermissions = getMissingChannelPermissions(me, channel, BOT_SLOWMODE_DISABLE_PERMISSIONS);
     if (missingPermissions) {
       pluginData.state.common.sendErrorMessage(
         interaction,

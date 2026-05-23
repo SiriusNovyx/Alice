@@ -25,7 +25,9 @@ export const SlowmodeClearCmd = slowmodeCmd({
       return;
     }
 
-    const me = pluginData.guild.members.cache.get(pluginData.client.user!.id)!;
+    const me = pluginData.guild.members.cache.get(pluginData.client.user!.id) ||
+      pluginData.guild.members.me ||
+      (await pluginData.guild.members.fetchMe());
     const missingPermissions = getMissingChannelPermissions(me, args.channel, BOT_SLOWMODE_CLEAR_PERMISSIONS);
     if (missingPermissions) {
       void pluginData.state.common.sendErrorMessage(

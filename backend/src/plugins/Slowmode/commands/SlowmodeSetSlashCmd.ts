@@ -40,6 +40,10 @@ export const SlowmodeSetSlashCmd = slowmodeSlashCmd({
       return;
     }
 
+    const me = pluginData.guild.members.cache.get(pluginData.client.user!.id) ||
+      pluginData.guild.members.me ||
+      (await pluginData.guild.members.fetchMe());
+
     const time = convertDelayStringToMS(options.time);
     if (time === null) {
       pluginData.state.common.sendErrorMessage(interaction, `Could not convert "${options.time}" to a duration`);
@@ -65,7 +69,7 @@ export const SlowmodeSetSlashCmd = slowmodeSlashCmd({
 
     if (useNative) {
       const missingPerms = getMissingChannelPermissions(
-        pluginData.guild.members.cache.get(pluginData.client.user!.id)!,
+        me,
         channel,
         NATIVE_SLOWMODE_PERMISSIONS,
       );
@@ -86,7 +90,7 @@ export const SlowmodeSetSlashCmd = slowmodeSlashCmd({
         return;
       }
       const missingPerms = getMissingChannelPermissions(
-        pluginData.guild.members.cache.get(pluginData.client.user!.id)!,
+        me,
         channel,
         BOT_SLOWMODE_PERMISSIONS,
       );
