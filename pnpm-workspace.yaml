@@ -23,6 +23,7 @@ minimumReleaseAgeExclude:
   - 'path-to-regexp'
   - 'picomatch'
   - 'undici'
+  - 'ws'
 
 overrides:
   # Keep in sync with Vety's discord.js version
@@ -41,3 +42,14 @@ overrides:
   picomatch@<2.3.2: "2.3.2"
   picomatch@>=4.0.0 <4.0.4: "4.0.4"
   undici@>=6.0.0 <6.24.0: "6.24.0"
+  brace-expansion@>=5.0.0 <5.0.6: "5.0.6"
+  qs@<6.14.1: "6.14.1"
+  qs@>=6.11.1 <=6.15.1: "6.15.2"
+  qs@>=6.7.0 <=6.14.1: "6.14.2"
+  uuid@<11.1.1: "11.1.1"
+  postcss@<8.5.10: "8.5.10"
+  ajv@>=7.0.0-alpha.0 <8.18.0: "8.18.0"
+  js-yaml@<3.14.2: "3.14.2"
+  js-yaml@>=4.0.0 <4.1.1: "4.1.1"
+  ws@>=8.0.0 <8.20.1: "8.20.1"
+  diff@>=4.0.0 <4.0.4: "4.0.4"
