@@ -144,10 +144,12 @@ export async function muteUser(
     const cfg = pluginData.config.get();
     const moveToVoiceChannel = cfg.kick_from_voice_channel ? null : cfg.move_to_voice_channel;
     if (moveToVoiceChannel || cfg.kick_from_voice_channel) {
-      // TODO: Add back the voiceState check once we figure out how to get voice state for guild members that are loaded on-demand
-      try {
-        await member.edit({ channel: moveToVoiceChannel as Snowflake });
-      } catch {} // eslint-disable-line no-empty
+      const voiceState = pluginData.guild.voiceStates.cache.get(member.id);
+      if (voiceState?.channelId) {
+        try {
+          await member.edit({ channel: moveToVoiceChannel as Snowflake });
+        } catch {} // eslint-disable-line no-empty
+      }
     }
   }
 
