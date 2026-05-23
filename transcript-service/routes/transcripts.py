@@ -269,8 +269,10 @@ def _get_safe_path(archive_id: str) -> Path:
     if not archive_id or not isinstance(archive_id, str) or not re.match(r"^[0-9a-f]{16}$", archive_id):
         raise HTTPException(status_code=404, detail="Transcript not found")
 
+    # Explicitly sanitize to prevent CodeQL false positives on path traversal
+    safe_id = "".join(c for c in archive_id if c.isalnum())[:16]
     store_dir_abs = STORE_DIR.resolve()
-    file_path = (STORE_DIR / f"{archive_id}.html").resolve()
+    file_path = (STORE_DIR / f"{safe_id}.html").resolve()
 
     if file_path.parent != store_dir_abs:
         raise HTTPException(status_code=404, detail="Transcript not found")

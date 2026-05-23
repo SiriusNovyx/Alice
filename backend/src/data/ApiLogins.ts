@@ -37,7 +37,14 @@ export class ApiLogins extends BaseRepository {
     const hash = crypto.createHash("sha256");
     hash.update(loginId + token); // Remember to use loginId as the salt
     const hashedToken = hash.digest("hex");
-    if (hashedToken !== login.token) {
+
+    const hashedBuf = Buffer.from(hashedToken, "hex");
+    const loginTokenBuf = Buffer.from(login.token, "hex");
+
+    if (
+      hashedBuf.length !== loginTokenBuf.length ||
+      !crypto.timingSafeEqual(hashedBuf, loginTokenBuf)
+    ) {
       return null;
     }
 
