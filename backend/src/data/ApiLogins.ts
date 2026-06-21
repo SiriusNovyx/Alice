@@ -1,9 +1,9 @@
-import crypto from "crypto";
 import moment from "moment-timezone";
 import { Repository } from "typeorm";
 // tslint:disable-next-line:no-submodule-imports
 import { v4 as uuidv4 } from "uuid";
 import { DAYS, DBDateFormat } from "../utils.js";
+import { hashApiToken, verifyApiToken } from "./apiLoginTokenHash.js";
 import { BaseRepository } from "./BaseRepository.js";
 import { dataSource } from "./dataSource.js";
 import { ApiLogin } from "./entities/ApiLogin.js";
@@ -34,17 +34,7 @@ export class ApiLogins extends BaseRepository {
       return null;
     }
 
-    const hash = crypto.createHash("sha256");
-    hash.update(loginId + token); // Remember to use loginId as the salt
-    const hashedToken = hash.digest("hex");
-
-    const hashedBuf = Buffer.from(hashedToken, "hex");
-    const loginTokenBuf = Buffer.from(login.token, "hex");
-
-    if (
-      hashedBuf.length !== loginTokenBuf.length ||
-      !crypto.timingSafeEqual(hashedBuf, loginTokenBuf)
-    ) {
+    if (!(await verifyApiToken(loginId, token, login.token))) {
       return null;
     }
 
@@ -66,9 +56,7 @@ export class ApiLogins extends BaseRepository {
 
     // Generate token
     const token = uuidv4();
-    const hash = crypto.createHash("sha256");
-    hash.update(loginId + token); // Use loginId as a salt
-    const hashedToken = hash.digest("hex");
+    const hashedToken = await hashApiToken(loginId, token);
 
     // Save this to the DB
     await this.apiLogins.insert({

@@ -26,6 +26,8 @@ router = APIRouter(prefix="/t")
 STORE_DIR = Path(os.getenv("TRANSCRIPT_STORE_DIR", "./store/transcripts"))
 STORE_DIR.mkdir(parents=True, exist_ok=True)
 
+_ARCHIVE_ID_PATTERN = re.compile(r"^[0-9a-f]{16}$")
+
 # ── Auth ──────────────────────────────────────────────────────────────────────
 _SECRET = os.getenv("TRANSCRIPT_SECRET", "change-me-in-env")
 
@@ -35,6 +37,47 @@ def _check_auth(authorization: str | None) -> bool:
         return False
     token = authorization.removeprefix("Bearer ").strip()
     return secrets.compare_digest(token, _SECRET)
+
+
+def _store_dir() -> Path:
+    return STORE_DIR.resolve()
+
+
+def _validate_archive_id(archive_id: object) -> str:
+    if not isinstance(archive_id, str) or not _ARCHIVE_ID_PATTERN.fullmatch(archive_id):
+        raise HTTPException(status_code=404, detail="Transcript not found")
+    return archive_id
+
+
+def _transcript_path_for_id(validated_id: str) -> Path:
+    """Map a validated archive ID to a file inside the transcript store."""
+    base_dir = _store_dir()
+    file_name = f"{validated_id}.html"
+    if os.path.basename(file_name) != file_name:
+        raise HTTPException(status_code=404, detail="Transcript not found")
+
+    resolved = Path(os.path.normpath(os.path.join(str(base_dir), file_name))).resolve()
+    try:
+        resolved.relative_to(base_dir)
+    except ValueError:
+        raise HTTPException(status_code=404, detail="Transcript not found") from None
+
+    return resolved
+
+
+def _read_transcript(validated_id: str) -> str:
+    file_path = _transcript_path_for_id(validated_id)
+    if not file_path.is_file():
+        raise HTTPException(status_code=404, detail="Transcript not found or expired")
+    return file_path.read_text(encoding="utf-8")
+
+
+def _delete_transcript(validated_id: str) -> bool:
+    file_path = _transcript_path_for_id(validated_id)
+    if not file_path.is_file():
+        return False
+    file_path.unlink()
+    return True
 
 
 # ── HTML renderer ─────────────────────────────────────────────────────────────
@@ -255,40 +298,17 @@ async def create_transcript(
 
     html_content = _render_html(guild_name, guild_id, messages, created_at, expires_at)
 
-    file_path = STORE_DIR / f"{archive_id}.html"
+    file_path = _transcript_path_for_id(archive_id)
     file_path.write_text(html_content, encoding="utf-8")
 
     return JSONResponse(status_code=200, content={"id": archive_id, "url": f"/t/{archive_id}"})
 
 
-def _get_safe_path(archive_id: str) -> Path:
-    """
-    Validate that archive_id is a safe hexadecimal string and verify
-    that the constructed file path lies strictly within the STORE_DIR.
-    """
-    if not archive_id or not isinstance(archive_id, str) or not re.match(r"^[0-9a-f]{16}$", archive_id):
-        raise HTTPException(status_code=404, detail="Transcript not found")
-
-    # Explicitly sanitize to prevent CodeQL false positives on path traversal
-    safe_id = "".join(c for c in archive_id if c.isalnum())[:16]
-    store_dir_abs = STORE_DIR.resolve()
-    file_path = (STORE_DIR / f"{safe_id}.html").resolve()
-
-    if file_path.parent != store_dir_abs:
-        raise HTTPException(status_code=404, detail="Transcript not found")
-
-    return file_path
-
-
 @router.get("/{archive_id}", response_class=HTMLResponse)
 async def serve_transcript(archive_id: str):
     """Serve a stored HTML transcript."""
-    file_path = _get_safe_path(archive_id)
-
-    if not file_path.exists():
-        raise HTTPException(status_code=404, detail="Transcript not found or expired")
-
-    return HTMLResponse(content=file_path.read_text(encoding="utf-8"), status_code=200)
+    validated_id = _validate_archive_id(archive_id)
+    return HTMLResponse(content=_read_transcript(validated_id), status_code=200)
 
 
 @router.delete("/{archive_id}")
@@ -300,12 +320,7 @@ async def delete_transcript(
     if not _check_auth(authorization):
         return JSONResponse(status_code=401, content={"error": "Unauthorized"})
 
-    try:
-        file_path = _get_safe_path(archive_id)
-    except HTTPException:
-        return JSONResponse(status_code=404, content={"error": "Not found"})
-
-    if file_path.exists():
-        file_path.unlink()
+    validated_id = _validate_archive_id(archive_id)
+    if _delete_transcript(validated_id):
         return JSONResponse(status_code=200, content={"deleted": True})
     return JSONResponse(status_code=404, content={"error": "Not found"})
