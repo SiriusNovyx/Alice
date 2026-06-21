@@ -74,7 +74,7 @@ export const MassAddRoleCmd = rolesCmd({
 
     for (const member of membersWithoutTheRole) {
       try {
-        pluginData.getPlugin(RoleManagerPlugin).addRole(member.id, roleId);
+        await pluginData.getPlugin(RoleManagerPlugin).addRole(member.id, roleId);
         pluginData.getPlugin(LogsPlugin).logMemberRoleAdd({
           member,
           roles: [role],

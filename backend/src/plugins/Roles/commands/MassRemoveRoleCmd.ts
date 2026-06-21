@@ -1,5 +1,6 @@
 import { GuildMember } from "discord.js";
 import { commandTypeHelpers as ct } from "../../../commandTypes.js";
+import { logger } from "../../../logger.js";
 import { canActOn, resolveMessageMember } from "../../../pluginUtils.js";
 import { resolveMember, resolveRoleId, successMessage } from "../../../utils.js";
 import { LogsPlugin } from "../../Logs/LogsPlugin.js";
@@ -72,13 +73,18 @@ export const MassRemoveRoleCmd = rolesCmd({
     );
 
     for (const member of membersWithTheRole) {
-      await pluginData.getPlugin(RoleManagerPlugin).removeRole(member.id, roleId);
-      pluginData.getPlugin(LogsPlugin).logMemberRoleRemove({
-        member,
-        roles: [role],
-        mod: msg.author,
-      });
-      assigned++;
+      try {
+        await pluginData.getPlugin(RoleManagerPlugin).removeRole(member.id, roleId);
+        pluginData.getPlugin(LogsPlugin).logMemberRoleRemove({
+          member,
+          roles: [role],
+          mod: msg.author,
+        });
+        assigned++;
+      } catch (e) {
+        logger.warn(`Error when removing role via !massremoverole: ${e.message}`);
+        failed.push(member.id);
+      }
     }
 
     let resultMessage = `Removed role **${role.name}** from ${assigned} ${assigned === 1 ? "member" : "members"}!`;

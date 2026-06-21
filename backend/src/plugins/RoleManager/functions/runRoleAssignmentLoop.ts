@@ -32,7 +32,21 @@ export async function runRoleAssignmentLoop(pluginData: GuildPluginData<RoleMana
       for (const assignment of nextAssignments) {
         const member = await pluginData.guild.members.fetch(assignment.user_id).catch(() => null);
         if (!member) {
-          return;
+          logger.warn(
+            `Could not fetch member ${assignment.user_id} for queued role ${assignment.should_add ? "add" : "remove"}`,
+          );
+          pluginData.getPlugin(LogsPlugin).logBotAlert({
+            body: `Could not ${assignment.should_add ? "assign" : "remove"} role <@&${assignment.role_id}> (\`${
+              assignment.role_id
+            }\`) ${assignment.should_add ? "to" : "from"} <@!${assignment.user_id}> (\`${assignment.user_id}\`): member not found`,
+          });
+          await pluginData.state.roleQueue.addQueueItem(
+            assignment.user_id,
+            assignment.role_id,
+            assignment.should_add,
+            assignment.priority,
+          );
+          continue;
         }
 
         const operation = assignment.should_add

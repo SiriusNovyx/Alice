@@ -343,12 +343,11 @@ export class GuildSavedMessages extends BaseGuildRepository<SavedMessage> {
     timeout: number = 60 * 1000,
   ): Promise<void> {
     let called = false;
-    let onceEventListener;
-    let timeoutFn;
+    let timeoutFn: NodeJS.Timeout;
 
     const callHandler = async (msg?: SavedMessage) => {
-      this.events.off(`create:${id}`, onceEventListener);
       clearTimeout(timeoutFn);
+      this.events.off(`create:${id}`, callHandler);
 
       if (called) return;
       called = true;
@@ -356,15 +355,12 @@ export class GuildSavedMessages extends BaseGuildRepository<SavedMessage> {
       await handler(msg);
     };
 
-    onceEventListener = this.events.once(`create:${id}`, callHandler);
-    timeoutFn = setTimeout(() => {
-      called = true;
-      callHandler(undefined);
-    }, timeout);
+    this.events.on(`create:${id}`, callHandler);
+    timeoutFn = setTimeout(() => callHandler(undefined), timeout);
 
     const messageInDB = await this.find(id);
     if (messageInDB) {
-      callHandler(messageInDB);
+      await callHandler(messageInDB);
     }
   }
 }

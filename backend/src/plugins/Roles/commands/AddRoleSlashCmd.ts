@@ -26,8 +26,14 @@ export const AddRoleSlashCmd = rolesSlashCmd({
       return;
     }
 
+    const modMember = await pluginData.guild.members.fetch(interaction.user.id).catch(() => null);
+    if (!modMember) {
+      pluginData.state.common.sendErrorMessage(interaction, "Failed to resolve your member info");
+      return;
+    }
+
     const config = await pluginData.config.getMatchingConfig({
-      member: interaction.member as GuildMember,
+      member: modMember,
       channelId: interaction.channelId,
     });
     if (!config.assignable_roles.includes(options.role.id)) {
@@ -35,7 +41,7 @@ export const AddRoleSlashCmd = rolesSlashCmd({
       return;
     }
 
-    if (!canActOn(pluginData, interaction.member as GuildMember, member, true)) {
+    if (!canActOn(pluginData, modMember, member, true)) {
       pluginData.state.common.sendErrorMessage(interaction, "Cannot add roles to this user: insufficient permissions");
       return;
     }

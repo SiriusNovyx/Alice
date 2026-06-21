@@ -140,7 +140,17 @@ export class MessageBuffer {
   }
 
   consume(): StrictMessageContent[] {
-    return Array.from(this.finalizedChunks);
+    const result = Array.from(this.finalizedChunks);
+    this.finalizedChunks = [];
+    return result;
+  }
+
+  dispose(): void {
+    if (this.chunkTimeout) {
+      clearTimeout(this.chunkTimeout);
+      this.chunkTimeout = null;
+    }
+    this.chunk = null;
     this.finalizedChunks = [];
   }
 

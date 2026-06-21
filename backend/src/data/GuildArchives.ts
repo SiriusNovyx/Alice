@@ -58,7 +58,8 @@ async function createHtmlTranscript(
 
     if (!res.ok) return undefined;
     const json = await res.json() as { id: string; url: string };
-    return `${TRANSCRIPT_SERVICE_URL}${json.url}`;
+    const publicUrlBase = process.env.PUBLIC_TRANSCRIPT_URL ?? process.env.DASHBOARD_URL ?? TRANSCRIPT_SERVICE_URL;
+    return `${publicUrlBase}${json.url}`;
   } catch {
     return undefined;
   }

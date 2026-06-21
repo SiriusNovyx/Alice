@@ -43,6 +43,11 @@ export const AutoDeletePlugin = guildPlugin<AutoDeletePluginType>()({
   beforeUnload(pluginData) {
     const { state } = pluginData;
 
+    if (state.nextDeletionTimeout) {
+      clearTimeout(state.nextDeletionTimeout);
+    }
+    state.deletionQueue = [];
+
     state.guildSavedMessages.events.off("create", state.onMessageCreateFn);
     state.guildSavedMessages.events.off("delete", state.onMessageDeleteFn);
     state.guildSavedMessages.events.off("deleteBulk", state.onMessageDeleteBulkFn);

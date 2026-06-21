@@ -93,7 +93,7 @@ export async function log<TLogType extends keyof ILogTypeData>(
       include_embed_timestamp: opts.include_embed_timestamp,
       timestamp_format: opts.timestamp_format,
     });
-    if (!message) return;
+    if (!message) continue;
 
     // Initialize message buffer for this channel
     if (!pluginData.state.buffers.has(channelId)) {

@@ -67,9 +67,9 @@ ALICE builds on Zeppelin with a significant number of bug fixes, security improv
 
 ## Verification
 
-- `pnpm audit --audit-level high` reports no remaining high or critical vulnerabilities.
-- `npm audit --audit-level high --package-lock-only` reports no high or critical vulnerabilities for `config-checker`.
-- `npm audit --audit-level high --package-lock-only` reports no high or critical vulnerabilities for `presetup-configurator`.
+- `pnpm audit --audit-level high` should report no high or critical vulnerabilities in the main workspace.
+- `npm audit --audit-level high --package-lock-only` should report no high or critical vulnerabilities for `config-checker` and `presetup-configurator`.
+- `presetup-configurator` uses Vite (Snowpack/vm2 removed).
 
 ### 🐛 Bug Fixes
 

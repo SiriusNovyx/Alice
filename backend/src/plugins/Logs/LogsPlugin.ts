@@ -298,6 +298,12 @@ export const LogsPlugin = guildPlugin<LogsPluginType>()({
     if (state.regexRunnerRepeatedTimeoutListener) {
       state.regexRunner.off("repeatedTimeout", state.regexRunnerRepeatedTimeoutListener);
     }
+
+    for (const buffer of state.buffers.values()) {
+      buffer.dispose();
+    }
+    state.buffers.clear();
+
     discardRegExpRunner(`guild-${guild.id}`);
   },
 });

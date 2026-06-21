@@ -46,7 +46,7 @@ export async function deleteNextItem(pluginData: GuildPluginData<AutoDeletePlugi
   const timeAndDate = pluginData.getPlugin(TimeAndDatePlugin);
 
   pluginData.state.guildLogs.ignoreLog(LogType.MESSAGE_DELETE, itemToDelete.message.id);
-  channel.messages.delete(itemToDelete.message.id as Snowflake).catch((err) => {
+  await channel.messages.delete(itemToDelete.message.id as Snowflake).catch((err) => {
     if (err.code === 10008) {
       // "Unknown Message", probably already deleted by automod or another bot, ignore
       return;

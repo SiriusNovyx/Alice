@@ -21,8 +21,13 @@ export class Blocker {
           getPromise: () => promise, // :d
         });
       });
-      // Clean up the map entry once the block resolves
-      promise.then(() => this.#blocks.delete(key));
+      // Clean up the map entry once the block resolves, unless a new block() incremented count in the meantime
+      promise.then(() => {
+        const entry = this.#blocks.get(key);
+        if (entry && entry.count === 0) {
+          this.#blocks.delete(key);
+        }
+      });
     }
     this.#blocks.get(key)!.count++;
   }
