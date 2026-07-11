@@ -15,6 +15,8 @@ const LOG_TYPES = {
   MEMBER_LEAVE: "Member left",
   MEMBER_ROLE_ADD: "Member, role added",
   MEMBER_ROLE_REMOVE: "Member, role removed",
+  MEMBER_TIMED_ROLE_ADD: "Member, timed role added",
+  MEMBER_TIMED_ROLE_REMOVE: "Member, timed role removed",
   MEMBER_NICK_CHANGE: "Member nickname changed",
   MEMBER_USERNAME_CHANGE: "Member username changed",
   MEMBER_RESTORE: "Member roles restored",

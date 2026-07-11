@@ -38,6 +38,7 @@ async function createHtmlTranscript(
       content:     m.data?.content ?? "",
       timestamp:   m.posted_at,
       channel_id:  m.channel_id,
+      channel:     guild.channels.cache.get(m.channel_id as Snowflake)?.name ?? m.channel_id,
       attachments: (m.data?.attachments ?? []).map((a: any) => ({
         url:      a.url ?? a.proxy_url ?? "",
         filename: a.filename ?? a.name ?? "attachment",
@@ -166,14 +167,17 @@ export class GuildArchives extends BaseGuildRepository<ArchiveEntry> {
     savedMessages: SavedMessage[],
     guild: Guild,
     expiresAt?: moment.Moment,
+    preferHtml = true,
   ): Promise<string> {
     if (expiresAt == null) {
       expiresAt = moment.utc().add(DEFAULT_EXPIRY_DAYS, "days");
     }
 
-    // Try the HTML transcript service first
-    const htmlUrl = await createHtmlTranscript(savedMessages, guild, expiresAt);
-    if (htmlUrl) return htmlUrl;
+    // Try the HTML transcript service first (unless caller needs a DB-backed archive)
+    if (preferHtml) {
+      const htmlUrl = await createHtmlTranscript(savedMessages, guild, expiresAt);
+      if (htmlUrl) return htmlUrl;
+    }
 
     // Fall back to plain-text archive stored in the database
     const headerStr = await renderTemplate(
@@ -204,6 +208,12 @@ export class GuildArchives extends BaseGuildRepository<ArchiveEntry> {
   }
 
   getUrl(baseUrl, archiveId) {
+    if (
+      typeof archiveId === "string" &&
+      (archiveId.startsWith("http://") || archiveId.startsWith("https://") || archiveId.startsWith("/t/"))
+    ) {
+      return archiveId;
+    }
     return baseUrl ? `${baseUrl}/archives/${archiveId}` : `Archive ID: ${archiveId}`;
   }
 }

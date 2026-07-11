@@ -62,7 +62,12 @@ export function createMessageSpamTrigger(spamType: RecentActionType, prettyName:
           .filter(Boolean)
           .sort(sorter("posted_at")) as SavedMessage[];
 
-        const archiveId = await pluginData.state.archives.createFromSavedMessages(messages, pluginData.guild);
+        const archiveId = await pluginData.state.archives.createFromSavedMessages(
+          messages,
+          pluginData.guild,
+          undefined,
+          false,
+        );
 
         pluginData.state.recentSpam.push({
           type: spamType,

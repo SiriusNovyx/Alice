@@ -2,6 +2,7 @@ import { Mute } from "./entities/Mute.js";
 import { Reminder } from "./entities/Reminder.js";
 import { ScheduledPost } from "./entities/ScheduledPost.js";
 import { Tempban } from "./entities/Tempban.js";
+import { TempRole } from "./entities/TempRole.js";
 import { VCAlert } from "./entities/VCAlert.js";
 
 interface GuildEventArgs extends Record<string, unknown[]> {
@@ -10,6 +11,7 @@ interface GuildEventArgs extends Record<string, unknown[]> {
   scheduledPost: [ScheduledPost];
   reminder: [Reminder];
   expiredTempban: [Tempban];
+  expiredTempRole: [TempRole];
   expiredVCAlert: [VCAlert];
 }
 

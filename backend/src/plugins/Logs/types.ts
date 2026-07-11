@@ -175,6 +175,21 @@ export const LogTypeData = z.object({
     roles: z.string(),
   }),
 
+  [LogType.MEMBER_TIMED_ROLE_ADD]: z.object({
+    mod: z.instanceof(TemplateSafeUser),
+    member: z.instanceof(TemplateSafeMember),
+    roles: z.string(),
+    time: z.string(),
+    reason: z.string(),
+  }),
+
+  [LogType.MEMBER_TIMED_ROLE_REMOVE]: z.object({
+    mod: z.instanceof(TemplateSafeUser).or(z.null()),
+    member: z.instanceof(TemplateSafeMember),
+    roles: z.string(),
+    reason: z.string(),
+  }),
+
   [LogType.MEMBER_NICK_CHANGE]: z.object({
     member: z.instanceof(TemplateSafeMember),
     oldNick: z.string(),

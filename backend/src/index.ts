@@ -30,6 +30,7 @@ import { runExpiredArchiveDeletionLoop } from "./data/loops/expiredArchiveDeleti
 import { runExpiredMemberCacheDeletionLoop } from "./data/loops/expiredMemberCacheDeletionLoop.js";
 import { runExpiringMutesLoop } from "./data/loops/expiringMutesLoop.js";
 import { runExpiringTempbansLoop } from "./data/loops/expiringTempbansLoop.js";
+import { runExpiringTempRolesLoop } from "./data/loops/expiringTempRolesLoop.js";
 import { runExpiringVCAlertsLoop } from "./data/loops/expiringVCAlertsLoop.js";
 import { runMemberCacheDeletionLoop } from "./data/loops/memberCacheDeletionLoop.js";
 import { runSavedMessageCleanupLoop } from "./data/loops/savedMessageCleanupLoop.js";
@@ -426,6 +427,8 @@ connect().then(async () => {
     runExpiringMutesLoop();
     await sleep(10 * SECONDS);
     runExpiringTempbansLoop();
+    await sleep(10 * SECONDS);
+    runExpiringTempRolesLoop();
     await sleep(10 * SECONDS);
     runUpcomingScheduledPostsLoop();
     await sleep(10 * SECONDS);

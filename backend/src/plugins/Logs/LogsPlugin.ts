@@ -73,6 +73,8 @@ import { logMemberRoleChanges } from "./logFunctions/logMemberRoleChanges.js";
 import { logMemberRoleRemove } from "./logFunctions/logMemberRoleRemove.js";
 import { logMemberTimedBan } from "./logFunctions/logMemberTimedBan.js";
 import { logMemberTimedMute } from "./logFunctions/logMemberTimedMute.js";
+import { logMemberTimedRoleAdd } from "./logFunctions/logMemberTimedRoleAdd.js";
+import { logMemberTimedRoleRemove } from "./logFunctions/logMemberTimedRoleRemove.js";
 import { logMemberTimedUnban } from "./logFunctions/logMemberTimedUnban.js";
 import { logMemberTimedUnmute } from "./logFunctions/logMemberTimedUnmute.js";
 import { logMemberUnban } from "./logFunctions/logMemberUnban.js";
@@ -191,6 +193,8 @@ export const LogsPlugin = guildPlugin<LogsPluginType>()({
       logMemberRoleRemove: makePublicFn(pluginData, logMemberRoleRemove),
       logMemberTimedBan: makePublicFn(pluginData, logMemberTimedBan),
       logMemberTimedMute: makePublicFn(pluginData, logMemberTimedMute),
+      logMemberTimedRoleAdd: makePublicFn(pluginData, logMemberTimedRoleAdd),
+      logMemberTimedRoleRemove: makePublicFn(pluginData, logMemberTimedRoleRemove),
       logMemberTimedUnban: makePublicFn(pluginData, logMemberTimedUnban),
       logMemberTimedUnmute: makePublicFn(pluginData, logMemberTimedUnmute),
       logMemberUnban: makePublicFn(pluginData, logMemberUnban),
