@@ -7,11 +7,14 @@ import VueHighlightJS from "vue3-highlightjs";
 
 import { router } from "./routes";
 import { RootStore } from "./store";
+import { initTheme } from "./theme";
 
 import "./directives/trim-indents";
 
 import App from "./components/App.vue";
 import { trimIndents } from "./directives/trim-indents";
+
+initTheme();
 
 if (!window.API_URL) {
   throw new Error("Missing API_URL");

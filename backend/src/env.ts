@@ -60,6 +60,33 @@ const envType = z.object({
     .transform((str) => str === "true"),
 
   NODE_ENV: z.string().default("development"),
+
+  BOT_DISPLAY_NAME_STYLE_ENABLED: z
+    .string()
+    .optional()
+    .default("false")
+    .transform((str) => str === "true"),
+
+  BOT_DISPLAY_NAME_STYLE_GUILD_ID: z.string().optional(),
+
+  BOT_DISPLAY_NAME_STYLE_FONT_ID: z.preprocess(
+    (v) => (v === undefined || v === "" ? 10 : Number(v)),
+    z.number().int().min(1).max(12),
+  ),
+
+  BOT_DISPLAY_NAME_STYLE_EFFECT_ID: z.preprocess(
+    (v) => (v === undefined || v === "" ? 3 : Number(v)),
+    z.number().int().min(1).max(6),
+  ),
+
+  BOT_DISPLAY_NAME_STYLE_COLORS: z.preprocess((v) => {
+    const raw = v === undefined || v === "" ? "16777215" : String(v);
+    return raw
+      .split(",")
+      .map((s) => s.trim())
+      .filter((s) => s !== "")
+      .map((s) => Number(s));
+  }, z.array(z.number().int()).min(1).max(2)),
 });
 
 let toValidate = { ...process.env };

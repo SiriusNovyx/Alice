@@ -202,6 +202,7 @@ https://discord.com/oauth2/authorize?client_id=YOUR_CLIENT_ID&permissions=8&scop
 ## Usage Documentation
 
 For information on how to use the bot, see [docs/MANAGEMENT.md](docs/MANAGEMENT.md).
+For the full offline command reference (useful if the dashboard docs site is down), see [docs/COMMANDS.md](docs/COMMANDS.md).
 For the original project, see: https://zeppelin.gg/
 
 ## Development

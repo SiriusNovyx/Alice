@@ -20,11 +20,11 @@ If you were previously running Alice using the `dragory/zeppelin` image pulled f
 Alice now builds from your local source code. To switch:
 
 1. Replace `docker-compose.standalone.yml` with the updated version that uses `build: context: .` instead of `image: dragory/zeppelin`
-2. Run a full clean rebuild:
+2. Rebuild and start:
    ```bash
    docker compose -f docker-compose.standalone.yml down
-   docker compose -f docker-compose.standalone.yml build --no-cache
+   docker compose -f docker-compose.standalone.yml build
    docker compose -f docker-compose.standalone.yml up -d
    ```
 
-> **Always use `--no-cache`** when rebuilding after TypeScript source changes. Without it, Docker may use cached layers and skip recompilation.
+> **`--no-cache` is optional.** Prefer a normal `build`. Use `build --no-cache` only if the Docker cache is corrupted or the image still looks stale after a regular rebuild.

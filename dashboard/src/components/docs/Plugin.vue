@@ -64,22 +64,6 @@
           <Expandable class="mt-4">
             <template v-slot:title>Additional information</template>
             <template v-slot:content>
-              <!--
-              <div v-if="command.config.extra.info && command.config.extra.info.usageGuide">
-                <div class="font-semibold">Usage guide:</div>
-                <MarkdownBlock :content="command.config.extra.info.usageGuide"
-                               class="content">
-                </MarkdownBlock>
-              </div>
-
-              <div v-if="command.config.extra.info && command.config.extra.info.examples">
-                <div class="font-semibold">Examples:</div>
-                <MarkdownBlock :content="command.config.extra.info.examples"
-                               class="content">
-                </MarkdownBlock>
-              </div>
-              -->
-
               <p v-if="command.permission">
                 <span class="font-semibold">Permission:</span>
                 <code class="inline-code">{{ command.permission }}</code>
@@ -128,6 +112,28 @@
               </div>
             </template>
           </Expandable>
+        </div>
+      </div>
+
+      <!-- Slash Command list -->
+      <div v-if="data.slashCommands && data.slashCommands.length">
+        <h3 id="slash-commands" class="text-2xl">Slash commands</h3>
+        <p class="text-pretty">
+          These commands appear in Discord’s slash menu. Grouped commands are shown as <code>/group subcommand</code>.
+        </p>
+        <div
+          v-for="command in data.slashCommands"
+          :key="getSlashCommandLabel(command)"
+          class="command mb-4"
+        >
+          <h4 class="text-xl font-semibold mb-0">
+            <code class="inline-code">{{ getSlashCommandLabel(command) }}</code>
+          </h4>
+          <MarkdownBlock v-if="command.description" :content="command.description" class="content" />
+          <p v-if="command.permission">
+            <span class="font-semibold">Permission:</span>
+            <code class="inline-code">{{ command.permission }}</code>
+          </p>
         </div>
       </div>
     </div>
@@ -276,6 +282,12 @@
       getCommandSlug(command) {
         const mainTrigger = this.getTriggers(command)[0];
         return 'command-' + mainTrigger.trim().toLowerCase().replace(/\s/g, '-');
+      },
+      getSlashCommandLabel(command) {
+        if (command.group) {
+          return `/${command.group} ${command.name}`;
+        }
+        return `/${command.name}`;
       },
       scrollToCommand(hash) {
         if (this.$refs[hash]) {

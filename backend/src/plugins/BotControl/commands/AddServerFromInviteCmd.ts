@@ -1,6 +1,7 @@
 import { ApiPermissions } from "@zeppelinbot/shared/apiPermissions.js";
 import moment from "moment-timezone";
 import { commandTypeHelpers as ct } from "../../../commandTypes.js";
+import { DEFAULT_GUILD_CONFIG } from "../../../data/defaultGuildConfig.js";
 import { DBDateFormat, isGuildInvite, resolveInvite } from "../../../utils.js";
 import { isEligible } from "../functions/isEligible.js";
 import { botControlCmd } from "../types.js";
@@ -34,7 +35,7 @@ export const AddServerFromInviteCmd = botControlCmd({
     }
 
     await pluginData.state.allowedGuilds.add(invite.guild.id, { name: invite.guild.name });
-    await pluginData.state.configs.saveNewRevision(`guild-${invite.guild.id}`, "plugins: {}", msg.author.id);
+    await pluginData.state.configs.saveNewRevision(`guild-${invite.guild.id}`, DEFAULT_GUILD_CONFIG, msg.author.id);
 
     await pluginData.state.apiPermissionAssignments.addUser(invite.guild.id, args.user.id, [
       ApiPermissions.ManageAccess,
@@ -50,6 +51,8 @@ export const AddServerFromInviteCmd = botControlCmd({
       );
     }
 
-    msg.channel.send("Server was eligible and is now allowed to use Zeppelin!");
+    msg.channel.send(
+      "Server was eligible and is now allowed! A starter config was applied — fill in role/channel IDs in the dashboard.",
+    );
   },
 });

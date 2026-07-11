@@ -3,8 +3,8 @@
     <header>
       <h1>Moderation</h1>
       <p>
-        Moderation in Zeppelin is multi-layered. On top of typical actions such
-        as warning, muting, kicking, and banning, Zeppelin allows moderators to
+        Moderation in Alice is multi-layered. On top of typical actions such
+        as warning, muting, kicking, and banning, Alice allows moderators to
         utilise flags; create alerts; set thresholds; and act as others.
       </p>
       <p>
@@ -28,7 +28,7 @@
 
     <h2>Moderation Commands</h2>
     <p>
-      So that your moderators may use Zeppelin moderation, you must define the
+      So that your moderators may use Alice moderation, you must define the
       moderator role id in the config, assign it a level (50), and enable the
       Mod actions plugin.
       <CodeBlock code-lang="yaml" trim="start">
@@ -45,8 +45,77 @@
       these permissions by referencing the plugins permissions page.
     </p>
 
+    <h3>Prefix and slash usage</h3>
+    <p>
+      Prefix commands use the server prefix (default <code>!</code>). Slash commands for this plugin live under
+      <code>/mod</code>. Mutes management (listing / clearing) uses <code>/mutes</code> via the
+      <router-link to="/docs/plugins/mutes">Mutes</router-link> plugin.
+    </p>
+    <table class="docs-cmd-table">
+      <thead>
+        <tr>
+          <th>Action</th>
+          <th>Prefix</th>
+          <th>Slash</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Warn</td>
+          <td><code>!warn &lt;user&gt; &lt;reason&gt;</code></td>
+          <td><code>/mod warn</code></td>
+        </tr>
+        <tr>
+          <td>Note</td>
+          <td><code>!note &lt;user&gt; [note text]</code></td>
+          <td><code>/mod note</code></td>
+        </tr>
+        <tr>
+          <td>Mute</td>
+          <td><code>!mute &lt;user&gt; [duration] [reason]</code></td>
+          <td><code>/mod mute</code></td>
+        </tr>
+        <tr>
+          <td>Unmute</td>
+          <td><code>!unmute &lt;user&gt; [duration] [reason]</code></td>
+          <td><code>/mod unmute</code></td>
+        </tr>
+        <tr>
+          <td>Kick</td>
+          <td><code>!kick &lt;user&gt; [reason]</code></td>
+          <td><code>/mod kick</code></td>
+        </tr>
+        <tr>
+          <td>Ban</td>
+          <td><code>!ban &lt;user&gt; [duration] [reason]</code></td>
+          <td><code>/mod ban</code></td>
+        </tr>
+        <tr>
+          <td>Unban</td>
+          <td><code>!unban &lt;user&gt; [reason]</code></td>
+          <td><code>/mod unban</code></td>
+        </tr>
+        <tr>
+          <td>Case</td>
+          <td><code>!case &lt;caseNumber&gt;</code></td>
+          <td><code>/mod case</code></td>
+        </tr>
+        <tr>
+          <td>Cases for user</td>
+          <td><code>!cases &lt;user&gt;</code></td>
+          <td><code>/mod cases</code></td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      Common optional flags on prefix commands include <code>-mod</code>, <code>-notify</code>, and
+      <code>-notify-channel</code>. See the
+      <router-link to="/docs/plugins/mod_actions">Mod actions</router-link> plugin page for the full command list
+      (massban, forceban, hidecase, etc.).
+    </p>
+
     <h2>Sanction Notifications</h2>
-    <p>These config options define how Zeppelin will interact with the
+    <p>These config options define how Alice will interact with the
       members it sanctions (warns, kicks, bans).</p>
 
     <h3>DM Values</h3>
@@ -141,7 +210,7 @@
 
     <h2>Ban Message Deletion</h2>
     <p>
-      When a member is banned, Zeppelin automatically deletes the last day of
+      When a member is banned, Alice automatically deletes the last day of
       message history. You can extend this through the
       <code>ban_delete_message_days</code> option.
     </p>

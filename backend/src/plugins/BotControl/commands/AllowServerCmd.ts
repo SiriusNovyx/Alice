@@ -1,6 +1,7 @@
 import { ApiPermissions } from "@zeppelinbot/shared/apiPermissions.js";
 import moment from "moment-timezone";
 import { commandTypeHelpers as ct } from "../../../commandTypes.js";
+import { DEFAULT_GUILD_CONFIG } from "../../../data/defaultGuildConfig.js";
 import { isStaffPreFilter } from "../../../pluginUtils.js";
 import { DBDateFormat, isSnowflake } from "../../../utils.js";
 import { botControlCmd } from "../types.js";
@@ -35,7 +36,7 @@ export const AllowServerCmd = botControlCmd({
     }
 
     await pluginData.state.allowedGuilds.add(args.guildId);
-    await pluginData.state.configs.saveNewRevision(`guild-${args.guildId}`, "plugins: {}", msg.author.id);
+    await pluginData.state.configs.saveNewRevision(`guild-${args.guildId}`, DEFAULT_GUILD_CONFIG, msg.author.id);
 
     if (args.userId) {
       await pluginData.state.apiPermissionAssignments.addUser(args.guildId, args.userId, [ApiPermissions.ManageAccess]);
@@ -51,6 +52,8 @@ export const AllowServerCmd = botControlCmd({
       );
     }
 
-    void msg.channel.send("Server is now allowed to use Zeppelin!");
+    void msg.channel.send(
+      "Server is now allowed! A starter config was applied — open the dashboard Config and fill in role/channel IDs.",
+    );
   },
 });

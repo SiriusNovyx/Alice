@@ -100,6 +100,24 @@
         </ul>
       </template>
     </Expandable>
+
+    <h2 id="timed-roles">Timed roles (<code>temprole</code>)</h2>
+    <p>
+      The <router-link to="/docs/plugins/roles">Roles</router-link> plugin can assign roles for a limited duration.
+      Slash commands live under <code>/roles</code> (<code>temprole</code>, <code>untemprole</code>, plus add/remove/mass variants).
+    </p>
+    <p>
+      Prefix usage places the <strong>duration before the role</strong> so multi-word role names work with catch-all parsing:
+    </p>
+    <ul>
+      <li><code>!temprole &lt;user&gt; &lt;duration&gt; &lt;role&gt; [-reason]</code> — e.g. <code>!temprole @User 1d Event Staff</code></li>
+      <li><code>!untemprole &lt;user&gt; &lt;role&gt;</code></li>
+      <li><code>!addrole &lt;user&gt; &lt;role&gt; [-reason]</code> — permanent add (role name may contain spaces)</li>
+      <li><code>!removerole &lt;user&gt; &lt;role&gt;</code></li>
+    </ul>
+    <p>
+      Equivalent slash forms: <code>/roles temprole</code>, <code>/roles untemprole</code>, <code>/roles add</code>, <code>/roles remove</code>.
+    </p>
   </div>
 </template>
 

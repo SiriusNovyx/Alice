@@ -2,6 +2,7 @@ import { Guild } from "discord.js";
 import { GlobalPluginData, globalPlugin, globalPluginEventListener } from "vety";
 import { AllowedGuilds } from "../../data/AllowedGuilds.js";
 import { Configs } from "../../data/Configs.js";
+import { DEFAULT_GUILD_CONFIG } from "../../data/defaultGuildConfig.js";
 import { env } from "../../env.js";
 import { GuildAccessMonitorPluginType, zGuildAccessMonitorConfig } from "./types.js";
 
@@ -41,7 +42,7 @@ export const GuildAccessMonitorPlugin = globalPlugin<GuildAccessMonitorPluginTyp
         // tslint:disable-next-line:no-console
         console.log(`Adding allowed-by-default server ${serverId} to the allowed servers`);
         await state.allowedGuilds.add(serverId);
-        await configs.saveNewRevision(`guild-${serverId}`, "plugins: {}", 0);
+        await configs.saveNewRevision(`guild-${serverId}`, DEFAULT_GUILD_CONFIG, 0);
       }
     }
   },

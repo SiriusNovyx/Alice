@@ -2,10 +2,11 @@
   <div class="pp-root">
     <Title title="Alice — Privacy Policy" />
 
-    <div class="pp-bg-grid" aria-hidden="true"></div>
-
     <div class="pp-inner">
-      <router-link class="pp-back" to="/">← Back to Home</router-link>
+      <div class="pp-top">
+        <router-link class="pp-back" to="/">← Back to Home</router-link>
+        <ThemeToggle />
+      </div>
 
       <header class="pp-header">
         <div class="pp-header-badge">Legal</div>
@@ -131,8 +132,9 @@
 
 <script lang="ts">
 import Title from "./Title.vue";
+import ThemeToggle from "./ThemeToggle.vue";
 export default {
-  components: { Title },
+  components: { Title, ThemeToggle },
 };
 </script>
 

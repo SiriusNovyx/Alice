@@ -7,7 +7,7 @@ export class ApiLogin {
   @PrimaryColumn()
   id: string;
 
-  @Column()
+  @Column({ length: 255 })
   token: string;
 
   @Column()

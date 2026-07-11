@@ -1,27 +1,31 @@
 .link {
-  @apply text-blue-400;
-  @apply underline;
+  color: var(--color-accent-2);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 
   &:hover {
-    @apply text-blue-200;
+    color: var(--color-accent);
   }
 }
 
 .inline-code {
   @apply inline-block;
-  @apply bg-gray-800;
   @apply px-1;
   @apply rounded;
   @apply text-sm;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  font-family: var(--font-mono);
 }
 
 .codeblock {
-  @apply bg-gray-800;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   @apply p-3;
   @apply mb-4;
   @apply rounded;
   @apply text-sm;
-  @apply shadow-md;
+  box-shadow: var(--shadow-sm);
 
   & .hljs {
     @apply bg-transparent;

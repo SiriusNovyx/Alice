@@ -168,22 +168,11 @@ logs:
 
 ## Slash Commands
 
-Alice supports both `!prefix` and `/slash` commands simultaneously. Available slash commands:
+Alice supports both `!prefix` and `/slash` commands simultaneously. Most slash commands live under plugin groups (for example `/mod warn`, `/roles add`, `/utility clean`).
 
-| Command | Description |
-|---|---|
-| `/addrole` | Add a role to a member |
-| `/removerole` | Remove a role from a member |
-| `/slowmode` | Set slowmode for a channel |
-| `/slowmode-disable` | Disable slowmode |
-| `/userinfo` | Show user information |
-| `/nickname` | Set or view a member's nickname |
-| `/level` | Show a user's permission level |
-| `/ping` | Test bot latency |
-| `/avatar` | Show a user's avatar |
-| `/clean` | Bulk delete messages |
+For the full command list — including every prefix, slash, and context-menu command — see **[COMMANDS.md](./COMMANDS.md)** and the per-plugin files in **[commands/](./commands/)**. Those markdown files are the offline fallback when the dashboard docs website is unavailable.
 
-Slash commands respect the same permission levels as their `!prefix` counterparts.
+Slash commands respect the same permission levels as their `!prefix` counterparts. Run `!help <command>` in Discord for live usage text.
 
 ---
 
@@ -199,8 +188,22 @@ docker compose -f docker-compose.standalone.yml down
 # View live logs
 docker compose -f docker-compose.standalone.yml logs -t -f
 
-# Rebuild after code changes (always use --no-cache)
+# Rebuild after code changes
 docker compose -f docker-compose.standalone.yml down
-docker compose -f docker-compose.standalone.yml build --no-cache
+docker compose -f docker-compose.standalone.yml build
 docker compose -f docker-compose.standalone.yml up -d
+
+# Optional: clean corrupted / stale Docker build cache
+docker compose -f docker-compose.standalone.yml build --no-cache
 ```
+
+> **`--no-cache` is optional** — use it only when a normal rebuild still serves a stale or corrupted image.
+
+---
+
+## Offline command reference
+
+If the dashboard docs site is down or unreachable, use the markdown command docs in this folder:
+
+- [COMMANDS.md](./COMMANDS.md) — index of all commands
+- [commands/](./commands/) — one file per plugin

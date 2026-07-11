@@ -88,11 +88,14 @@ Browse to `https://localhost:3300`
 Alice uses a **local build** via `docker-compose.standalone.yml` rather than pulling a pre-built image. This means your code changes are always compiled and included.
 
 ```bash
-docker compose -f docker-compose.standalone.yml build --no-cache
+docker compose -f docker-compose.standalone.yml build
 docker compose -f docker-compose.standalone.yml up -d
 ```
 
-> **Why `--no-cache`?** Docker caches build layers aggressively. Use `--no-cache` after changing any TypeScript source files to guarantee a fresh compile.
+> **`--no-cache` is optional.** A normal `build` is enough in most cases — Docker rebuilds layers when source files change. Add `--no-cache` only if the cache looks corrupted or the image still seems stale after a regular rebuild:
+> ```bash
+> docker compose -f docker-compose.standalone.yml build --no-cache
+> ```
 
 ---
 

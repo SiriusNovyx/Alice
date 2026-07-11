@@ -51,11 +51,14 @@ docker compose -f docker-compose.standalone.yml down
 ```bash
 docker compose -f docker-compose.standalone.yml down
 git pull
-docker compose -f docker-compose.standalone.yml build --no-cache
+docker compose -f docker-compose.standalone.yml build
 docker compose -f docker-compose.standalone.yml up -d
 ```
 
-> **Important:** Always use `--no-cache` when rebuilding after changing source files. Docker caches build layers and will not recompile changed TypeScript files without it.
+> **`--no-cache` is optional.** Use a normal `build` after pulling or changing source. Add `--no-cache` only to clear a corrupted or stale Docker layer cache:
+> ```bash
+> docker compose -f docker-compose.standalone.yml build --no-cache
+> ```
 
 ### Viewing Logs
 ```bash
@@ -93,9 +96,11 @@ docker compose -f docker-compose.lightweight.yml down
 ```bash
 docker compose -f docker-compose.lightweight.yml down
 git pull
-docker compose -f docker-compose.lightweight.yml build --no-cache
+docker compose -f docker-compose.lightweight.yml build
 docker compose -f docker-compose.lightweight.yml up -d
 ```
+
+> **`--no-cache` is optional** — add it only if the build cache is corrupted or the image looks stale after a normal rebuild.
 
 ### Viewing Logs
 ```bash

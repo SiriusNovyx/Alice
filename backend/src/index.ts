@@ -37,6 +37,7 @@ import { runSavedMessageCleanupLoop } from "./data/loops/savedMessageCleanupLoop
 import { runUpcomingRemindersLoop } from "./data/loops/upcomingRemindersLoop.js";
 import { runUpcomingScheduledPostsLoop } from "./data/loops/upcomingScheduledPostsLoop.js";
 import { consumeQueryStats } from "./data/queryLogger.js";
+import { applyBotDisplayNameStyle } from "./botDisplayNameStyle.js";
 import { env } from "./env.js";
 import { logger } from "./logger.js";
 import { availableGlobalPlugins, availableGuildPlugins } from "./plugins/availablePlugins.js";
@@ -406,6 +407,9 @@ connect().then(async () => {
 
   client.once("clientReady", () => {
     startUptimeCounter();
+    void applyBotDisplayNameStyle(client).catch((err) => {
+      logger.warn(`Bot display name style skipped: ${err?.message ?? err}`);
+    });
   });
 
   client.rest.on(RESTEvents.RateLimited, (data) => {

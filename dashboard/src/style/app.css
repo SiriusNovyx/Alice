@@ -5,6 +5,8 @@
 @import "tailwindcss";
 @import "vue-material-design-icons/styles.css";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @import "./content.css";
 @import "./docs.css";
 
@@ -16,8 +18,6 @@
 
 body {
   overflow-y: scroll;
-
-  @apply bg-gray-900;
-  @apply text-gray-300;
-  @apply text-base;
+  background: var(--color-bg);
+  color: var(--color-text-2);
 }

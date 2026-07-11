@@ -2,10 +2,11 @@
   <div>
     <h1>Counters</h1>
     <p>
-      Counters are an advanced feature in Zeppelin that allows you keep track of per-user, per-channel, or global numbers and trigger specific actions based on this number.
+      Counters are an advanced feature in Alice that allows you keep track of per-user, per-channel, or global numbers and trigger specific actions based on this number.
       Common use cases are infraction points, XP systems, activity roles, and so on.
     </p>
     <p>
+      Slash commands for counters live under <code>/counter</code>.
       This guide will be expanded in the future. For now, it contains examples of common counter use cases.
       Also see the <router-link to="/docs/plugins/counters">documentation for the Counters plugin.</router-link>
     </p>

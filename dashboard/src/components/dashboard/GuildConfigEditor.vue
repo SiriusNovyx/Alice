@@ -237,22 +237,17 @@ export default {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap');
-
-/* ── Page ────────────────────────────────────────────────── */
 .config-page {
-  font-family: 'DM Sans', sans-serif;
-  animation: fadeIn 0.35s ease both;
+  font-family: var(--font-body);
 }
 
-/* ── Header ──────────────────────────────────────────────── */
 .config-header {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .config-header-left {
@@ -263,26 +258,26 @@ export default {
 
 .back-link {
   font-size: 0.82rem;
-  color: #4b5572;
+  color: var(--color-text-4);
   text-decoration: none;
-  transition: color 0.15s;
   margin-bottom: 0.1rem;
 }
 
-.back-link:hover { color: #8b96b8; }
+.back-link:hover {
+  color: var(--color-text-2);
+}
 
 .config-title {
-  font-family: 'Syne', sans-serif;
   font-size: 1.5rem;
-  font-weight: 700;
-  color: #e8ecf4;
-  letter-spacing: -0.02em;
+  font-weight: 650;
+  color: var(--color-text-1);
   line-height: 1.2;
+  text-wrap: balance;
 }
 
 .config-subtitle {
   font-size: 0.82rem;
-  color: #4b5572;
+  color: var(--color-text-4);
 }
 
 .config-header-right {
@@ -294,55 +289,57 @@ export default {
 
 .shortcut-hint {
   font-size: 0.78rem;
-  color: #4b5572;
+  color: var(--color-text-4);
 }
 
-/* ── Save button ─────────────────────────────────────────── */
 .save-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.55rem 1.4rem;
-  border-radius: 8px;
+  padding: 0.55rem 1.25rem;
+  border-radius: var(--radius-sm);
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
   border: none;
-  transition: all 0.18s ease;
-  background: linear-gradient(135deg, #5b6fff, #4a5ce8);
+  background: var(--color-accent);
   color: #fff;
-  box-shadow: 0 3px 14px rgba(91, 111, 255, 0.3);
   min-width: 120px;
   justify-content: center;
+  font-family: inherit;
+}
+
+html.dark .save-btn {
+  color: #0c0f14;
 }
 
 .save-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #6b7fff, #5a6cf8);
-  box-shadow: 0 5px 18px rgba(91, 111, 255, 0.45);
-  transform: translateY(-1px);
+  filter: brightness(1.06);
 }
 
-.save-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+.save-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
 
 .save-btn--saved {
-  background: linear-gradient(135deg, #22c55e, #16a34a) !important;
-  box-shadow: 0 3px 14px rgba(34, 197, 94, 0.3) !important;
+  background: var(--color-success) !important;
+  color: #fff !important;
 }
 
 .save-spinner {
   width: 14px;
   height: 14px;
-  border: 2px solid rgba(255,255,255,0.3);
-  border-top-color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: currentColor;
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }
 
-/* ── Error panel ─────────────────────────────────────────── */
 .error-panel {
-  background: rgba(220, 60, 60, 0.08);
-  border: 1px solid rgba(220, 60, 60, 0.25);
-  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-danger) 10%, var(--color-surface));
+  border: 1px solid color-mix(in srgb, var(--color-danger) 30%, transparent);
+  border-radius: var(--radius-md);
   padding: 0.875rem 1rem;
   margin-bottom: 1rem;
 }
@@ -354,44 +351,48 @@ export default {
   margin-bottom: 0.5rem;
 }
 
-.error-panel-icon { color: #f08080; font-size: 0.95rem; }
+.error-panel-icon {
+  color: var(--color-danger);
+  font-size: 0.95rem;
+}
 
 .error-panel-title {
   flex: 1;
   font-size: 0.88rem;
   font-weight: 500;
-  color: #f08080;
+  color: var(--color-danger);
 }
 
 .error-panel-close {
   background: none;
   border: none;
-  color: #7a86a8;
+  color: var(--color-text-3);
   cursor: pointer;
   font-size: 0.85rem;
   padding: 0.1rem 0.3rem;
   border-radius: 4px;
-  transition: color 0.15s;
+  font-family: inherit;
 }
 
-.error-panel-close:hover { color: #c8d0e8; }
+.error-panel-close:hover {
+  color: var(--color-text-1);
+}
 
 .error-item {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.8rem;
-  color: #f08080;
+  color: var(--color-danger);
   margin: 0;
   padding: 0.25rem 0;
   white-space: pre-wrap;
   word-break: break-all;
 }
 
-/* ── Editor shell ────────────────────────────────────────── */
 .editor-shell {
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
 }
 
 .editor-shell--loading {
@@ -399,7 +400,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--color-surface);
 }
 
 .loading-inner {
@@ -407,15 +408,15 @@ export default {
   flex-direction: column;
   align-items: center;
   gap: 0.75rem;
-  color: #4b5572;
+  color: var(--color-text-4);
   font-size: 0.9rem;
 }
 
 .loading-spinner {
   width: 28px;
   height: 28px;
-  border: 2px solid rgba(91, 111, 255, 0.2);
-  border-top-color: #5b6fff;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-accent);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -425,35 +426,28 @@ export default {
   align-items: center;
   gap: 1rem;
   padding: 0.4rem 0.85rem;
-  background: rgba(255, 255, 255, 0.035);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: var(--color-surface-2);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .statusbar-lang {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.72rem;
-  color: #5b6fff;
-  background: rgba(91, 111, 255, 0.1);
+  color: var(--color-accent);
+  background: var(--color-accent-muted);
   padding: 0.1rem 0.45rem;
   border-radius: 4px;
-  letter-spacing: 0.05em;
 }
 
 .statusbar-hint {
   font-size: 0.75rem;
-  color: #4b5572;
+  color: var(--color-text-4);
 }
 
-.ace-editor {
-  /* ace editor fills the shell */
-}
-
-/* ── Skeleton ────────────────────────────────────────────── */
 .skeleton-line {
   height: 12px;
   border-radius: 6px;
-  background: rgba(255,255,255,0.06);
-  animation: pulse 1.4s ease infinite;
+  background: var(--color-surface-2);
 }
 
 .skeleton-line--title {
@@ -462,23 +456,23 @@ export default {
   margin-bottom: 1.5rem;
 }
 
-/* ── Transitions ─────────────────────────────────────────── */
-.errors-enter-active, .errors-leave-active { transition: all 0.25s ease; }
-.errors-enter-from, .errors-leave-to { opacity: 0; transform: translateY(-8px); }
+.errors-enter-active,
+.errors-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
 
-/* ── Keyframes ───────────────────────────────────────────── */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+.errors-enter-from,
+.errors-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 0.4; }
-  50%       { opacity: 0.7; }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

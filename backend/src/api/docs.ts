@@ -138,6 +138,40 @@ export function initDocs(router: express.Router) {
       config: cmd.config,
     }));
 
+    const slashCommands = (pluginInfo.plugin.slashCommands || []).flatMap((entry: any) => {
+      // Slash group with subcommands → flatten as /group sub
+      if (entry?.subcommands?.length) {
+        return entry.subcommands.map((cmd: any) => ({
+          name: cmd.name,
+          group: entry.name,
+          description: cmd.description,
+          permission: cmd.configPermission ?? cmd.permission,
+          signature: cmd.signature,
+        }));
+      }
+      // Top-level slash command
+      if (entry?.name) {
+        return [
+          {
+            name: entry.name,
+            group: null,
+            description: entry.description,
+            permission: entry.configPermission ?? entry.permission,
+            signature: entry.signature,
+          },
+        ];
+      }
+      return [];
+    });
+
+    slashCommands.sort((a: { name: string }, b: { name: string }) => {
+      const aName = a.name.toLowerCase();
+      const bName = b.name.toLowerCase();
+      if (aName > bName) return 1;
+      if (aName < bName) return -1;
+      return 0;
+    });
+
     const defaultOptions = pluginInfo.docs.configSchema.safeParse({}).data ?? {};
 
     res.json({
@@ -146,6 +180,7 @@ export function initDocs(router: express.Router) {
       configSchema: formattedConfigSchema,
       defaultOptions,
       messageCommands,
+      slashCommands,
     });
   });
 }

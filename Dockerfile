@@ -25,9 +25,9 @@ RUN CI=true pnpm install
 
 COPY --chown=node:node . /alice
 
-# Build backend
+# Build backend (Node 24: disable Maglev to avoid tsc SIGSEGV; cap heap)
 WORKDIR /alice/backend
-RUN pnpm run build
+RUN node --no-maglev --max-old-space-size=4096 /alice/node_modules/typescript/bin/tsc --build
 
 # Build dashboard
 WORKDIR /alice/dashboard

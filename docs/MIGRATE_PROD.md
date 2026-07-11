@@ -21,14 +21,14 @@ Alice now builds entirely from your local source. To switch:
 
 1. Replace `docker-compose.standalone.yml` with the updated version that includes `build: context: .` instead of `image: dragory/zeppelin`
 2. Place all your modified source files in the correct locations under `backend/src/`
-3. Run a full clean rebuild:
+3. Rebuild and start:
    ```bash
    docker compose -f docker-compose.standalone.yml down
-   docker compose -f docker-compose.standalone.yml build --no-cache
+   docker compose -f docker-compose.standalone.yml build
    docker compose -f docker-compose.standalone.yml up -d
    ```
 
-> **Always use `--no-cache`** when rebuilding after TypeScript changes. Docker's layer cache will skip recompilation otherwise.
+> **`--no-cache` is optional.** Prefer a normal `build`. Use `build --no-cache` only if the Docker cache is corrupted or the image still looks stale after a regular rebuild.
 
 ---
 
@@ -38,6 +38,6 @@ Alice now builds entirely from your local source. To switch:
 |---|---|---|
 | `Cannot find module '...'` | A file was placed in the wrong folder | Check the correct path — e.g. `SlowmodePlugin.ts` goes in `Slowmode/`, not `Slowmode/commands/` |
 | `error TS1005: ',' expected` | Missing comma after a property in a command definition | Add `,` after `description:` before `usage:` |
-| `error TS2339: Property does not exist` | TypeScript can't find a property on a type | Rebuild with `--no-cache` to ensure the latest type definitions are compiled |
+| `error TS2339: Property does not exist` | TypeScript can't find a property on a type | Rebuild normally; if the image still looks stale, rebuild with optional `--no-cache` |
 | `error TS2345: Argument of type 'GuildMember \| undefined'` | `.cache.get()` returns `undefined` but function expects `GuildMember` | Add `!` non-null assertion: `.cache.get(id)!` |
-| Build succeeds but config gives `unrecognized_keys` | Backend wasn't rebuilt with new `types.ts` | Rebuild with `--no-cache` |
+| Build succeeds but config gives `unrecognized_keys` | Backend wasn't rebuilt with new `types.ts` | Rebuild the image (`build`, or `build --no-cache` if the cache looks corrupted) |

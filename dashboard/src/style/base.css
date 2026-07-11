@@ -1,51 +1,90 @@
-/* ── Design system variables ─────────────────────────────── */
+/* ── Design tokens (light default) ───────────────────────── */
 :root {
-  /* Colors */
-  --color-bg:          #080b14;
-  --color-surface:     rgba(255, 255, 255, 0.03);
-  --color-surface-2:   rgba(255, 255, 255, 0.055);
-  --color-border:      rgba(255, 255, 255, 0.07);
-  --color-border-2:    rgba(255, 255, 255, 0.12);
+  --color-bg: #f4f6f8;
+  --color-surface: #ffffff;
+  --color-surface-2: #eef1f5;
+  --color-border: #dde3ea;
+  --color-border-2: #c5ced8;
 
-  --color-accent:      #5b6fff;
-  --color-accent-2:    #a8b4ff;
-  --color-accent-glow: rgba(91, 111, 255, 0.35);
+  --color-accent: #0369a1;
+  --color-accent-2: #0284c7;
+  --color-accent-muted: rgba(3, 105, 161, 0.12);
 
-  --color-success:     #22c55e;
-  --color-danger:      #dc3c3c;
-  --color-warning:     #f59e0b;
+  --color-success: #15803d;
+  --color-danger: #b91c1c;
+  --color-warning: #b45309;
 
-  --color-text-1:      #e8ecf4;
-  --color-text-2:      #c8d0e8;
-  --color-text-3:      #8b96b8;
-  --color-text-4:      #4b5572;
+  --color-text-1: #0f172a;
+  --color-text-2: #334155;
+  --color-text-3: #64748b;
+  --color-text-4: #94a3b8;
 
-  /* Typography */
-  --font-display: 'Syne', sans-serif;
-  --font-body:    'DM Sans', sans-serif;
-  --font-mono:    'JetBrains Mono', 'Fira Code', monospace;
+  --font-display: "Geist", system-ui, sans-serif;
+  --font-body: "Geist", system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
 
-  /* Spacing */
-  --radius-sm:  6px;
-  --radius-md:  10px;
-  --radius-lg:  14px;
-  --radius-xl:  20px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
 
-  /* Shadows */
-  --shadow-sm:  0 2px 8px rgba(0, 0, 0, 0.2);
-  --shadow-md:  0 4px 20px rgba(0, 0, 0, 0.3);
-  --shadow-lg:  0 8px 32px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+
+  /* Fixed z-index scale */
+  --z-base: 0;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-overlay: 30;
+  --z-modal: 40;
+  --z-toast: 50;
+
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+}
+
+/* ── Dark theme ──────────────────────────────────────────── */
+html.dark {
+  --color-bg: #0c0f14;
+  --color-surface: #151a22;
+  --color-surface-2: #1c2330;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-2: rgba(255, 255, 255, 0.14);
+
+  --color-accent: #38bdf8;
+  --color-accent-2: #7dd3fc;
+  --color-accent-muted: rgba(56, 189, 248, 0.12);
+
+  --color-success: #22c55e;
+  --color-danger: #f87171;
+  --color-warning: #fbbf24;
+
+  --color-text-1: #f1f5f9;
+  --color-text-2: #cbd5e1;
+  --color-text-3: #94a3b8;
+  --color-text-4: #64748b;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 /* ── Base ────────────────────────────────────────────────── */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
@@ -57,32 +96,46 @@ body {
   overflow-y: scroll;
   margin: 0;
   padding: 0;
+  min-height: 100dvh;
 }
 
-/* ── Typography ──────────────────────────────────────────── */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-display);
   color: var(--color-text-1);
   line-height: 1.25;
+  text-wrap: balance;
   margin: 0;
+}
+
+p {
+  text-wrap: pretty;
 }
 
 a {
   color: var(--color-accent-2);
   text-decoration: none;
-  transition: color 0.15s;
 }
 
 a:hover {
   color: var(--color-text-1);
 }
 
-code, pre, .mono {
+code,
+pre,
+.mono {
   font-family: var(--font-mono);
   font-size: 0.875em;
 }
 
-/* ── Scrollbar ───────────────────────────────────────────── */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -93,23 +146,27 @@ code, pre, .mono {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--color-border-2);
   border-radius: 3px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.18);
-}
-
-/* ── Selection ───────────────────────────────────────────── */
 ::selection {
-  background: rgba(91, 111, 255, 0.35);
-  color: #fff;
+  background: var(--color-accent-muted);
+  color: var(--color-text-1);
 }
 
-/* ── Focus rings ─────────────────────────────────────────── */
 :focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
