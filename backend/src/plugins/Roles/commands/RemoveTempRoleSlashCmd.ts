@@ -1,10 +1,6 @@
 import { slashOptions } from "vety";
-import { clearExpiringTempRole } from "../../../data/loops/expiringTempRolesLoop.js";
-import { canActOn } from "../../../pluginUtils.js";
-import { convertDelayStringToMS, resolveRoleId, verboseUserMention } from "../../../utils.js";
-import { LogsPlugin } from "../../Logs/LogsPlugin.js";
-import { RoleManagerPlugin } from "../../RoleManager/RoleManagerPlugin.js";
 import { rolesSlashCmd } from "../types.js";
+import { actualRemoveTempRoleCmd } from "./actualRemoveTempRoleCmd.js";
 
 export const RemoveTempRoleSlashCmd = rolesSlashCmd({
   name: "untemprole",
@@ -41,41 +37,19 @@ export const RemoveTempRoleSlashCmd = rolesSlashCmd({
       return;
     }
 
-    if (!canActOn(pluginData, modMember, member, true)) {
-      pluginData.state.common.sendErrorMessage(
-        interaction,
-        "Cannot remove roles from this user: insufficient permissions",
-      );
+    const role = pluginData.guild.roles.cache.get(options.role.id);
+    if (!role) {
+      pluginData.state.common.sendErrorMessage(interaction, "You cannot remove that role");
       return;
     }
 
-    const existingTempRole = await pluginData.state.tempRoles.findExistingTempRoleForUserIdAndRoleId(
-      member.id,
-      options.role.id,
-    );
-    if (!existingTempRole) {
-      pluginData.state.common.sendErrorMessage(interaction, "That member does not have an active timed role for that role");
-      return;
-    }
-
-    clearExpiringTempRole(existingTempRole);
-
-    if (member.roles.cache.has(options.role.id)) {
-      await pluginData.getPlugin(RoleManagerPlugin).removeRole(member.id, options.role.id);
-    }
-
-    await pluginData.state.tempRoles.clear(member.id, options.role.id);
-
-    pluginData.getPlugin(LogsPlugin).logMemberTimedRoleRemove({
-      mod: interaction.user,
-      member,
-      roles: [options.role],
-      reason: "",
-    });
-
-    pluginData.state.common.sendSuccessMessage(
+    await actualRemoveTempRoleCmd(
+      pluginData,
       interaction,
-      `Removed timed role **${options.role.name}** from ${verboseUserMention(member.user)}!`,
+      modMember,
+      interaction.user,
+      member,
+      role,
     );
   },
 });

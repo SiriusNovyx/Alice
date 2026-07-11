@@ -5,11 +5,14 @@ import { GuildSavedMessages } from "../../data/GuildSavedMessages.js";
 import { CommonPlugin } from "../Common/CommonPlugin.js";
 import { LogsPlugin } from "../Logs/LogsPlugin.js";
 import { ClearReactionRolesCmd } from "./commands/ClearReactionRolesCmd.js";
+import { ClearReactionRolesSlashCmd } from "./commands/ClearReactionRolesSlashCmd.js";
 import { InitReactionRolesCmd } from "./commands/InitReactionRolesCmd.js";
+import { InitReactionRolesSlashCmd } from "./commands/InitReactionRolesSlashCmd.js";
 import { RefreshReactionRolesCmd } from "./commands/RefreshReactionRolesCmd.js";
+import { RefreshReactionRolesSlashCmd } from "./commands/RefreshReactionRolesSlashCmd.js";
 import { AddReactionRoleEvt } from "./events/AddReactionRoleEvt.js";
 import { MessageDeletedEvt } from "./events/MessageDeletedEvt.js";
-import { ReactionRolesPluginType, zReactionRolesConfig } from "./types.js";
+import { ReactionRolesPluginType, reactionRolesSlashGroup, zReactionRolesConfig } from "./types.js";
 
 export const ReactionRolesPlugin = guildPlugin<ReactionRolesPluginType>()({
   name: "reaction_roles",
@@ -30,6 +33,15 @@ export const ReactionRolesPlugin = guildPlugin<ReactionRolesPluginType>()({
     RefreshReactionRolesCmd,
     ClearReactionRolesCmd,
     InitReactionRolesCmd,
+  ],
+
+  slashCommands: [
+    reactionRolesSlashGroup({
+      name: "reaction_roles",
+      description: "Manage reaction roles",
+      defaultMemberPermissions: "0",
+      subcommands: [InitReactionRolesSlashCmd, ClearReactionRolesSlashCmd, RefreshReactionRolesSlashCmd],
+    }),
   ],
 
   // prettier-ignore

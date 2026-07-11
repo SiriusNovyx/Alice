@@ -78,7 +78,7 @@ export const KickSlashCmd = modActionsSlashCmd({
       return;
     }
 
-    actualKickCmd(
+    await actualKickCmd(
       pluginData,
       interaction,
       interaction.member as GuildMember,

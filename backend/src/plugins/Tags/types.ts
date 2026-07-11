@@ -1,4 +1,11 @@
-import { BasePluginType, guildPluginEventListener, guildPluginMessageCommand, pluginUtils } from "vety";
+import {
+  BasePluginType,
+  guildPluginEventListener,
+  guildPluginMessageCommand,
+  guildPluginSlashCommand,
+  guildPluginSlashGroup,
+  pluginUtils,
+} from "vety";
 import { z } from "zod";
 import { GuildArchives } from "../../data/GuildArchives.js";
 import { GuildLogs } from "../../data/GuildLogs.js";
@@ -78,4 +85,6 @@ export interface TemplateFunction {
 }
 
 export const tagsCmd = guildPluginMessageCommand<TagsPluginType>();
+export const tagsSlashGroup = guildPluginSlashGroup<TagsPluginType>();
+export const tagsSlashCmd = guildPluginSlashCommand<TagsPluginType>();
 export const tagsEvt = guildPluginEventListener<TagsPluginType>();

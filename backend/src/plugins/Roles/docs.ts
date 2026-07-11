@@ -7,7 +7,9 @@ export const rolesPluginDocs: ZeppelinPluginDocs = {
   prettyName: "Roles",
   description: trimPluginDescription(`
     Enables authorised users to add and remove whitelisted roles with a command.
-    Timed roles can be assigned with \`!temprole\` / \`/temprole\` and removed early with \`!untemprole\` / \`/untemprole\`.
+    Slash commands live under \`/roles\` (add, remove, temprole, untemprole, massadd, massremove).
+    Timed roles: \`!temprole <user> <duration> <role> [-reason]\` (role name may contain spaces).
+    Permanent add: \`!addrole <user> <role> [-reason]\`.
     Roles assigned with a duration are automatically removed when the timer expires.
   `),
   configSchema: zRolesConfig,

@@ -1,6 +1,6 @@
 import { commandTypeHelpers as ct } from "../../../../commandTypes.js";
-import { canActOn, hasPermission, resolveMessageMember } from "../../../../pluginUtils.js";
-import { resolveMember, resolveUser } from "../../../../utils.js";
+import { hasPermission, resolveMessageMember } from "../../../../pluginUtils.js";
+import { resolveUser } from "../../../../utils.js";
 import { readContactMethodsFromArgs } from "../../functions/readContactMethodsFromArgs.js";
 import { modActionsMsgCmd } from "../../types.js";
 import { actualMuteCmd } from "../mute/actualMuteCmd.js";
@@ -41,13 +41,6 @@ export const ForceMuteMsgCmd = modActionsMsgCmd({
     }
 
     const authorMember = await resolveMessageMember(msg);
-    const memberToMute = await resolveMember(pluginData.client, pluginData.guild, user.id);
-
-    // Make sure we're allowed to mute this user
-    if (memberToMute && !canActOn(pluginData, authorMember, memberToMute)) {
-      pluginData.state.common.sendErrorMessage(msg, "Cannot mute: insufficient permissions");
-      return;
-    }
 
     // The moderator who did the action is the message author or, if used, the specified -mod
     let mod = authorMember;
@@ -71,9 +64,10 @@ export const ForceMuteMsgCmd = modActionsMsgCmd({
       return;
     }
 
-    actualMuteCmd(
+    await actualMuteCmd(
       pluginData,
       msg,
+      authorMember,
       user,
       [...msg.attachments.values()],
       mod,

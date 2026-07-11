@@ -1,4 +1,11 @@
-import { BasePluginType, guildPluginEventListener, guildPluginMessageCommand, pluginUtils } from "vety";
+import {
+  BasePluginType,
+  guildPluginEventListener,
+  guildPluginMessageCommand,
+  guildPluginSlashCommand,
+  guildPluginSlashGroup,
+  pluginUtils,
+} from "vety";
 import { z } from "zod";
 import { GuildSavedMessages } from "../../data/GuildSavedMessages.js";
 import { CommonPlugin } from "../Common/CommonPlugin.js";
@@ -16,4 +23,6 @@ export interface MessageSaverPluginType extends BasePluginType {
 }
 
 export const messageSaverCmd = guildPluginMessageCommand<MessageSaverPluginType>();
+export const messageSaverSlashGroup = guildPluginSlashGroup<MessageSaverPluginType>();
+export const messageSaverSlashCmd = guildPluginSlashCommand<MessageSaverPluginType>();
 export const messageSaverEvt = guildPluginEventListener<MessageSaverPluginType>();

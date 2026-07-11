@@ -15,16 +15,16 @@ export async function sendWhere(
     : null;
 
   if (voice == null) {
-    channel.send(prepend + "That user is not in a channel");
+    await channel.send(prepend + "That user is not in a channel");
   } else {
     let invite: Invite;
     try {
       invite = await createOrReuseInvite(voice);
     } catch {
-      void pluginData.state.common.sendErrorMessage(channel, "Cannot create an invite to that channel!");
+      await pluginData.state.common.sendErrorMessage(channel, "Cannot create an invite to that channel!");
       return;
     }
-    channel.send({
+    await channel.send({
       content: prepend + `<@${member.id}> is in the following channel: \`${voice.name}\` ${getInviteLink(invite)}`,
       allowedMentions: { parse: ["users"] },
     });

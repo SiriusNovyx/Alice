@@ -1,5 +1,5 @@
-import { getGuildTz } from "../functions/getGuildTz.js";
 import { timeAndDateCmd } from "../types.js";
+import { actualResetTimezoneCmd } from "./actualResetTimezoneCmd.js";
 
 export const ResetTimezoneCmd = timeAndDateCmd({
   trigger: "timezone reset",
@@ -8,11 +8,6 @@ export const ResetTimezoneCmd = timeAndDateCmd({
   signature: {},
 
   async run({ pluginData, message }) {
-    await pluginData.state.memberTimezones.reset(message.author.id);
-    const serverTimezone = getGuildTz(pluginData);
-    void pluginData.state.common.sendSuccessMessage(
-      message,
-      `Your timezone has been reset to server default, **${serverTimezone}**`,
-    );
+    await actualResetTimezoneCmd(pluginData, message, message.author.id);
   },
 });

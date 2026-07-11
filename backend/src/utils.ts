@@ -448,6 +448,14 @@ export function convertDelayStringToMS(str, defaultUnit = "m"): number | null {
   return ms;
 }
 
+/**
+ * Slash-command wrapper for convertDelayStringToMS.
+ * Use for slash `time` string options; return null means the string was invalid.
+ */
+export function parseSlashDelay(time: string, defaultUnit = "m"): number | null {
+  return convertDelayStringToMS(time, defaultUnit);
+}
+
 export function convertMSToDelayString(ms: number): string {
   let result = "";
   let remaining = ms;

@@ -8,7 +8,7 @@ export const MassMuteMsgCmd = modActionsMsgCmd({
   trigger: "massmute",
   permission: "can_massmute",
   description: "Mass-mute a list of user IDs",
-  usage: "!massmute <userId> [userId2] ... (bot will prompt for reason)",
+  usage: "!massmute <user> [user] ... (bot will prompt for reason)",
 
   signature: [
     {
@@ -30,7 +30,7 @@ export const MassMuteMsgCmd = modActionsMsgCmd({
     }
 
     const member = await resolveMessageMember(msg);
-    actualMassMuteCmd(pluginData, msg, args.userIds, member, muteReasonReceived.content, [
+    await actualMassMuteCmd(pluginData, msg, args.userIds, member, muteReasonReceived.content, [
       ...muteReasonReceived.attachments.values(),
     ]);
   },

@@ -1,13 +1,9 @@
-import { GuildMember } from "discord.js";
 import { slashOptions } from "vety";
-import { canActOn } from "../../../pluginUtils.js";
-import { verboseUserMention } from "../../../utils.js";
-import { LogsPlugin } from "../../Logs/LogsPlugin.js";
-import { RoleManagerPlugin } from "../../RoleManager/RoleManagerPlugin.js";
 import { rolesSlashCmd } from "../types.js";
+import { actualAddRoleCmd } from "./actualAddRoleCmd.js";
 
 export const AddRoleSlashCmd = rolesSlashCmd({
-  name: "addrole",
+  name: "add",
   configPermission: "can_assign",
   description: "Add a role to the specified member",
   allowDms: false,
@@ -15,6 +11,7 @@ export const AddRoleSlashCmd = rolesSlashCmd({
   signature: [
     slashOptions.user({ name: "member", description: "The member to add the role to", required: true }),
     slashOptions.role({ name: "role", description: "The role to add", required: true }),
+    slashOptions.string({ name: "reason", description: "Reason for adding the role", required: false }),
   ],
 
   async run({ interaction, options, pluginData }) {
@@ -41,21 +38,20 @@ export const AddRoleSlashCmd = rolesSlashCmd({
       return;
     }
 
-    if (!canActOn(pluginData, modMember, member, true)) {
-      pluginData.state.common.sendErrorMessage(interaction, "Cannot add roles to this user: insufficient permissions");
+    const role = pluginData.guild.roles.cache.get(options.role.id);
+    if (!role) {
+      pluginData.state.common.sendErrorMessage(interaction, "You cannot assign that role");
       return;
     }
 
-    if (member.roles.cache.has(options.role.id)) {
-      pluginData.state.common.sendErrorMessage(interaction, "Member already has that role");
-      return;
-    }
-
-    await pluginData.getPlugin(RoleManagerPlugin).addRole(member.id, options.role.id);
-    pluginData.getPlugin(LogsPlugin).logMemberRoleAdd({ mod: interaction.user, member, roles: [options.role] });
-    pluginData.state.common.sendSuccessMessage(
+    await actualAddRoleCmd(
+      pluginData,
       interaction,
-      `Added role **${options.role.name}** to ${verboseUserMention(member.user)}!`,
+      modMember,
+      interaction.user,
+      member,
+      role,
+      options.reason,
     );
   },
 });

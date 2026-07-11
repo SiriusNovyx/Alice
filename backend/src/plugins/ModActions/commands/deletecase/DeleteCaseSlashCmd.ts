@@ -20,7 +20,7 @@ export const DeleteCaseSlashCmd = modActionsSlashCmd({
   async run({ interaction, options, pluginData }) {
     await interaction.deferReply({ ephemeral: true });
 
-    actualDeleteCaseCmd(
+    await actualDeleteCaseCmd(
       pluginData,
       interaction,
       interaction.member as GuildMember,

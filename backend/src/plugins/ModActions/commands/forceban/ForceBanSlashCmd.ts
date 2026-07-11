@@ -1,7 +1,7 @@
 import { GuildMember } from "discord.js";
 import { slashOptions } from "vety";
 import { hasPermission } from "../../../../pluginUtils.js";
-import { convertDelayStringToMS, resolveMember } from "../../../../utils.js";
+import { resolveMember } from "../../../../utils.js";
 import { generateAttachmentSlashOptions, retrieveMultipleOptions } from "../../../../utils/multipleSlashOptions.js";
 import { modActionsSlashCmd } from "../../types.js";
 import { NUMBER_ATTACHMENTS_CASE_CREATION } from "../constants.js";
@@ -49,13 +49,7 @@ export const ForceBanSlashCmd = modActionsSlashCmd({
       mod = (await resolveMember(pluginData.client, pluginData.guild, options.mod.id))!;
     }
 
-    const convertedTime = options.time ? convertDelayStringToMS(options.time) : null;
-    if (options.time && !convertedTime) {
-      pluginData.state.common.sendErrorMessage(interaction, `Could not convert ${options.time} to a delay`);
-      return;
-    }
-
-    actualForceBanCmd(
+    await actualForceBanCmd(
       pluginData,
       interaction,
       interaction.user.id,

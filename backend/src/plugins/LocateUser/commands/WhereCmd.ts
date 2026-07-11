@@ -1,11 +1,11 @@
 import { commandTypeHelpers as ct } from "../../../commandTypes.js";
 import { locateUserCmd } from "../types.js";
-import { sendWhere } from "../utils/sendWhere.js";
+import { actualWhereCmd } from "./actualWhereCmd.js";
 
 export const WhereCmd = locateUserCmd({
   trigger: ["where", "w"],
   description: "Posts an instant invite to the voice channel that `<member>` is in",
-  usage: "!w 108552944961454080",
+  usage: "!w <user>",
   permission: "can_where",
 
   signature: {
@@ -13,6 +13,6 @@ export const WhereCmd = locateUserCmd({
   },
 
   async run({ message: msg, args, pluginData }) {
-    sendWhere(pluginData, args.member, msg.channel, `<@${msg.author.id}> | `);
+    await actualWhereCmd(pluginData, msg, msg.author.id, args.member);
   },
 });

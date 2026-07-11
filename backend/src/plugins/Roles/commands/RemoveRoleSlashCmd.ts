@@ -1,13 +1,9 @@
-import { GuildMember } from "discord.js";
 import { slashOptions } from "vety";
-import { canActOn } from "../../../pluginUtils.js";
-import { verboseUserMention } from "../../../utils.js";
-import { LogsPlugin } from "../../Logs/LogsPlugin.js";
-import { RoleManagerPlugin } from "../../RoleManager/RoleManagerPlugin.js";
 import { rolesSlashCmd } from "../types.js";
+import { actualRemoveRoleCmd } from "./actualRemoveRoleCmd.js";
 
 export const RemoveRoleSlashCmd = rolesSlashCmd({
-  name: "removerole",
+  name: "remove",
   configPermission: "can_assign",
   description: "Remove a role from the specified member",
   allowDms: false,
@@ -41,21 +37,12 @@ export const RemoveRoleSlashCmd = rolesSlashCmd({
       return;
     }
 
-    if (!canActOn(pluginData, modMember, member, true)) {
-      pluginData.state.common.sendErrorMessage(interaction, "Cannot remove roles from this user: insufficient permissions");
+    const role = pluginData.guild.roles.cache.get(options.role.id);
+    if (!role) {
+      pluginData.state.common.sendErrorMessage(interaction, "You cannot remove that role");
       return;
     }
 
-    if (!member.roles.cache.has(options.role.id)) {
-      pluginData.state.common.sendErrorMessage(interaction, "Member doesn't have that role");
-      return;
-    }
-
-    await pluginData.getPlugin(RoleManagerPlugin).removeRole(member.id, options.role.id);
-    pluginData.getPlugin(LogsPlugin).logMemberRoleRemove({ mod: interaction.user, member, roles: [options.role] });
-    pluginData.state.common.sendSuccessMessage(
-      interaction,
-      `Removed role **${options.role.name}** from ${verboseUserMention(member.user)}!`,
-    );
+    await actualRemoveRoleCmd(pluginData, interaction, modMember, interaction.user, member, role);
   },
 });

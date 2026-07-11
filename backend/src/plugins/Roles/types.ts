@@ -1,4 +1,10 @@
-import { BasePluginType, guildPluginMessageCommand, guildPluginSlashCommand, pluginUtils } from "vety";
+import {
+  BasePluginType,
+  guildPluginMessageCommand,
+  guildPluginSlashCommand,
+  guildPluginSlashGroup,
+  pluginUtils,
+} from "vety";
 import { z } from "zod";
 import { GuildLogs } from "../../data/GuildLogs.js";
 import { GuildTempRoles } from "../../data/GuildTempRoles.js";
@@ -22,4 +28,5 @@ export interface RolesPluginType extends BasePluginType {
 }
 
 export const rolesCmd = guildPluginMessageCommand<RolesPluginType>();
+export const rolesSlashGroup = guildPluginSlashGroup<RolesPluginType>();
 export const rolesSlashCmd = guildPluginSlashCommand<RolesPluginType>();

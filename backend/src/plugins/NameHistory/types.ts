@@ -1,4 +1,10 @@
-import { BasePluginType, guildPluginEventListener, guildPluginMessageCommand, pluginUtils } from "vety";
+import {
+  BasePluginType,
+  guildPluginEventListener,
+  guildPluginMessageCommand,
+  guildPluginSlashCommand,
+  pluginUtils,
+} from "vety";
 import { z } from "zod";
 import { Queue } from "../../Queue.js";
 import { GuildNicknameHistory } from "../../data/GuildNicknameHistory.js";
@@ -20,4 +26,5 @@ export interface NameHistoryPluginType extends BasePluginType {
 }
 
 export const nameHistoryCmd = guildPluginMessageCommand<NameHistoryPluginType>();
+export const nameHistorySlashCmd = guildPluginSlashCommand<NameHistoryPluginType>();
 export const nameHistoryEvt = guildPluginEventListener<NameHistoryPluginType>();

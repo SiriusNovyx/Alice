@@ -10,10 +10,19 @@ import { EditCmd } from "./commands/EditCmd.js";
 import { EditEmbedCmd } from "./commands/EditEmbedCmd.js";
 import { PostCmd } from "./commands/PostCmd.js";
 import { PostEmbedCmd } from "./commands/PostEmbedCmd.js";
+import {
+  EditEmbedSlashCmd,
+  EditSlashCmd,
+  PostEmbedSlashCmd,
+  PostSlashCmd,
+  ScheduledPostsDeleteSlashCmd,
+  ScheduledPostsListSlashCmd,
+  ScheduledPostsShowSlashCmd,
+} from "./commands/PostSlashCmds.js";
 import { ScheduledPostsDeleteCmd } from "./commands/ScheduledPostsDeleteCmd.js";
 import { ScheduledPostsListCmd } from "./commands/ScheduledPostsListCmd.js";
 import { ScheduledPostsShowCmd } from "./commands/ScheduledPostsShowCmd.js";
-import { PostPluginType, zPostConfig } from "./types.js";
+import { PostPluginType, postSlashGroup, zPostConfig } from "./types.js";
 import { postScheduledPost } from "./util/postScheduledPost.js";
 
 export const PostPlugin = guildPlugin<PostPluginType>()({
@@ -39,6 +48,23 @@ export const PostPlugin = guildPlugin<PostPluginType>()({
       ScheduledPostsShowCmd,
       ScheduledPostsListCmd,
       ScheduledPostsDeleteCmd,
+  ],
+
+  slashCommands: [
+    postSlashGroup({
+      name: "post",
+      description: "Post and schedule messages",
+      defaultMemberPermissions: "0",
+      subcommands: [
+        PostSlashCmd,
+        PostEmbedSlashCmd,
+        EditSlashCmd,
+        EditEmbedSlashCmd,
+        ScheduledPostsListSlashCmd,
+        ScheduledPostsShowSlashCmd,
+        ScheduledPostsDeleteSlashCmd,
+      ],
+    }),
   ],
 
   beforeLoad(pluginData) {

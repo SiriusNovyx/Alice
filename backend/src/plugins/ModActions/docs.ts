@@ -7,6 +7,7 @@ export const modActionsPluginDocs: ZeppelinPluginDocs = {
   type: "stable",
   description: trimPluginDescription(`
     This plugin contains the 'typical' mod actions such as warning, muting, kicking, banning, etc.
+    Slash commands live under \`/mod\`.
   `),
   configSchema: zModActionsConfig,
 };

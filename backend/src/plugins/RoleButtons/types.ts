@@ -1,5 +1,5 @@
 import { ButtonStyle } from "discord.js";
-import { BasePluginType, pluginUtils } from "vety";
+import { BasePluginType, guildPluginMessageCommand, guildPluginSlashCommand, guildPluginSlashGroup, pluginUtils } from "vety";
 import { z } from "zod";
 import { GuildRoleButtons } from "../../data/GuildRoleButtons.js";
 import { zBoundedCharacters, zBoundedRecord, zMessageContent, zSnowflake } from "../../utils.js";
@@ -99,3 +99,7 @@ export interface RoleButtonsPluginType extends BasePluginType {
     common: pluginUtils.PluginPublicInterface<typeof CommonPlugin>;
   };
 }
+
+export const roleButtonsCmd = guildPluginMessageCommand<RoleButtonsPluginType>();
+export const roleButtonsSlashGroup = guildPluginSlashGroup<RoleButtonsPluginType>();
+export const roleButtonsSlashCmd = guildPluginSlashCommand<RoleButtonsPluginType>();

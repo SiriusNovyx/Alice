@@ -57,6 +57,6 @@ export const ForceBanMsgCmd = modActionsMsgCmd({
       mod = args.mod;
     }
 
-    actualForceBanCmd(pluginData, msg, msg.author.id, user, args.reason, [...msg.attachments.values()], mod);
+    await actualForceBanCmd(pluginData, msg, msg.author.id, user, args.reason, [...msg.attachments.values()], mod);
   },
 });

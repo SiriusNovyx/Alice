@@ -3,8 +3,8 @@ import { guildPluginMessageCommand } from "vety";
 import { waitForReply } from "vety/helpers";
 import { commandTypeHelpers as ct } from "../../../commandTypes.js";
 import { UnknownUser, resolveUser } from "../../../utils.js";
-import { changeCounterValue } from "../functions/changeCounterValue.js";
 import { CountersPluginType } from "../types.js";
+import { actualAddCounterCmd } from "./actualCountersCmds.js";
 
 export const AddCounterCmd = guildPluginMessageCommand<CountersPluginType>()({
   trigger: ["counters add", "counter add", "addcounter"],
@@ -42,30 +42,14 @@ export const AddCounterCmd = guildPluginMessageCommand<CountersPluginType>()({
   async run({ pluginData, message, args }) {
     const config = await pluginData.config.getForMessage(message);
     const counter = config.counters[args.counterName];
-    const counterId = pluginData.state.counterIds[args.counterName];
-    if (!counter || !counterId) {
+    if (!counter || !pluginData.state.counterIds[args.counterName]) {
       void pluginData.state.common.sendErrorMessage(message, `Unknown counter: ${args.counterName}`);
       return;
     }
 
-    if (counter.can_edit === false) {
-      void pluginData.state.common.sendErrorMessage(message, `Missing permissions to edit this counter's value`);
-      return;
-    }
-
-    if (args.channel && !counter.per_channel) {
-      void pluginData.state.common.sendErrorMessage(message, `This counter is not per-channel`);
-      return;
-    }
-
-    if (args.user && !counter.per_user) {
-      void pluginData.state.common.sendErrorMessage(message, `This counter is not per-user`);
-      return;
-    }
-
-    let channel = args.channel;
+    let channel = args.channel ?? null;
     if (!channel && counter.per_channel) {
-      message.channel.send(`Which channel's counter value would you like to add to?`);
+      await message.channel.send(`Which channel's counter value would you like to add to?`);
       const reply = await waitForReply(pluginData.client, message.channel, message.author.id);
       if (!reply || !reply.content) {
         void pluginData.state.common.sendErrorMessage(message, "Cancelling");
@@ -81,9 +65,9 @@ export const AddCounterCmd = guildPluginMessageCommand<CountersPluginType>()({
       channel = potentialChannel;
     }
 
-    let user = args.user;
+    let user = args.user ?? null;
     if (!user && counter.per_user) {
-      message.channel.send(`Which user's counter value would you like to add to?`);
+      await message.channel.send(`Which user's counter value would you like to add to?`);
       const reply = await waitForReply(pluginData.client, message.channel, message.author.id);
       if (!reply || !reply.content) {
         void pluginData.state.common.sendErrorMessage(message, "Cancelling");
@@ -101,7 +85,7 @@ export const AddCounterCmd = guildPluginMessageCommand<CountersPluginType>()({
 
     let amount = args.amount;
     if (amount == null) {
-      message.channel.send("How much would you like to add to the counter's value?");
+      await message.channel.send("How much would you like to add to the counter's value?");
       const reply = await waitForReply(pluginData.client, message.channel, message.author.id);
       if (!reply || !reply.content) {
         void pluginData.state.common.sendErrorMessage(message, "Cancelling");
@@ -117,23 +101,6 @@ export const AddCounterCmd = guildPluginMessageCommand<CountersPluginType>()({
       amount = potentialAmount;
     }
 
-    await changeCounterValue(pluginData, args.counterName, channel?.id ?? null, user?.id ?? null, amount);
-    const newValue = await pluginData.state.counters.getCurrentValue(counterId, channel?.id ?? null, user?.id ?? null);
-
-    if (channel && user) {
-      message.channel.send(
-        `Added ${amount} to **${args.counterName}** for <@!${user.id}> in <#${channel.id}>. The value is now ${newValue}.`,
-      );
-    } else if (channel) {
-      message.channel.send(
-        `Added ${amount} to **${args.counterName}** in <#${channel.id}>. The value is now ${newValue}.`,
-      );
-    } else if (user) {
-      message.channel.send(
-        `Added ${amount} to **${args.counterName}** for <@!${user.id}>. The value is now ${newValue}.`,
-      );
-    } else {
-      message.channel.send(`Added ${amount} to **${args.counterName}**. The value is now ${newValue}.`);
-    }
+    await actualAddCounterCmd(pluginData, message, args.counterName, amount, channel, user);
   },
 });

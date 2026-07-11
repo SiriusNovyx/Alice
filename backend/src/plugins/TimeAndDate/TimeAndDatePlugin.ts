@@ -3,14 +3,17 @@ import { GuildMemberTimezones } from "../../data/GuildMemberTimezones.js";
 import { makePublicFn } from "../../pluginUtils.js";
 import { CommonPlugin } from "../Common/CommonPlugin.js";
 import { ResetTimezoneCmd } from "./commands/ResetTimezoneCmd.js";
+import { ResetTimezoneSlashCmd } from "./commands/ResetTimezoneSlashCmd.js";
 import { SetTimezoneCmd } from "./commands/SetTimezoneCmd.js";
+import { SetTimezoneSlashCmd } from "./commands/SetTimezoneSlashCmd.js";
 import { ViewTimezoneCmd } from "./commands/ViewTimezoneCmd.js";
+import { ViewTimezoneSlashCmd } from "./commands/ViewTimezoneSlashCmd.js";
 import { getDateFormat } from "./functions/getDateFormat.js";
 import { getGuildTz } from "./functions/getGuildTz.js";
 import { getMemberTz } from "./functions/getMemberTz.js";
 import { inGuildTz } from "./functions/inGuildTz.js";
 import { inMemberTz } from "./functions/inMemberTz.js";
-import { TimeAndDatePluginType, zTimeAndDateConfig } from "./types.js";
+import { TimeAndDatePluginType, timeAndDateSlashGroup, zTimeAndDateConfig } from "./types.js";
 
 export const TimeAndDatePlugin = guildPlugin<TimeAndDatePluginType>()({
   name: "time_and_date",
@@ -30,6 +33,15 @@ export const TimeAndDatePlugin = guildPlugin<TimeAndDatePluginType>()({
     ResetTimezoneCmd,
     SetTimezoneCmd,
     ViewTimezoneCmd,
+  ],
+
+  slashCommands: [
+    timeAndDateSlashGroup({
+      name: "timezone",
+      description: "Manage your personal timezone",
+      defaultMemberPermissions: "0",
+      subcommands: [SetTimezoneSlashCmd, ResetTimezoneSlashCmd, ViewTimezoneSlashCmd],
+    }),
   ],
 
   public(pluginData) {

@@ -12,9 +12,13 @@ import { CommonPlugin } from "../Common/CommonPlugin.js";
 import { LogsPlugin } from "../Logs/LogsPlugin.js";
 import { RoleManagerPlugin } from "../RoleManager/RoleManagerPlugin.js";
 import { ClearBannedMutesCmd } from "./commands/ClearBannedMutesCmd.js";
+import { ClearBannedMutesSlashCmd } from "./commands/ClearBannedMutesSlashCmd.js";
 import { ClearMutesCmd } from "./commands/ClearMutesCmd.js";
+import { ClearMutesSlashCmd } from "./commands/ClearMutesSlashCmd.js";
 import { ClearMutesWithoutRoleCmd } from "./commands/ClearMutesWithoutRoleCmd.js";
+import { ClearMutesWithoutRoleSlashCmd } from "./commands/ClearMutesWithoutRoleSlashCmd.js";
 import { MutesCmd } from "./commands/MutesCmd.js";
+import { MutesListSlashCmd } from "./commands/MutesListSlashCmd.js";
 import { ClearActiveMuteOnMemberBanEvt } from "./events/ClearActiveMuteOnMemberBanEvt.js";
 import { ReapplyActiveMuteOnJoinEvt } from "./events/ReapplyActiveMuteOnJoinEvt.js";
 import { RegisterManualTimeoutsEvt } from "./events/RegisterManualTimeoutsEvt.js";
@@ -24,7 +28,7 @@ import { offMutesEvent } from "./functions/offMutesEvent.js";
 import { onMutesEvent } from "./functions/onMutesEvent.js";
 import { renewTimeoutMute } from "./functions/renewTimeoutMute.js";
 import { unmuteUser } from "./functions/unmuteUser.js";
-import { MutesPluginType, zMutesConfig } from "./types.js";
+import { MutesPluginType, mutesSlashGroup, zMutesConfig } from "./types.js";
 
 export const MutesPlugin = guildPlugin<MutesPluginType>()({
   name: "mutes",
@@ -52,6 +56,20 @@ export const MutesPlugin = guildPlugin<MutesPluginType>()({
     ClearBannedMutesCmd,
     ClearMutesWithoutRoleCmd,
     ClearMutesCmd,
+  ],
+
+  slashCommands: [
+    mutesSlashGroup({
+      name: "mutes",
+      description: "Mute list and cleanup",
+      defaultMemberPermissions: "0",
+      subcommands: [
+        MutesListSlashCmd,
+        ClearBannedMutesSlashCmd,
+        ClearMutesWithoutRoleSlashCmd,
+        ClearMutesSlashCmd,
+      ],
+    }),
   ],
 
   // prettier-ignore

@@ -4,10 +4,13 @@ import { GuildReminders } from "../../data/GuildReminders.js";
 import { CommonPlugin } from "../Common/CommonPlugin.js";
 import { TimeAndDatePlugin } from "../TimeAndDate/TimeAndDatePlugin.js";
 import { RemindCmd } from "./commands/RemindCmd.js";
+import { RemindCreateSlashCmd } from "./commands/RemindCreateSlashCmd.js";
+import { RemindDeleteSlashCmd } from "./commands/RemindDeleteSlashCmd.js";
+import { RemindListSlashCmd } from "./commands/RemindListSlashCmd.js";
 import { RemindersCmd } from "./commands/RemindersCmd.js";
 import { RemindersDeleteCmd } from "./commands/RemindersDeleteCmd.js";
 import { postReminder } from "./functions/postReminder.js";
-import { RemindersPluginType, zRemindersConfig } from "./types.js";
+import { RemindersPluginType, remindersSlashGroup, zRemindersConfig } from "./types.js";
 
 export const RemindersPlugin = guildPlugin<RemindersPluginType>()({
   name: "reminders",
@@ -28,6 +31,15 @@ export const RemindersPlugin = guildPlugin<RemindersPluginType>()({
     RemindCmd,
     RemindersCmd,
     RemindersDeleteCmd,
+  ],
+
+  slashCommands: [
+    remindersSlashGroup({
+      name: "remind",
+      description: "Reminders",
+      defaultMemberPermissions: "0",
+      subcommands: [RemindCreateSlashCmd, RemindListSlashCmd, RemindDeleteSlashCmd],
+    }),
   ],
 
   beforeLoad(pluginData) {

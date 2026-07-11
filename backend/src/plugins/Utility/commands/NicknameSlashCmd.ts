@@ -1,17 +1,26 @@
-import { escapeBold, GuildMember } from "discord.js";
+import { GuildMember } from "discord.js";
 import { slashOptions } from "vety";
-import { canActOn } from "../../../pluginUtils.js";
 import { utilitySlashCmd } from "../types.js";
+import { actualNicknameCmd } from "./actualNicknameCmd.js";
 
 export const NicknameSlashCmd = utilitySlashCmd({
   name: "nickname",
   configPermission: "can_nickname",
-  description: "Set or view a member's nickname",
+  description: "Set, view, or reset a member's nickname",
   allowDms: false,
 
   signature: [
     slashOptions.user({ name: "member", description: "The member whose nickname to set", required: true }),
-    slashOptions.string({ name: "nickname", description: "The new nickname (leave empty to view current)", required: false }),
+    slashOptions.string({
+      name: "nickname",
+      description: "The new nickname (leave empty to view current)",
+      required: false,
+    }),
+    slashOptions.boolean({
+      name: "reset",
+      description: "Reset the member's nickname to their username",
+      required: false,
+    }),
   ],
 
   async run({ interaction, options, pluginData }) {
@@ -23,32 +32,26 @@ export const NicknameSlashCmd = utilitySlashCmd({
       return;
     }
 
-    if (!options.nickname) {
-      if (!member.nickname) {
-        interaction.editReply(`<@!${member.id}> does not have a nickname`);
-      } else {
-        interaction.editReply(`The nickname of <@!${member.id}> is **${escapeBold(member.nickname)}**`);
-      }
+    const modMember =
+      (interaction.member as GuildMember) ??
+      (await pluginData.guild.members.fetch(interaction.user.id).catch(() => null));
+    if (!modMember) {
+      pluginData.state.common.sendErrorMessage(interaction, "Failed to resolve your member info");
       return;
     }
 
-    if (interaction.user.id !== member.id && !canActOn(pluginData, interaction.member as GuildMember, member)) {
-      pluginData.state.common.sendErrorMessage(interaction, "Cannot change nickname: insufficient permissions");
+    if (options.reset) {
+      await actualNicknameCmd(pluginData, interaction, modMember, member, "reset");
       return;
     }
 
-    const nicknameLength = [...options.nickname].length;
-    if (nicknameLength < 2 || nicknameLength > 32) {
-      pluginData.state.common.sendErrorMessage(interaction, "Nickname must be between 2 and 32 characters long");
-      return;
-    }
-
-    const oldNickname = member.nickname || "<none>";
-    await member.setNickname(options.nickname).catch(() => null);
-
-    pluginData.state.common.sendSuccessMessage(
+    await actualNicknameCmd(
+      pluginData,
       interaction,
-      `Changed nickname of <@!${member.id}> from **${oldNickname}** to **${options.nickname}**`,
+      modMember,
+      member,
+      options.nickname ? "set" : "view",
+      options.nickname,
     );
   },
 });

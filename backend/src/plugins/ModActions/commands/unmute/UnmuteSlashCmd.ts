@@ -1,7 +1,7 @@
 import { GuildMember } from "discord.js";
 import { slashOptions } from "vety";
 import { canActOn, hasPermission } from "../../../../pluginUtils.js";
-import { convertDelayStringToMS, resolveMember } from "../../../../utils.js";
+import { parseSlashDelay, resolveMember } from "../../../../utils.js";
 import { generateAttachmentSlashOptions, retrieveMultipleOptions } from "../../../../utils/multipleSlashOptions.js";
 import { waitForButtonConfirm } from "../../../../utils/waitForInteraction.js";
 import { MutesPlugin } from "../../../Mutes/MutesPlugin.js";
@@ -99,12 +99,12 @@ export const UnmuteSlashCmd = modActionsSlashCmd({
       ppId = interaction.user.id;
     }
 
-    const convertedTime = options.time ? (convertDelayStringToMS(options.time) ?? undefined) : undefined;
+    const convertedTime = options.time ? (parseSlashDelay(options.time) ?? undefined) : undefined;
     if (options.time && !convertedTime) {
       pluginData.state.common.sendErrorMessage(interaction, `Could not convert ${options.time} to a delay`);
       return;
     }
 
-    actualUnmuteCmd(pluginData, interaction, options.user, attachments, mod, ppId, convertedTime, options.reason);
+    await actualUnmuteCmd(pluginData, interaction, options.user, attachments, mod, ppId, convertedTime, options.reason);
   },
 });

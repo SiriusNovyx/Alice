@@ -1,7 +1,6 @@
 import { commandTypeHelpers as ct } from "../../../commandTypes.js";
-import { sorter } from "../../../utils.js";
 import { postCmd } from "../types.js";
-import { postMessage } from "../util/postMessage.js";
+import { actualScheduledPostsShowCmd } from "../util/actualScheduledPostsCmd.js";
 
 export const ScheduledPostsShowCmd = postCmd({
   trigger: ["scheduled_posts", "scheduled_posts show"],
@@ -12,14 +11,6 @@ export const ScheduledPostsShowCmd = postCmd({
   },
 
   async run({ message: msg, args, pluginData }) {
-    const scheduledPosts = await pluginData.state.scheduledPosts.all();
-    scheduledPosts.sort(sorter("post_at"));
-    const post = scheduledPosts[args.num - 1];
-    if (!post) {
-      void pluginData.state.common.sendErrorMessage(msg, "Scheduled post not found");
-      return;
-    }
-
-    postMessage(pluginData, msg.channel, post.content, post.attachments, post.enable_mentions);
+    await actualScheduledPostsShowCmd(pluginData, msg, args.num);
   },
 });

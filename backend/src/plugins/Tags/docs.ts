@@ -6,7 +6,7 @@ import { TemplateFunction, zTagsConfig } from "./types.js";
 export const tagsPluginDocs: ZeppelinPluginDocs = {
   type: "stable",
   prettyName: "Tags",
-  description: "Tags are a way to store and reuse information.",
+  description: "Tags are a way to store and reuse information. Slash commands live under `/tag`.",
   configurationGuide: trimPluginDescription(`
     ### Template Functions
     You can use template functions in your tags. These functions are called when the tag is rendered.

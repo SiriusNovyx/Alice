@@ -99,7 +99,7 @@ export const UnmuteMsgCmd = modActionsMsgCmd({
       ppId = msg.author.id;
     }
 
-    actualUnmuteCmd(
+    await actualUnmuteCmd(
       pluginData,
       msg,
       user,

@@ -1,9 +1,8 @@
-import { guildPluginMessageCommand } from "vety";
 import { commandTypeHelpers as ct } from "../../../commandTypes.js";
-import { setAntiraidLevel } from "../functions/setAntiraidLevel.js";
-import { AutomodPluginType } from "../types.js";
+import { automodMsgCmd } from "../types.js";
+import { actualSetAntiraidCmd } from "./actualSetAntiraidCmd.js";
 
-export const SetAntiraidCmd = guildPluginMessageCommand<AutomodPluginType>()({
+export const SetAntiraidCmd = automodMsgCmd({
   trigger: "antiraid",
   permission: "can_set_antiraid",
 
@@ -12,13 +11,6 @@ export const SetAntiraidCmd = guildPluginMessageCommand<AutomodPluginType>()({
   },
 
   async run({ pluginData, message, args }) {
-    const config = pluginData.config.get();
-    if (!config.antiraid_levels.includes(args.level)) {
-      pluginData.state.common.sendErrorMessage(message, "Unknown anti-raid level");
-      return;
-    }
-
-    await setAntiraidLevel(pluginData, args.level, message.author);
-    pluginData.state.common.sendSuccessMessage(message, `Anti-raid level set to **${args.level}**`);
+    await actualSetAntiraidCmd(pluginData, message, message.author, args.level);
   },
 });

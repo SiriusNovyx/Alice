@@ -12,6 +12,14 @@ import { MINUTES, convertDelayStringToMS } from "../../utils.js";
 import { CommonPlugin } from "../Common/CommonPlugin.js";
 import { AddCounterCmd } from "./commands/AddCounterCmd.js";
 import { CountersListCmd } from "./commands/CountersListCmd.js";
+import {
+  AddCounterSlashCmd,
+  CountersListSlashCmd,
+  ResetAllCounterSlashCmd,
+  ResetCounterSlashCmd,
+  SetCounterSlashCmd,
+  ViewCounterSlashCmd,
+} from "./commands/CountersSlashCmds.js";
 import { ResetAllCounterValuesCmd } from "./commands/ResetAllCounterValuesCmd.js";
 import { ResetCounterCmd } from "./commands/ResetCounterCmd.js";
 import { SetCounterCmd } from "./commands/SetCounterCmd.js";
@@ -24,7 +32,7 @@ import { getPrettyNameForCounterTrigger } from "./functions/getPrettyNameForCoun
 import { offCounterEvent } from "./functions/offCounterEvent.js";
 import { onCounterEvent } from "./functions/onCounterEvent.js";
 import { setCounterValue } from "./functions/setCounterValue.js";
-import { CountersPluginType, zCountersConfig } from "./types.js";
+import { CountersPluginType, countersSlashGroup, zCountersConfig } from "./types.js";
 
 const DECAY_APPLY_INTERVAL = 5 * MINUTES;
 
@@ -79,6 +87,22 @@ export const CountersPlugin = guildPlugin<CountersPluginType>()({
     SetCounterCmd,
     ResetCounterCmd,
     ResetAllCounterValuesCmd,
+  ],
+
+  slashCommands: [
+    countersSlashGroup({
+      name: "counter",
+      description: "Counter management",
+      defaultMemberPermissions: "0",
+      subcommands: [
+        CountersListSlashCmd,
+        ViewCounterSlashCmd,
+        AddCounterSlashCmd,
+        SetCounterSlashCmd,
+        ResetCounterSlashCmd,
+        ResetAllCounterSlashCmd,
+      ],
+    }),
   ],
 
   async beforeLoad(pluginData) {

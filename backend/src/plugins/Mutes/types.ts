@@ -1,6 +1,13 @@
 import { GuildMember } from "discord.js";
 import { EventEmitter } from "events";
-import { BasePluginType, guildPluginEventListener, guildPluginMessageCommand, pluginUtils } from "vety";
+import {
+  BasePluginType,
+  guildPluginEventListener,
+  guildPluginMessageCommand,
+  guildPluginSlashCommand,
+  guildPluginSlashGroup,
+  pluginUtils,
+} from "vety";
 import { z } from "zod";
 import { GuildArchives } from "../../data/GuildArchives.js";
 import { GuildCases } from "../../data/GuildCases.js";
@@ -84,4 +91,6 @@ export interface MuteOptions {
 }
 
 export const mutesCmd = guildPluginMessageCommand<MutesPluginType>();
+export const mutesSlashGroup = guildPluginSlashGroup<MutesPluginType>();
+export const mutesSlashCmd = guildPluginSlashCommand<MutesPluginType>();
 export const mutesEvt = guildPluginEventListener<MutesPluginType>();

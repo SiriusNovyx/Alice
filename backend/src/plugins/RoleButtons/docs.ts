@@ -6,7 +6,8 @@ export const roleButtonsPluginDocs: ZeppelinPluginDocs = {
   type: "stable",
   prettyName: "Role buttons",
   description: trimPluginDescription(`
-    Allow users to pick roles by clicking on buttons
+    Allow users to pick roles by clicking on buttons.
+    Slash commands live under \`/role_buttons\`.
   `),
   configurationGuide: trimPluginDescription(`
     Button roles are entirely config-based; this is in contrast to the old reaction roles. They can either be added to an existing message posted by Zeppelin or posted as a new message.

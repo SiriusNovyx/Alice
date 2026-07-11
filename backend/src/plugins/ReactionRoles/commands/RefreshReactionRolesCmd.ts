@@ -1,6 +1,6 @@
 import { commandTypeHelpers as ct } from "../../../commandTypes.js";
 import { reactionRolesCmd } from "../types.js";
-import { refreshReactionRoles } from "../util/refreshReactionRoles.js";
+import { actualRefreshReactionRolesCmd } from "./actualRefreshReactionRolesCmd.js";
 
 export const RefreshReactionRolesCmd = reactionRolesCmd({
   trigger: "reaction_roles refresh",
@@ -11,13 +11,6 @@ export const RefreshReactionRolesCmd = reactionRolesCmd({
   },
 
   async run({ message: msg, args, pluginData }) {
-    if (pluginData.state.pendingRefreshes.has(`${args.message.channel.id}-${args.message.messageId}`)) {
-      void pluginData.state.common.sendErrorMessage(msg, "Another refresh in progress");
-      return;
-    }
-
-    await refreshReactionRoles(pluginData, args.message.channel.id, args.message.messageId);
-
-    void pluginData.state.common.sendSuccessMessage(msg, "Reaction roles refreshed");
+    await actualRefreshReactionRolesCmd(pluginData, msg, args.message.channel.id, args.message.messageId);
   },
 });

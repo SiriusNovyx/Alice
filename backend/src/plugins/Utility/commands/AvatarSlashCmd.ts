@@ -1,6 +1,5 @@
-import { APIEmbed, ImageFormat } from "discord.js";
 import { slashOptions } from "vety";
-import { renderUsername } from "../../../utils.js";
+import { formatAvatarEmbed } from "../functions/formatUtilityReplies.js";
 import { utilitySlashCmd } from "../types.js";
 
 export const AvatarSlashCmd = utilitySlashCmd({
@@ -10,7 +9,11 @@ export const AvatarSlashCmd = utilitySlashCmd({
   allowDms: false,
 
   signature: [
-    slashOptions.user({ name: "user", description: "The user whose avatar to show (defaults to yourself)", required: false }),
+    slashOptions.user({
+      name: "user",
+      description: "The user whose avatar to show (defaults to yourself)",
+      required: false,
+    }),
   ],
 
   async run({ interaction, options, pluginData }) {
@@ -18,12 +21,8 @@ export const AvatarSlashCmd = utilitySlashCmd({
 
     const userId = options.user?.id ?? interaction.user.id;
     const member = await pluginData.guild.members.fetch(userId).catch(() => null);
-    const user = member?.user ?? options.user ?? interaction.user;
+    const user = member ?? options.user ?? interaction.user;
 
-    const embed: APIEmbed = {
-      image: { url: (member ?? user).displayAvatarURL({ extension: ImageFormat.PNG, size: 2048 }) },
-      title: `Avatar of ${renderUsername(member ?? user)}:`,
-    };
-    interaction.editReply({ embeds: [embed] });
+    await interaction.editReply({ embeds: [formatAvatarEmbed(user)] });
   },
 });

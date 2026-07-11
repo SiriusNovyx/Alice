@@ -1,4 +1,11 @@
-import { BasePluginType, guildPluginEventListener, guildPluginMessageCommand, pluginUtils } from "vety";
+import {
+  BasePluginType,
+  guildPluginEventListener,
+  guildPluginMessageCommand,
+  guildPluginSlashCommand,
+  guildPluginSlashGroup,
+  pluginUtils,
+} from "vety";
 import { z } from "zod";
 import { GuildAutoReactions } from "../../data/GuildAutoReactions.js";
 import { GuildLogs } from "../../data/GuildLogs.js";
@@ -22,4 +29,6 @@ export interface AutoReactionsPluginType extends BasePluginType {
 }
 
 export const autoReactionsCmd = guildPluginMessageCommand<AutoReactionsPluginType>();
+export const autoReactionsSlashGroup = guildPluginSlashGroup<AutoReactionsPluginType>();
+export const autoReactionsSlashCmd = guildPluginSlashCommand<AutoReactionsPluginType>();
 export const autoReactionsEvt = guildPluginEventListener<AutoReactionsPluginType>();

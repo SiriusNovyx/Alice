@@ -21,7 +21,7 @@ export const searchCmdSignature = {
 export const SearchCmd = utilityCmd({
   trigger: ["search", "s"],
   description: "Search server members",
-  usage: "!search dragory",
+  usage: "!search <query>",
   permission: "can_search",
 
   signature: searchCmdSignature,

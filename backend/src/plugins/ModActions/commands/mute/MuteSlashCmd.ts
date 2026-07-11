@@ -1,7 +1,7 @@
 import { ChannelType, GuildMember } from "discord.js";
 import { slashOptions } from "vety";
-import { canActOn, hasPermission } from "../../../../pluginUtils.js";
-import { UserNotificationMethod, convertDelayStringToMS, resolveMember } from "../../../../utils.js";
+import { hasPermission } from "../../../../pluginUtils.js";
+import { UserNotificationMethod, parseSlashDelay, resolveMember } from "../../../../utils.js";
 import { generateAttachmentSlashOptions, retrieveMultipleOptions } from "../../../../utils/multipleSlashOptions.js";
 import { waitForButtonConfirm } from "../../../../utils/waitForInteraction.js";
 import { isBanned } from "../../functions/isBanned.js";
@@ -72,12 +72,6 @@ export const MuteSlashCmd = modActionsSlashCmd({
       }
     }
 
-    // Make sure we're allowed to mute this member
-    if (memberToMute && !canActOn(pluginData, interaction.member as GuildMember, memberToMute)) {
-      pluginData.state.common.sendErrorMessage(interaction, "Cannot mute: insufficient permissions");
-      return;
-    }
-
     let mod = interaction.member as GuildMember;
     let ppId: string | undefined;
     const canActAsOther = await hasPermission(pluginData, "can_act_as_other", {
@@ -95,7 +89,7 @@ export const MuteSlashCmd = modActionsSlashCmd({
       ppId = interaction.user.id;
     }
 
-    const convertedTime = options.time ? (convertDelayStringToMS(options.time) ?? undefined) : undefined;
+    const convertedTime = options.time ? (parseSlashDelay(options.time) ?? undefined) : undefined;
     if (options.time && !convertedTime) {
       pluginData.state.common.sendErrorMessage(interaction, `Could not convert ${options.time} to a delay`);
       return;
@@ -109,9 +103,10 @@ export const MuteSlashCmd = modActionsSlashCmd({
       return;
     }
 
-    actualMuteCmd(
+    await actualMuteCmd(
       pluginData,
       interaction,
+      interaction.member as GuildMember,
       options.user,
       attachments,
       mod,

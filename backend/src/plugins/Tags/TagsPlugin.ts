@@ -12,11 +12,16 @@ import { CommonPlugin } from "../Common/CommonPlugin.js";
 import { LogsPlugin } from "../Logs/LogsPlugin.js";
 import { TimeAndDatePlugin } from "../TimeAndDate/TimeAndDatePlugin.js";
 import { TagCreateCmd } from "./commands/TagCreateCmd.js";
+import { TagCreateSlashCmd } from "./commands/TagCreateSlashCmd.js";
 import { TagDeleteCmd } from "./commands/TagDeleteCmd.js";
+import { TagDeleteSlashCmd } from "./commands/TagDeleteSlashCmd.js";
 import { TagEvalCmd } from "./commands/TagEvalCmd.js";
+import { TagEvalSlashCmd } from "./commands/TagEvalSlashCmd.js";
+import { TagGetSlashCmd } from "./commands/TagGetSlashCmd.js";
 import { TagListCmd } from "./commands/TagListCmd.js";
+import { TagListSlashCmd } from "./commands/TagListSlashCmd.js";
 import { TagSourceCmd } from "./commands/TagSourceCmd.js";
-import { TagsPluginType, zTagsConfig } from "./types.js";
+import { TagsPluginType, tagsSlashGroup, zTagsConfig } from "./types.js";
 import { findTagByName } from "./util/findTagByName.js";
 import { onMessageCreate } from "./util/onMessageCreate.js";
 import { onMessageDelete } from "./util/onMessageDelete.js";
@@ -45,6 +50,15 @@ export const TagsPlugin = guildPlugin<TagsPluginType>()({
     TagListCmd,
     TagSourceCmd,
     TagCreateCmd,
+  ],
+
+  slashCommands: [
+    tagsSlashGroup({
+      name: "tag",
+      description: "Tag management",
+      defaultMemberPermissions: "0",
+      subcommands: [TagCreateSlashCmd, TagGetSlashCmd, TagListSlashCmd, TagDeleteSlashCmd, TagEvalSlashCmd],
+    }),
   ],
 
   // prettier-ignore

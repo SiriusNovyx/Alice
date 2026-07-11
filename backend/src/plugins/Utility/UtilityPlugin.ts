@@ -13,30 +13,52 @@ import { ModActionsPlugin } from "../ModActions/ModActionsPlugin.js";
 import { TimeAndDatePlugin } from "../TimeAndDate/TimeAndDatePlugin.js";
 import { AboutCmd } from "./commands/AboutCmd.js";
 import { AvatarCmd } from "./commands/AvatarCmd.js";
+import { AvatarSlashCmd } from "./commands/AvatarSlashCmd.js";
 import { BanSearchCmd } from "./commands/BanSearchCmd.js";
+import { BanSearchSlashCmd } from "./commands/BanSearchSlashCmd.js";
 import { ChannelInfoCmd } from "./commands/ChannelInfoCmd.js";
 import { CleanCmd } from "./commands/CleanCmd.js";
+import { CleanSlashCmd } from "./commands/CleanSlashCmd.js";
 import { ContextCmd } from "./commands/ContextCmd.js";
 import { EmojiInfoCmd } from "./commands/EmojiInfoCmd.js";
 import { HelpCmd } from "./commands/HelpCmd.js";
 import { InfoCmd } from "./commands/InfoCmd.js";
+import {
+  InfoSlashCmd,
+  LookupSlashCmd,
+  ServerInfoSlashCmd,
+} from "./commands/InfoSlashCmds.js";
 import { InviteInfoCmd } from "./commands/InviteInfoCmd.js";
 import { JumboCmd } from "./commands/JumboCmd.js";
 import { LevelCmd } from "./commands/LevelCmd.js";
+import { LevelSlashCmd } from "./commands/LevelSlashCmd.js";
 import { MessageInfoCmd } from "./commands/MessageInfoCmd.js";
+import {
+  AboutSlashCmd,
+  HelpSlashCmd,
+  JumboSlashCmd,
+  ReloadGuildSlashCmd,
+} from "./commands/MiscSlashCmds.js";
 import { NicknameCmd } from "./commands/NicknameCmd.js";
 import { NicknameResetCmd } from "./commands/NicknameResetCmd.js";
+import { NicknameSlashCmd } from "./commands/NicknameSlashCmd.js";
 import { PingCmd } from "./commands/PingCmd.js";
+import { PingSlashCmd } from "./commands/PingSlashCmd.js";
 import { ReloadGuildCmd } from "./commands/ReloadGuildCmd.js";
 import { RoleInfoCmd } from "./commands/RoleInfoCmd.js";
 import { RolesCmd } from "./commands/RolesCmd.js";
+import { RolesSlashCmd } from "./commands/RolesSlashCmd.js";
 import { SearchCmd } from "./commands/SearchCmd.js";
+import { SearchSlashCmd } from "./commands/SearchSlashCmd.js";
 import { ServerInfoCmd } from "./commands/ServerInfoCmd.js";
 import { SnowflakeInfoCmd } from "./commands/SnowflakeInfoCmd.js";
 import { SourceCmd } from "./commands/SourceCmd.js";
+import { ContextSlashCmd, SourceSlashCmd } from "./commands/SourceSlashCmd.js";
 import { UserInfoCmd } from "./commands/UserInfoCmd.js";
+import { UserInfoSlashCmd } from "./commands/UserInfoSlashCmd.js";
 import { VcdisconnectCmd } from "./commands/VcdisconnectCmd.js";
 import { VcmoveAllCmd, VcmoveCmd } from "./commands/VcmoveCmd.js";
+import { VcdisconnectSlashCmd, VcmoveAllSlashCmd, VcmoveSlashCmd } from "./commands/VcmoveSlashCmd.js";
 import { AutoJoinThreadEvt, AutoJoinThreadSyncEvt } from "./events/AutoJoinThreadEvt.js";
 import { cleanMessages } from "./functions/cleanMessages.js";
 import { fetchChannelMessagesToClean } from "./functions/fetchChannelMessagesToClean.js";
@@ -44,13 +66,7 @@ import { getUserInfoEmbed } from "./functions/getUserInfoEmbed.js";
 import { hasPermission } from "./functions/hasPermission.js";
 import { activeReloads } from "./guildReloads.js";
 import { refreshMembersIfNeeded } from "./refreshMembers.js";
-import { UtilityPluginType, zUtilityConfig } from "./types.js";
-import { AvatarSlashCmd } from "./commands/AvatarSlashCmd.js";
-import { CleanSlashCmd } from "./commands/CleanSlashCmd.js";
-import { LevelSlashCmd } from "./commands/LevelSlashCmd.js";
-import { NicknameSlashCmd } from "./commands/NicknameSlashCmd.js";
-import { PingSlashCmd } from "./commands/PingSlashCmd.js";
-import { UserInfoSlashCmd } from "./commands/UserInfoSlashCmd.js";
+import { UtilityPluginType, utilitySlashGroup, zUtilityConfig } from "./types.js";
 
 export const UtilityPlugin = guildPlugin<UtilityPluginType>()({
   name: "utility",
@@ -127,12 +143,34 @@ export const UtilityPlugin = guildPlugin<UtilityPluginType>()({
   ],
 
   slashCommands: [
-    AvatarSlashCmd,
-    CleanSlashCmd,
-    LevelSlashCmd,
-    NicknameSlashCmd,
-    PingSlashCmd,
-    UserInfoSlashCmd,
+    utilitySlashGroup({
+      name: "utility",
+      description: "Utility commands",
+      defaultMemberPermissions: "0",
+      subcommands: [
+        AvatarSlashCmd,
+        CleanSlashCmd,
+        LevelSlashCmd,
+        NicknameSlashCmd,
+        PingSlashCmd,
+        UserInfoSlashCmd,
+        SearchSlashCmd,
+        BanSearchSlashCmd,
+        RolesSlashCmd,
+        ServerInfoSlashCmd,
+        SourceSlashCmd,
+        ContextSlashCmd,
+        VcmoveSlashCmd,
+        VcmoveAllSlashCmd,
+        VcdisconnectSlashCmd,
+        HelpSlashCmd,
+        AboutSlashCmd,
+        JumboSlashCmd,
+        InfoSlashCmd,
+        LookupSlashCmd,
+        ReloadGuildSlashCmd,
+      ],
+    }),
   ],
 
   // prettier-ignore

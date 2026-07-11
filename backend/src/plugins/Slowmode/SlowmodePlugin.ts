@@ -6,15 +6,17 @@ import { SECONDS } from "../../utils.js";
 import { CommonPlugin } from "../Common/CommonPlugin.js";
 import { LogsPlugin } from "../Logs/LogsPlugin.js";
 import { SlowmodeClearCmd } from "./commands/SlowmodeClearCmd.js";
+import { SlowmodeClearSlashCmd } from "./commands/SlowmodeClearSlashCmd.js";
 import { SlowmodeDisableCmd } from "./commands/SlowmodeDisableCmd.js";
+import { SlowmodeDisableSlashCmd } from "./commands/SlowmodeDisableSlashCmd.js";
 import { SlowmodeGetCmd } from "./commands/SlowmodeGetCmd.js";
 import { SlowmodeListCmd } from "./commands/SlowmodeListCmd.js";
+import { SlowmodeListSlashCmd } from "./commands/SlowmodeListSlashCmd.js";
 import { SlowmodeSetCmd } from "./commands/SlowmodeSetCmd.js";
-import { SlowmodePluginType, zSlowmodeConfig } from "./types.js";
+import { SlowmodeSetSlashCmd } from "./commands/SlowmodeSetSlashCmd.js";
+import { SlowmodePluginType, slowmodeSlashGroup, zSlowmodeConfig } from "./types.js";
 import { clearExpiredSlowmodes } from "./util/clearExpiredSlowmodes.js";
 import { onMessageCreate } from "./util/onMessageCreate.js";
-import { SlowmodeSetSlashCmd } from "./commands/SlowmodeSetSlashCmd.js";
-import { SlowmodeDisableSlashCmd } from "./commands/SlowmodeDisableSlashCmd.js";
 
 const BOT_SLOWMODE_CLEAR_INTERVAL = 60 * SECONDS;
 
@@ -47,8 +49,12 @@ export const SlowmodePlugin = guildPlugin<SlowmodePluginType>()({
   ],
 
   slashCommands: [
-    SlowmodeSetSlashCmd,
-    SlowmodeDisableSlashCmd,
+    slowmodeSlashGroup({
+      name: "slowmode",
+      description: "Slowmode management",
+      defaultMemberPermissions: "0",
+      subcommands: [SlowmodeSetSlashCmd, SlowmodeDisableSlashCmd, SlowmodeClearSlashCmd, SlowmodeListSlashCmd],
+    }),
   ],
 
   beforeLoad(pluginData) {

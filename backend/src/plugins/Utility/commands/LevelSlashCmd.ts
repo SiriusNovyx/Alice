@@ -1,6 +1,7 @@
 import { slashOptions } from "vety";
 import { helpers } from "vety";
 import { renderUsername } from "../../../utils.js";
+import { formatLevelReply } from "../functions/formatUtilityReplies.js";
 import { utilitySlashCmd } from "../types.js";
 
 const { getMemberLevel } = helpers;
@@ -28,6 +29,6 @@ export const LevelSlashCmd = utilitySlashCmd({
     }
 
     const level = getMemberLevel(pluginData, member);
-    interaction.editReply(`The permission level of ${renderUsername(member)} is **${level}**`);
+    await interaction.editReply(formatLevelReply(renderUsername(member), level));
   },
 });

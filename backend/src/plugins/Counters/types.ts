@@ -1,5 +1,11 @@
 import { EventEmitter } from "events";
-import { BasePluginType, pluginUtils } from "vety";
+import {
+  BasePluginType,
+  guildPluginMessageCommand,
+  guildPluginSlashCommand,
+  guildPluginSlashGroup,
+  pluginUtils,
+} from "vety";
 import { z } from "zod";
 import { GuildCounters, MAX_COUNTER_VALUE, MIN_COUNTER_VALUE } from "../../data/GuildCounters.js";
 import {
@@ -95,3 +101,7 @@ export interface CountersPluginType extends BasePluginType {
     common: pluginUtils.PluginPublicInterface<typeof CommonPlugin>;
   };
 }
+
+export const countersCmd = guildPluginMessageCommand<CountersPluginType>();
+export const countersSlashGroup = guildPluginSlashGroup<CountersPluginType>();
+export const countersSlashCmd = guildPluginSlashCommand<CountersPluginType>();

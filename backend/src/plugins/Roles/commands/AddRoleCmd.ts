@@ -1,28 +1,25 @@
 import { GuildChannel } from "discord.js";
 import { commandTypeHelpers as ct } from "../../../commandTypes.js";
-import { canActOn, resolveMessageMember } from "../../../pluginUtils.js";
-import { resolveRoleId, verboseUserMention } from "../../../utils.js";
+import { resolveMessageMember } from "../../../pluginUtils.js";
+import { resolveRoleId } from "../../../utils.js";
 import { LogsPlugin } from "../../Logs/LogsPlugin.js";
-import { RoleManagerPlugin } from "../../RoleManager/RoleManagerPlugin.js";
 import { rolesCmd } from "../types.js";
+import { actualAddRoleCmd } from "./actualAddRoleCmd.js";
 
 export const AddRoleCmd = rolesCmd({
   trigger: "addrole",
   permission: "can_assign",
   description: "Add a role to the specified member",
-  usage: "!addrole <user> <role> [reason]",
+  usage: "!addrole <user> <role> [-reason]",
 
   signature: {
     member: ct.resolvedMember(),
     role: ct.string({ catchAll: true }),
+    reason: ct.string({ option: true }),
   },
 
   async run({ message: msg, args, pluginData }) {
     const member = await resolveMessageMember(msg);
-    if (!canActOn(pluginData, member, args.member, true)) {
-      void pluginData.state.common.sendErrorMessage(msg, "Cannot add roles to this user: insufficient permissions");
-      return;
-    }
 
     const roleId = await resolveRoleId(pluginData.client, pluginData.guild.id, args.role);
     if (!roleId) {
@@ -36,7 +33,6 @@ export const AddRoleCmd = rolesCmd({
       return;
     }
 
-    // Sanity check: make sure the role is configured properly
     const role = (msg.channel as GuildChannel).guild.roles.cache.get(roleId);
     if (!role) {
       pluginData.getPlugin(LogsPlugin).logBotAlert({
@@ -46,22 +42,6 @@ export const AddRoleCmd = rolesCmd({
       return;
     }
 
-    if (args.member.roles.cache.has(roleId)) {
-      void pluginData.state.common.sendErrorMessage(msg, "Member already has that role");
-      return;
-    }
-
-    pluginData.getPlugin(RoleManagerPlugin).addRole(args.member.id, roleId);
-
-    pluginData.getPlugin(LogsPlugin).logMemberRoleAdd({
-      mod: msg.author,
-      member: args.member,
-      roles: [role],
-    });
-
-    void pluginData.state.common.sendSuccessMessage(
-      msg,
-      `Added role **${role.name}** to ${verboseUserMention(args.member.user)}!`,
-    );
+    await actualAddRoleCmd(pluginData, msg, member, msg.author, args.member, role, args.reason);
   },
 });

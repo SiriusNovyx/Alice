@@ -57,7 +57,7 @@ export const AddCaseSlashCmd = modActionsSlashCmd({
       mod = (await resolveMember(pluginData.client, pluginData.guild, options.mod.id))!;
     }
 
-    actualAddCaseCmd(
+    await actualAddCaseCmd(
       pluginData,
       interaction,
       interaction.member as GuildMember,

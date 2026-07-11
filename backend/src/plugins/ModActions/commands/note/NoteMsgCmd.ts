@@ -26,6 +26,6 @@ export const NoteMsgCmd = modActionsMsgCmd({
       return;
     }
 
-    actualNoteCmd(pluginData, msg, msg.author, [...msg.attachments.values()], user, args.note || "");
+    await actualNoteCmd(pluginData, msg, msg.author, [...msg.attachments.values()], user, args.note || "");
   },
 });

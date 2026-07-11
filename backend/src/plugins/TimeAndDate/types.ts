@@ -1,4 +1,10 @@
-import { BasePluginType, guildPluginMessageCommand, pluginUtils } from "vety";
+import {
+  BasePluginType,
+  guildPluginMessageCommand,
+  guildPluginSlashCommand,
+  guildPluginSlashGroup,
+  pluginUtils,
+} from "vety";
 import { z } from "zod";
 import { GuildMemberTimezones } from "../../data/GuildMemberTimezones.js";
 import { keys } from "../../utils.js";
@@ -29,3 +35,5 @@ export interface TimeAndDatePluginType extends BasePluginType {
 }
 
 export const timeAndDateCmd = guildPluginMessageCommand<TimeAndDatePluginType>();
+export const timeAndDateSlashGroup = guildPluginSlashGroup<TimeAndDatePluginType>();
+export const timeAndDateSlashCmd = guildPluginSlashCommand<TimeAndDatePluginType>();

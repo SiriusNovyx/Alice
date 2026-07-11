@@ -6,7 +6,8 @@ export const timeAndDatePluginDocs: ZeppelinPluginDocs = {
   type: "stable",
   prettyName: "Time and date",
   description: trimPluginDescription(`
-    Allows controlling the displayed time/date formats and timezones
+    Allows controlling the displayed time/date formats and timezones.
+    Slash commands live under \`/timezone\`.
   `),
   configSchema: zTimeAndDateConfig,
 };

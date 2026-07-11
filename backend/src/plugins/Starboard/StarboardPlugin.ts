@@ -4,9 +4,10 @@ import { GuildStarboardMessages } from "../../data/GuildStarboardMessages.js";
 import { GuildStarboardReactions } from "../../data/GuildStarboardReactions.js";
 import { CommonPlugin } from "../Common/CommonPlugin.js";
 import { MigratePinsCmd } from "./commands/MigratePinsCmd.js";
+import { MigratePinsSlashCmd } from "./commands/MigratePinsSlashCmd.js";
 import { StarboardReactionAddEvt } from "./events/StarboardReactionAddEvt.js";
 import { StarboardReactionRemoveAllEvt, StarboardReactionRemoveEvt } from "./events/StarboardReactionRemoveEvts.js";
-import { StarboardPluginType, zStarboardConfig } from "./types.js";
+import { StarboardPluginType, starboardSlashGroup, zStarboardConfig } from "./types.js";
 import { onMessageDelete } from "./util/onMessageDelete.js";
 
 export const StarboardPlugin = guildPlugin<StarboardPluginType>()({
@@ -25,6 +26,15 @@ export const StarboardPlugin = guildPlugin<StarboardPluginType>()({
   // prettier-ignore
   messageCommands: [
     MigratePinsCmd,
+  ],
+
+  slashCommands: [
+    starboardSlashGroup({
+      name: "starboard",
+      description: "Starboard management",
+      defaultMemberPermissions: "0",
+      subcommands: [MigratePinsSlashCmd],
+    }),
   ],
 
   // prettier-ignore

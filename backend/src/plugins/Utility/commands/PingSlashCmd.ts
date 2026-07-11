@@ -1,3 +1,4 @@
+import { formatPingSlashReply } from "../functions/formatUtilityReplies.js";
 import { utilitySlashCmd } from "../types.js";
 
 export const PingSlashCmd = utilitySlashCmd({
@@ -13,8 +14,6 @@ export const PingSlashCmd = utilitySlashCmd({
     const sent = Date.now();
     await interaction.editReply("Calculating ping...");
     const roundtrip = Date.now() - sent;
-    interaction.editReply(
-      `**Ping:**\nRoundtrip: **${roundtrip}ms**\nShard latency: **${pluginData.client.ws.ping}ms**`,
-    );
+    await interaction.editReply(formatPingSlashReply(roundtrip, pluginData.client.ws.ping));
   },
 });

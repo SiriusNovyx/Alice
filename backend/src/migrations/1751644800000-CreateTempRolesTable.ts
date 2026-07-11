@@ -36,7 +36,7 @@ export class CreateTempRolesTable1751644800000 implements MigrationInterface {
         ],
       }),
     );
-    queryRunner.createIndex(
+    await queryRunner.createIndex(
       "temp_roles",
       new TableIndex({
         columnNames: ["expires_at"],

@@ -15,6 +15,6 @@ export const CaseMsgCmd = modActionsMsgCmd({
   ],
 
   async run({ pluginData, message: msg, args }) {
-    actualCaseCmd(pluginData, msg, msg.author.id, args.caseNumber);
+    await actualCaseCmd(pluginData, msg, msg.author.id, args.caseNumber);
   },
 });

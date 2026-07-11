@@ -1,6 +1,6 @@
 import { ChannelType, GuildMember } from "discord.js";
 import { slashOptions } from "vety";
-import { canActOn, hasPermission } from "../../../../pluginUtils.js";
+import { hasPermission } from "../../../../pluginUtils.js";
 import { UserNotificationMethod, resolveMember } from "../../../../utils.js";
 import { generateAttachmentSlashOptions, retrieveMultipleOptions } from "../../../../utils/multipleSlashOptions.js";
 import { isBanned } from "../../functions/isBanned.js";
@@ -70,12 +70,6 @@ export const WarnSlashCmd = modActionsSlashCmd({
       return;
     }
 
-    // Make sure we're allowed to warn this member
-    if (!canActOn(pluginData, interaction.member as GuildMember, memberToWarn)) {
-      await pluginData.state.common.sendErrorMessage(interaction, "Cannot warn: insufficient permissions");
-      return;
-    }
-
     let mod = interaction.member as GuildMember;
     const canActAsOther = await hasPermission(pluginData, "can_act_as_other", {
       channel: interaction.channel,
@@ -102,10 +96,10 @@ export const WarnSlashCmd = modActionsSlashCmd({
       return;
     }
 
-    actualWarnCmd(
+    await actualWarnCmd(
       pluginData,
       interaction,
-      interaction.user.id,
+      interaction.member as GuildMember,
       mod,
       memberToWarn,
       options.reason ?? "",

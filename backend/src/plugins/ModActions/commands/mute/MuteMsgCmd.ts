@@ -1,5 +1,5 @@
 import { commandTypeHelpers as ct } from "../../../../commandTypes.js";
-import { canActOn, hasPermission, resolveMessageMember } from "../../../../pluginUtils.js";
+import { hasPermission, resolveMessageMember } from "../../../../pluginUtils.js";
 import { resolveMember, resolveUser } from "../../../../utils.js";
 import { waitForButtonConfirm } from "../../../../utils/waitForInteraction.js";
 import { isBanned } from "../../functions/isBanned.js";
@@ -69,12 +69,6 @@ export const MuteMsgCmd = modActionsMsgCmd({
       }
     }
 
-    // Make sure we're allowed to mute this member
-    if (memberToMute && !canActOn(pluginData, authorMember, memberToMute)) {
-      pluginData.state.common.sendErrorMessage(msg, "Cannot mute: insufficient permissions");
-      return;
-    }
-
     // The moderator who did the action is the message author or, if used, the specified -mod
     let mod = authorMember;
     let ppId: string | undefined;
@@ -97,9 +91,10 @@ export const MuteMsgCmd = modActionsMsgCmd({
       return;
     }
 
-    actualMuteCmd(
+    await actualMuteCmd(
       pluginData,
       msg,
+      authorMember,
       user,
       [...msg.attachments.values()],
       mod,

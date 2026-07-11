@@ -1,4 +1,11 @@
-import { BasePluginType, guildPluginEventListener, guildPluginMessageCommand, pluginUtils } from "vety";
+import {
+  BasePluginType,
+  guildPluginEventListener,
+  guildPluginMessageCommand,
+  guildPluginSlashCommand,
+  guildPluginSlashGroup,
+  pluginUtils,
+} from "vety";
 import { z } from "zod";
 import { GuildSavedMessages } from "../../data/GuildSavedMessages.js";
 import { GuildStarboardMessages } from "../../data/GuildStarboardMessages.js";
@@ -36,4 +43,6 @@ export interface StarboardPluginType extends BasePluginType {
 }
 
 export const starboardCmd = guildPluginMessageCommand<StarboardPluginType>();
+export const starboardSlashGroup = guildPluginSlashGroup<StarboardPluginType>();
+export const starboardSlashCmd = guildPluginSlashCommand<StarboardPluginType>();
 export const starboardEvt = guildPluginEventListener<StarboardPluginType>();

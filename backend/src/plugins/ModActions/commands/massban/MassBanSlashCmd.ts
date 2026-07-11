@@ -35,7 +35,7 @@ export const MassBanSlashCmd = modActionsSlashCmd({
       return;
     }
 
-    actualMassBanCmd(
+    await actualMassBanCmd(
       pluginData,
       interaction,
       options["user-ids"].split(/\D+/),

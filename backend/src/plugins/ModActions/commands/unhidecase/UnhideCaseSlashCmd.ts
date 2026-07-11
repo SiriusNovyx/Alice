@@ -14,6 +14,6 @@ export const UnhideCaseSlashCmd = modActionsSlashCmd({
 
   async run({ interaction, options, pluginData }) {
     await interaction.deferReply({ ephemeral: true });
-    actualUnhideCaseCmd(pluginData, interaction, options["case-number"].split(/\D+/).map(Number));
+    await actualUnhideCaseCmd(pluginData, interaction, options["case-number"].split(/\D+/).map(Number));
   },
 });

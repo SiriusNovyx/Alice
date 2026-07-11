@@ -1,11 +1,11 @@
 import { commandTypeHelpers as ct } from "../../../commandTypes.js";
-import { getSnowflakeInfoEmbed } from "../functions/getSnowflakeInfoEmbed.js";
 import { utilityCmd } from "../types.js";
+import { actualSnowflakeInfoCmd } from "./actualInfoCmds.js";
 
 export const SnowflakeInfoCmd = utilityCmd({
   trigger: ["snowflake", "snowflakeinfo"],
   description: "Show information about a snowflake ID",
-  usage: "!snowflake 534722016549404673",
+  usage: "!snowflake <id>",
   permission: "can_snowflake",
 
   signature: {
@@ -13,7 +13,6 @@ export const SnowflakeInfoCmd = utilityCmd({
   },
 
   async run({ message, args }) {
-    const embed = await getSnowflakeInfoEmbed(args.id, false);
-    message.channel.send({ embeds: [embed] });
+    await actualSnowflakeInfoCmd(message, args.id);
   },
 });

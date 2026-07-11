@@ -12,7 +12,10 @@ export const SlowmodeDisableCmd = slowmodeCmd({
   },
 
   async run({ message: msg, args, pluginData }) {
-    // Workaround until you can call this cmd from SlowmodeSetChannelCmd
-    actualDisableSlowmodeCmd(msg, args, pluginData);
+    if (args.channel.isThread()) {
+      void pluginData.state.common.sendErrorMessage(msg, "Cannot disable slowmode on this channel type");
+      return;
+    }
+    await actualDisableSlowmodeCmd(pluginData, msg, args.channel);
   },
 });

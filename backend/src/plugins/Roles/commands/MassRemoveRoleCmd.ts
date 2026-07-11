@@ -1,15 +1,13 @@
-import { GuildMember } from "discord.js";
 import { commandTypeHelpers as ct } from "../../../commandTypes.js";
-import { logger } from "../../../logger.js";
-import { canActOn, resolveMessageMember } from "../../../pluginUtils.js";
-import { resolveMember, resolveRoleId, successMessage } from "../../../utils.js";
+import { resolveMessageMember } from "../../../pluginUtils.js";
+import { resolveRoleId } from "../../../utils.js";
 import { LogsPlugin } from "../../Logs/LogsPlugin.js";
-import { RoleManagerPlugin } from "../../RoleManager/RoleManagerPlugin.js";
 import { rolesCmd } from "../types.js";
+import { actualMassRemoveRoleCmd } from "./actualMassRemoveRoleCmd.js";
 
 export const MassRemoveRoleCmd = rolesCmd({
   trigger: "massremoverole",
-  usage: "!massremoverole <role> [userId1] [userId2] ...",
+  usage: "!massremoverole <role> [user] [user] ...",
   permission: "can_mass_assign",
 
   signature: {
@@ -18,27 +16,7 @@ export const MassRemoveRoleCmd = rolesCmd({
   },
 
   async run({ message: msg, args, pluginData }) {
-    msg.channel.send(`Resolving members...`);
-
     const authorMember = await resolveMessageMember(msg);
-
-    const members: GuildMember[] = [];
-    const unknownMembers: string[] = [];
-    for (const memberId of args.members) {
-      const member = await resolveMember(pluginData.client, pluginData.guild, memberId);
-      if (member) members.push(member);
-      else unknownMembers.push(memberId);
-    }
-
-    for (const member of members) {
-      if (!canActOn(pluginData, authorMember, member, true)) {
-        void pluginData.state.common.sendErrorMessage(
-          msg,
-          "Cannot remove roles from 1 or more specified members: insufficient permissions",
-        );
-        return;
-      }
-    }
 
     const roleId = await resolveRoleId(pluginData.client, pluginData.guild.id, args.role);
     if (!roleId) {
@@ -61,45 +39,6 @@ export const MassRemoveRoleCmd = rolesCmd({
       return;
     }
 
-    const membersWithTheRole = members.filter((m) => m.roles.cache.has(roleId));
-    let assigned = 0;
-    const failed: string[] = [];
-    const didNotHaveRole = members.length - membersWithTheRole.length;
-
-    msg.channel.send(
-      `Removing role **${role.name}** from ${membersWithTheRole.length} ${
-        membersWithTheRole.length === 1 ? "member" : "members"
-      }...`,
-    );
-
-    for (const member of membersWithTheRole) {
-      try {
-        await pluginData.getPlugin(RoleManagerPlugin).removeRole(member.id, roleId);
-        pluginData.getPlugin(LogsPlugin).logMemberRoleRemove({
-          member,
-          roles: [role],
-          mod: msg.author,
-        });
-        assigned++;
-      } catch (e) {
-        logger.warn(`Error when removing role via !massremoverole: ${e.message}`);
-        failed.push(member.id);
-      }
-    }
-
-    let resultMessage = `Removed role **${role.name}** from ${assigned} ${assigned === 1 ? "member" : "members"}!`;
-    if (didNotHaveRole) {
-      resultMessage += ` ${didNotHaveRole} ${didNotHaveRole === 1 ? "member" : "members"} didn't have the role.`;
-    }
-
-    if (failed.length) {
-      resultMessage += `\nFailed to remove the role from the following members: ${failed.join(", ")}`;
-    }
-
-    if (unknownMembers.length) {
-      resultMessage += `\nUnknown members: ${unknownMembers.join(", ")}`;
-    }
-
-    msg.channel.send(successMessage(resultMessage));
+    await actualMassRemoveRoleCmd(pluginData, msg, authorMember, msg.author, role, args.members);
   },
 });

@@ -1,15 +1,11 @@
-import { guildPluginMessageCommand } from "vety";
-import { AutomodPluginType } from "../types.js";
+import { automodMsgCmd } from "../types.js";
+import { actualViewAntiraidCmd } from "./actualViewAntiraidCmd.js";
 
-export const ViewAntiraidCmd = guildPluginMessageCommand<AutomodPluginType>()({
+export const ViewAntiraidCmd = automodMsgCmd({
   trigger: "antiraid",
   permission: "can_view_antiraid",
 
   async run({ pluginData, message }) {
-    if (pluginData.state.cachedAntiraidLevel) {
-      message.channel.send(`Anti-raid is set to **${pluginData.state.cachedAntiraidLevel}**`);
-    } else {
-      message.channel.send(`Anti-raid is **off**`);
-    }
+    await actualViewAntiraidCmd(pluginData, message);
   },
 });

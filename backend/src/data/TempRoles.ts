@@ -17,4 +17,14 @@ export class TempRoles extends BaseRepository {
     const thresholdDateStr = moment.utc().add(threshold, "ms").format(DBDateFormat);
     return this.tempRoles.createQueryBuilder().where("expires_at <= :date", { date: thresholdDateStr }).getMany();
   }
+
+  findTempRole(guildId: string, userId: string, roleId: string): Promise<TempRole | null> {
+    return this.tempRoles.findOne({
+      where: {
+        guild_id: guildId,
+        user_id: userId,
+        role_id: roleId,
+      },
+    });
+  }
 }

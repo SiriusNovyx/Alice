@@ -1,5 +1,12 @@
 import { GuildMember, GuildTextBasedChannel, PartialGuildMember, ThreadChannel, User } from "discord.js";
-import { BasePluginType, CooldownManager, pluginUtils } from "vety";
+import {
+  BasePluginType,
+  CooldownManager,
+  guildPluginMessageCommand,
+  guildPluginSlashCommand,
+  guildPluginSlashGroup,
+  pluginUtils,
+} from "vety";
 import { z } from "zod";
 import { Queue } from "../../Queue.js";
 import { RegExpRunner } from "../../RegExpRunner.js";
@@ -184,3 +191,7 @@ export interface RecentSpam {
   identifiers: string[];
   timestamp: number;
 }
+
+export const automodMsgCmd = guildPluginMessageCommand<AutomodPluginType>();
+export const automodSlashGroup = guildPluginSlashGroup<AutomodPluginType>();
+export const automodSlashCmd = guildPluginSlashCommand<AutomodPluginType>();

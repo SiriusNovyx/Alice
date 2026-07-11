@@ -66,7 +66,7 @@ export const ForceUnmuteMsgCmd = modActionsMsgCmd({
       ppId = msg.author.id;
     }
 
-    actualUnmuteCmd(
+    await actualUnmuteCmd(
       pluginData,
       msg,
       user,

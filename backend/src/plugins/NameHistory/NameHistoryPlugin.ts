@@ -4,6 +4,7 @@ import { GuildNicknameHistory } from "../../data/GuildNicknameHistory.js";
 import { UsernameHistory } from "../../data/UsernameHistory.js";
 import { CommonPlugin } from "../Common/CommonPlugin.js";
 import { NamesCmd } from "./commands/NamesCmd.js";
+import { NamesSlashCmd } from "./commands/NamesSlashCmd.js";
 import { NameHistoryPluginType, zNameHistoryConfig } from "./types.js";
 
 export const NameHistoryPlugin = guildPlugin<NameHistoryPluginType>()({
@@ -23,6 +24,8 @@ export const NameHistoryPlugin = guildPlugin<NameHistoryPluginType>()({
   messageCommands: [
     NamesCmd,
   ],
+
+  slashCommands: [NamesSlashCmd],
 
   // prettier-ignore
   events: [

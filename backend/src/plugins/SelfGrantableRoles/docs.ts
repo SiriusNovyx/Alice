@@ -6,7 +6,8 @@ export const selfGrantableRolesPluginDocs: ZeppelinPluginDocs = {
   type: "stable",
   prettyName: "Self-grantable roles",
   description: trimPluginDescription(`
-          Allows users to grant themselves roles via a command
+          Allows users to grant themselves roles via a command.
+          Slash commands live under \`/srole\`.
       `),
   configurationGuide: trimPluginDescription(`
     ### Basic configuration

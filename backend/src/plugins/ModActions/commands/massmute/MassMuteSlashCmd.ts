@@ -13,7 +13,7 @@ const opts = [
   }),
 ];
 
-export const MassMuteSlashSlashCmd = modActionsSlashCmd({
+export const MassMuteSlashCmd = modActionsSlashCmd({
   name: "massmute",
   configPermission: "can_massmute",
   description: "Mass-mute a list of user IDs",
@@ -35,7 +35,7 @@ export const MassMuteSlashSlashCmd = modActionsSlashCmd({
       return;
     }
 
-    actualMassMuteCmd(
+    await actualMassMuteCmd(
       pluginData,
       interaction,
       options["user-ids"].split(/\D+/),

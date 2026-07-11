@@ -1,9 +1,15 @@
-import { GuildTextBasedChannel, Message } from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  GuildTextBasedChannel,
+  Message,
+  User,
+} from "discord.js";
 import { GuildPluginData } from "vety";
 import moment from "moment-timezone";
 import { registerUpcomingScheduledPost } from "../../../data/loops/upcomingScheduledPostsLoop.js";
 import { humanizeDuration } from "../../../humanizeDuration.js";
-import { DBDateFormat, MINUTES, StrictMessageContent, errorMessage, renderUsername } from "../../../utils.js";
+import { isContextMessage } from "../../../pluginUtils.js";
+import { DBDateFormat, MINUTES, StrictMessageContent, renderUsername } from "../../../utils.js";
 import { LogsPlugin } from "../../Logs/LogsPlugin.js";
 import { TimeAndDatePlugin } from "../../TimeAndDate/TimeAndDatePlugin.js";
 import { PostPluginType } from "../types.js";
@@ -16,7 +22,8 @@ const MAX_REPEAT_UNTIL = moment.utc().add(100, "years");
 
 export async function actualPostCmd(
   pluginData: GuildPluginData<PostPluginType>,
-  msg: Message,
+  context: Message | ChatInputCommandInteraction,
+  author: User,
   targetChannel: GuildTextBasedChannel,
   content: StrictMessageContent,
   opts: {
@@ -28,65 +35,63 @@ export async function actualPostCmd(
   } = {},
 ) {
   if (!targetChannel.isSendable()) {
-    msg.reply(errorMessage("Specified channel is not a sendable channel"));
+    await pluginData.state.common.sendErrorMessage(context, "Specified channel is not a sendable channel");
     return;
   }
 
-  if (content == null && msg.attachments.size === 0) {
-    msg.reply(errorMessage("Message content or attachment required"));
+  const attachments = isContextMessage(context) ? [...context.attachments.values()] : [];
+
+  if (content == null && attachments.length === 0) {
+    await pluginData.state.common.sendErrorMessage(context, "Message content or attachment required");
     return;
   }
 
   if (opts.repeat) {
     if (opts.repeat < MIN_REPEAT_TIME) {
-      void pluginData.state.common.sendErrorMessage(
-        msg,
+      await pluginData.state.common.sendErrorMessage(
+        context,
         `Minimum time for -repeat is ${humanizeDuration(MIN_REPEAT_TIME)}`,
       );
       return;
     }
     if (opts.repeat > MAX_REPEAT_TIME) {
-      void pluginData.state.common.sendErrorMessage(
-        msg,
+      await pluginData.state.common.sendErrorMessage(
+        context,
         `Max time for -repeat is ${humanizeDuration(MAX_REPEAT_TIME)}`,
       );
       return;
     }
   }
 
-  // If this is a scheduled or repeated post, figure out the next post date
   let postAt;
   if (opts.schedule) {
-    // Schedule the post to be posted later
-    postAt = await parseScheduleTime(pluginData, msg.author.id, opts.schedule);
+    postAt = await parseScheduleTime(pluginData, author.id, opts.schedule);
     if (!postAt) {
-      void pluginData.state.common.sendErrorMessage(msg, "Invalid schedule time");
+      await pluginData.state.common.sendErrorMessage(context, "Invalid schedule time");
       return;
     }
   } else if (opts.repeat) {
     postAt = moment.utc().add(opts.repeat, "ms");
   }
 
-  // For repeated posts, make sure repeat-until or repeat-times is specified
   let repeatUntil: moment.Moment | null = null;
   let repeatTimes: number | null = null;
   let repeatDetailsStr: string | null = null;
 
   if (opts["repeat-until"]) {
-    repeatUntil = await parseScheduleTime(pluginData, msg.author.id, opts["repeat-until"]);
+    repeatUntil = await parseScheduleTime(pluginData, author.id, opts["repeat-until"]);
 
-    // Invalid time
     if (!repeatUntil) {
-      void pluginData.state.common.sendErrorMessage(msg, "Invalid time specified for -repeat-until");
+      await pluginData.state.common.sendErrorMessage(context, "Invalid time specified for -repeat-until");
       return;
     }
     if (repeatUntil.isBefore(moment.utc())) {
-      void pluginData.state.common.sendErrorMessage(msg, "You can't set -repeat-until in the past");
+      await pluginData.state.common.sendErrorMessage(context, "You can't set -repeat-until in the past");
       return;
     }
     if (repeatUntil.isAfter(MAX_REPEAT_UNTIL)) {
-      void pluginData.state.common.sendErrorMessage(
-        msg,
+      await pluginData.state.common.sendErrorMessage(
+        context,
         "Unfortunately, -repeat-until can only be at most 100 years into the future. Maybe 99 years would be enough?",
       );
       return;
@@ -94,22 +99,22 @@ export async function actualPostCmd(
   } else if (opts["repeat-times"]) {
     repeatTimes = opts["repeat-times"];
     if (repeatTimes <= 0) {
-      void pluginData.state.common.sendErrorMessage(msg, "-repeat-times must be 1 or more");
+      await pluginData.state.common.sendErrorMessage(context, "-repeat-times must be 1 or more");
       return;
     }
   }
 
   if (repeatUntil && repeatTimes) {
-    void pluginData.state.common.sendErrorMessage(
-      msg,
+    await pluginData.state.common.sendErrorMessage(
+      context,
       "You can only use one of -repeat-until or -repeat-times at once",
     );
     return;
   }
 
   if (opts.repeat && !repeatUntil && !repeatTimes) {
-    void pluginData.state.common.sendErrorMessage(
-      msg,
+    await pluginData.state.common.sendErrorMessage(
+      context,
       "You must specify -repeat-until or -repeat-times for repeated messages",
     );
     return;
@@ -123,19 +128,18 @@ export async function actualPostCmd(
 
   const timeAndDate = pluginData.getPlugin(TimeAndDatePlugin);
 
-  // Save schedule/repeat information in DB
   if (postAt) {
     if (postAt < moment.utc()) {
-      void pluginData.state.common.sendErrorMessage(msg, "Post can't be scheduled to be posted in the past");
+      await pluginData.state.common.sendErrorMessage(context, "Post can't be scheduled to be posted in the past");
       return;
     }
 
     const post = await pluginData.state.scheduledPosts.create({
-      author_id: msg.author.id,
-      author_name: renderUsername(msg.author),
+      author_id: author.id,
+      author_name: renderUsername(author),
       channel_id: targetChannel.id,
       content,
-      attachments: [...msg.attachments.values()],
+      attachments,
       post_at: postAt.clone().tz("Etc/UTC").format(DBDateFormat),
       enable_mentions: opts["enable-mentions"],
       repeat_interval: opts.repeat,
@@ -146,7 +150,7 @@ export async function actualPostCmd(
 
     if (opts.repeat) {
       pluginData.getPlugin(LogsPlugin).logScheduledRepeatedMessage({
-        author: msg.author,
+        author,
         channel: targetChannel,
         datetime: postAt.format(timeAndDate.getDateFormat("pretty_datetime")),
         date: postAt.format(timeAndDate.getDateFormat("date")),
@@ -156,7 +160,7 @@ export async function actualPostCmd(
       });
     } else {
       pluginData.getPlugin(LogsPlugin).logScheduledMessage({
-        author: msg.author,
+        author,
         channel: targetChannel,
         datetime: postAt.format(timeAndDate.getDateFormat("pretty_datetime")),
         date: postAt.format(timeAndDate.getDateFormat("date")),
@@ -165,14 +169,13 @@ export async function actualPostCmd(
     }
   }
 
-  // When the message isn't scheduled for later, post it immediately
   if (!opts.schedule) {
-    await postMessage(pluginData, targetChannel, content, [...msg.attachments.values()], opts["enable-mentions"]);
+    await postMessage(pluginData, targetChannel, content, attachments, opts["enable-mentions"]);
   }
 
   if (opts.repeat) {
     pluginData.getPlugin(LogsPlugin).logRepeatedMessage({
-      author: msg.author,
+      author,
       channel: targetChannel,
       datetime: postAt.format(timeAndDate.getDateFormat("pretty_datetime")),
       date: postAt.format(timeAndDate.getDateFormat("date")),
@@ -182,7 +185,6 @@ export async function actualPostCmd(
     });
   }
 
-  // Bot reply schenanigans
   let successMessage = opts.schedule
     ? `Message scheduled to be posted in <#${targetChannel.id}> on ${postAt.format(
         timeAndDate.getDateFormat("pretty_datetime"),
@@ -201,7 +203,9 @@ export async function actualPostCmd(
     successMessage += ".";
   }
 
-  if (targetChannel.id !== msg.channel.id || opts.schedule || opts.repeat) {
-    void pluginData.state.common.sendSuccessMessage(msg, successMessage);
+  if (targetChannel.id !== context.channelId || opts.schedule || opts.repeat) {
+    await pluginData.state.common.sendSuccessMessage(context, successMessage);
+  } else if (!isContextMessage(context)) {
+    await pluginData.state.common.sendSuccessMessage(context, successMessage);
   }
 }

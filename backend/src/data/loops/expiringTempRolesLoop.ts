@@ -1,7 +1,7 @@
 // tslint:disable:no-console
 
 import moment from "moment-timezone";
-import { lazyMemoize, MINUTES } from "../../utils.js";
+import { lazyMemoize, MINUTES, SECONDS } from "../../utils.js";
 import { TempRole } from "../entities/TempRole.js";
 import { emitGuildEvent, hasGuildEventListener } from "../GuildEvents.js";
 import { TempRoles } from "../TempRoles.js";
@@ -16,12 +16,22 @@ function tempRoleToKey(tempRole: TempRole) {
   return `${tempRole.guild_id}/${tempRole.user_id}/${tempRole.role_id}`;
 }
 
-function broadcastExpiredTempRole(tempRole: TempRole, tries = 0) {
+async function broadcastExpiredTempRole(guildId: string, userId: string, roleId: string, tries = 0): Promise<void> {
+  const tempRole = await getTempRolesRepository().findTempRole(guildId, userId, roleId);
+  if (!tempRole) {
+    // Temp role was already cleared
+    return;
+  }
+  if (!tempRole.expires_at || moment(tempRole.expires_at).diff(moment()) > 10 * SECONDS) {
+    // Duration was changed and it's no longer expiring now
+    return;
+  }
+
   if (!hasGuildEventListener(tempRole.guild_id, "expiredTempRole")) {
     if (tries < MAX_TRIES_PER_SERVER) {
       timeouts.set(
         tempRoleToKey(tempRole),
-        setTimeout(() => broadcastExpiredTempRole(tempRole, tries + 1), 1 * MINUTES),
+        setTimeout(() => broadcastExpiredTempRole(guildId, userId, roleId, tries + 1), 1 * MINUTES),
       );
     }
     return;
@@ -44,7 +54,10 @@ export async function runExpiringTempRolesLoop() {
     const remaining = Math.max(0, moment.utc(tempRole.expires_at!).diff(moment.utc()));
     timeouts.set(
       tempRoleToKey(tempRole),
-      setTimeout(() => broadcastExpiredTempRole(tempRole), remaining),
+      setTimeout(
+        () => broadcastExpiredTempRole(tempRole.guild_id, tempRole.user_id, tempRole.role_id),
+        remaining,
+      ),
     );
   }
 
@@ -63,7 +76,10 @@ export function registerExpiringTempRole(tempRole: TempRole) {
 
   timeouts.set(
     tempRoleToKey(tempRole),
-    setTimeout(() => broadcastExpiredTempRole(tempRole), remaining),
+    setTimeout(
+      () => broadcastExpiredTempRole(tempRole.guild_id, tempRole.user_id, tempRole.role_id),
+      remaining,
+    ),
   );
 }
 

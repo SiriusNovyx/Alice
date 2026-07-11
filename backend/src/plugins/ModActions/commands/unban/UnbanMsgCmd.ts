@@ -43,6 +43,6 @@ export const UnbanMsgCmd = modActionsMsgCmd({
       mod = args.mod;
     }
 
-    actualUnbanCmd(pluginData, msg, msg.author.id, user, args.reason, [...msg.attachments.values()], mod);
+    await actualUnbanCmd(pluginData, msg, msg.author.id, user, args.reason, [...msg.attachments.values()], mod);
   },
 });

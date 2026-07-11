@@ -1,9 +1,12 @@
 import { CooldownManager, guildPlugin } from "vety";
 import { CommonPlugin } from "../Common/CommonPlugin.js";
 import { RoleAddCmd } from "./commands/RoleAddCmd.js";
+import { RoleAddSlashCmd } from "./commands/RoleAddSlashCmd.js";
 import { RoleHelpCmd } from "./commands/RoleHelpCmd.js";
+import { RoleHelpSlashCmd } from "./commands/RoleHelpSlashCmd.js";
 import { RoleRemoveCmd } from "./commands/RoleRemoveCmd.js";
-import { SelfGrantableRolesPluginType, zSelfGrantableRolesConfig } from "./types.js";
+import { RoleRemoveSlashCmd } from "./commands/RoleRemoveSlashCmd.js";
+import { SelfGrantableRolesPluginType, selfGrantableRolesSlashGroup, zSelfGrantableRolesConfig } from "./types.js";
 
 export const SelfGrantableRolesPlugin = guildPlugin<SelfGrantableRolesPluginType>()({
   name: "self_grantable_roles",
@@ -15,6 +18,15 @@ export const SelfGrantableRolesPlugin = guildPlugin<SelfGrantableRolesPluginType
     RoleHelpCmd,
     RoleRemoveCmd,
     RoleAddCmd,
+  ],
+
+  slashCommands: [
+    selfGrantableRolesSlashGroup({
+      name: "srole",
+      description: "Self-grantable roles",
+      defaultMemberPermissions: "0",
+      subcommands: [RoleAddSlashCmd, RoleRemoveSlashCmd, RoleHelpSlashCmd],
+    }),
   ],
 
   beforeLoad(pluginData) {

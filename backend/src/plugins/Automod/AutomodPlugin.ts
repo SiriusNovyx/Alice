@@ -17,8 +17,13 @@ import { MutesPlugin } from "../Mutes/MutesPlugin.js";
 import { PhishermanPlugin } from "../Phisherman/PhishermanPlugin.js";
 import { RoleManagerPlugin } from "../RoleManager/RoleManagerPlugin.js";
 import { AntiraidClearCmd } from "./commands/AntiraidClearCmd.js";
+import { ClearAntiraidSlashCmd } from "./commands/ClearAntiraidSlashCmd.js";
+import { DebugAutomodCmd } from "./commands/DebugAutomodCmd.js";
+import { DebugAutomodSlashCmd } from "./commands/DebugAutomodSlashCmd.js";
 import { SetAntiraidCmd } from "./commands/SetAntiraidCmd.js";
+import { SetAntiraidSlashCmd } from "./commands/SetAntiraidSlashCmd.js";
 import { ViewAntiraidCmd } from "./commands/ViewAntiraidCmd.js";
+import { ViewAntiraidSlashCmd } from "./commands/ViewAntiraidSlashCmd.js";
 import { RunAutomodOnJoinEvt, RunAutomodOnLeaveEvt } from "./events/RunAutomodOnJoinLeaveEvt.js";
 import { RunAutomodOnMemberUpdate } from "./events/RunAutomodOnMemberUpdate.js";
 import { runAutomodOnCounterTrigger } from "./events/runAutomodOnCounterTrigger.js";
@@ -32,8 +37,7 @@ import {
 import { clearOldRecentNicknameChanges } from "./functions/clearOldNicknameChanges.js";
 import { clearOldRecentActions } from "./functions/clearOldRecentActions.js";
 import { clearOldRecentSpam } from "./functions/clearOldRecentSpam.js";
-import { AutomodPluginType, zAutomodConfig } from "./types.js";
-import { DebugAutomodCmd } from "./commands/DebugAutomodCmd.js";
+import { AutomodPluginType, automodSlashGroup, zAutomodConfig } from "./types.js";
 
 export const AutomodPlugin = guildPlugin<AutomodPluginType>()({
   name: "automod",
@@ -69,6 +73,15 @@ export const AutomodPlugin = guildPlugin<AutomodPluginType>()({
   ],
 
   messageCommands: [AntiraidClearCmd, SetAntiraidCmd, ViewAntiraidCmd, DebugAutomodCmd],
+
+  slashCommands: [
+    automodSlashGroup({
+      name: "antiraid",
+      description: "Anti-raid and automod tools",
+      defaultMemberPermissions: "0",
+      subcommands: [SetAntiraidSlashCmd, ViewAntiraidSlashCmd, ClearAntiraidSlashCmd, DebugAutomodSlashCmd],
+    }),
+  ],
 
   async beforeLoad(pluginData) {
     const { state, guild } = pluginData;

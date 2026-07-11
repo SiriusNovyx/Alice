@@ -4,9 +4,11 @@ import { GuildSavedMessages } from "../../data/GuildSavedMessages.js";
 import { CommonPlugin } from "../Common/CommonPlugin.js";
 import { LogsPlugin } from "../Logs/LogsPlugin.js";
 import { DisableAutoReactionsCmd } from "./commands/DisableAutoReactionsCmd.js";
+import { DisableAutoReactionsSlashCmd } from "./commands/DisableAutoReactionsSlashCmd.js";
 import { NewAutoReactionsCmd } from "./commands/NewAutoReactionsCmd.js";
+import { NewAutoReactionsSlashCmd } from "./commands/NewAutoReactionsSlashCmd.js";
 import { AddReactionsEvt } from "./events/AddReactionsEvt.js";
-import { AutoReactionsPluginType, zAutoReactionsConfig } from "./types.js";
+import { AutoReactionsPluginType, autoReactionsSlashGroup, zAutoReactionsConfig } from "./types.js";
 
 const defaultOverrides: Array<PluginOverride<AutoReactionsPluginType>> = [
   {
@@ -32,6 +34,15 @@ export const AutoReactionsPlugin = guildPlugin<AutoReactionsPluginType>()({
   messageCommands: [
     NewAutoReactionsCmd,
     DisableAutoReactionsCmd,
+  ],
+
+  slashCommands: [
+    autoReactionsSlashGroup({
+      name: "auto_reactions",
+      description: "Manage auto-reactions",
+      defaultMemberPermissions: "0",
+      subcommands: [NewAutoReactionsSlashCmd, DisableAutoReactionsSlashCmd],
+    }),
   ],
 
   // prettier-ignore

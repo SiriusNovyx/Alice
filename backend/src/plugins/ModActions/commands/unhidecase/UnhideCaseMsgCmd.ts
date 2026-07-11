@@ -14,6 +14,6 @@ export const UnhideCaseMsgCmd = modActionsMsgCmd({
   ],
 
   async run({ pluginData, message: msg, args }) {
-    actualUnhideCaseCmd(pluginData, msg, args.caseNum);
+    await actualUnhideCaseCmd(pluginData, msg, args.caseNum);
   },
 });

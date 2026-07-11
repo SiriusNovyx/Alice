@@ -1,5 +1,5 @@
-import { getGuildTz } from "../functions/getGuildTz.js";
 import { timeAndDateCmd } from "../types.js";
+import { actualViewTimezoneCmd } from "./actualViewTimezoneCmd.js";
 
 export const ViewTimezoneCmd = timeAndDateCmd({
   trigger: "timezone",
@@ -8,13 +8,6 @@ export const ViewTimezoneCmd = timeAndDateCmd({
   signature: {},
 
   async run({ pluginData, message }) {
-    const memberTimezone = await pluginData.state.memberTimezones.get(message.author.id);
-    if (memberTimezone) {
-      message.channel.send(`Your timezone is currently set to **${memberTimezone.timezone}**`);
-      return;
-    }
-
-    const serverTimezone = getGuildTz(pluginData);
-    message.channel.send(`Your timezone is currently set to **${serverTimezone}** (server default)`);
+    await actualViewTimezoneCmd(pluginData, message, message.author.id);
   },
 });

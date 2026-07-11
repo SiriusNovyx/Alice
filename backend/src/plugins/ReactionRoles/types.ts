@@ -1,4 +1,11 @@
-import { BasePluginType, guildPluginEventListener, guildPluginMessageCommand, pluginUtils } from "vety";
+import {
+  BasePluginType,
+  guildPluginEventListener,
+  guildPluginMessageCommand,
+  guildPluginSlashCommand,
+  guildPluginSlashGroup,
+  pluginUtils,
+} from "vety";
 import { z } from "zod";
 import { Queue } from "../../Queue.js";
 import { GuildReactionRoles } from "../../data/GuildReactionRoles.js";
@@ -46,4 +53,6 @@ export interface ReactionRolesPluginType extends BasePluginType {
 }
 
 export const reactionRolesCmd = guildPluginMessageCommand<ReactionRolesPluginType>();
+export const reactionRolesSlashGroup = guildPluginSlashGroup<ReactionRolesPluginType>();
+export const reactionRolesSlashCmd = guildPluginSlashCommand<ReactionRolesPluginType>();
 export const reactionRolesEvt = guildPluginEventListener<ReactionRolesPluginType>();

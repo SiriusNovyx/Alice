@@ -33,7 +33,7 @@ export async function actualForceBanCmd(
   pluginData.state.serverLogs.ignoreLog(LogType.MEMBER_BAN, user.id);
 
   try {
-    // FIXME: Use banUserId()?
+    // Intentionally not banUserId(): forceban uses separate logging and skips pre-ban DMs.
     await pluginData.guild.bans.create(user.id as Snowflake, {
       deleteMessageSeconds: (1 * DAYS) / MINUTES,
       reason: formattedReasonWithAttachments ?? undefined,

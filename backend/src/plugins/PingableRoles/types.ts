@@ -1,4 +1,11 @@
-import { BasePluginType, guildPluginEventListener, guildPluginMessageCommand, pluginUtils } from "vety";
+import {
+  BasePluginType,
+  guildPluginEventListener,
+  guildPluginMessageCommand,
+  guildPluginSlashCommand,
+  guildPluginSlashGroup,
+  pluginUtils,
+} from "vety";
 import { z } from "zod";
 import { GuildPingableRoles } from "../../data/GuildPingableRoles.js";
 import { PingableRole } from "../../data/entities/PingableRole.js";
@@ -19,4 +26,6 @@ export interface PingableRolesPluginType extends BasePluginType {
 }
 
 export const pingableRolesCmd = guildPluginMessageCommand<PingableRolesPluginType>();
+export const pingableRolesSlashGroup = guildPluginSlashGroup<PingableRolesPluginType>();
+export const pingableRolesSlashCmd = guildPluginSlashCommand<PingableRolesPluginType>();
 export const pingableRolesEvt = guildPluginEventListener<PingableRolesPluginType>();

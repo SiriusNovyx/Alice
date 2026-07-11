@@ -1,11 +1,7 @@
 import { slashOptions } from "vety";
-import { registerExpiringTempRole } from "../../../data/loops/expiringTempRolesLoop.js";
-import { humanizeDuration } from "../../../humanizeDuration.js";
-import { canActOn } from "../../../pluginUtils.js";
-import { convertDelayStringToMS, verboseUserMention } from "../../../utils.js";
-import { LogsPlugin } from "../../Logs/LogsPlugin.js";
-import { RoleManagerPlugin } from "../../RoleManager/RoleManagerPlugin.js";
+import { parseSlashDelay } from "../../../utils.js";
 import { rolesSlashCmd } from "../types.js";
+import { actualAddTempRoleCmd } from "./actualAddTempRoleCmd.js";
 
 export const AddTempRoleSlashCmd = rolesSlashCmd({
   name: "temprole",
@@ -35,7 +31,7 @@ export const AddTempRoleSlashCmd = rolesSlashCmd({
       return;
     }
 
-    const convertedTime = convertDelayStringToMS(options.time);
+    const convertedTime = parseSlashDelay(options.time);
     if (!convertedTime) {
       pluginData.state.common.sendErrorMessage(interaction, `Could not convert ${options.time} to a delay`);
       return;
@@ -50,49 +46,21 @@ export const AddTempRoleSlashCmd = rolesSlashCmd({
       return;
     }
 
-    if (!canActOn(pluginData, modMember, member, true)) {
-      pluginData.state.common.sendErrorMessage(interaction, "Cannot add roles to this user: insufficient permissions");
+    const role = pluginData.guild.roles.cache.get(options.role.id);
+    if (!role) {
+      pluginData.state.common.sendErrorMessage(interaction, "You cannot assign that role");
       return;
     }
 
-    const existingTempRole = await pluginData.state.tempRoles.findExistingTempRoleForUserIdAndRoleId(
-      member.id,
-      options.role.id,
-    );
-
-    let tempRole;
-    if (existingTempRole) {
-      await pluginData.state.tempRoles.updateExpiryTime(member.id, options.role.id, convertedTime, interaction.user.id);
-      tempRole = (await pluginData.state.tempRoles.findExistingTempRoleForUserIdAndRoleId(
-        member.id,
-        options.role.id,
-      ))!;
-    } else {
-      tempRole = await pluginData.state.tempRoles.addTempRole(
-        member.id,
-        options.role.id,
-        convertedTime,
-        interaction.user.id,
-      );
-    }
-
-    if (!member.roles.cache.has(options.role.id)) {
-      await pluginData.getPlugin(RoleManagerPlugin).addRole(member.id, options.role.id);
-    }
-
-    registerExpiringTempRole(tempRole);
-
-    pluginData.getPlugin(LogsPlugin).logMemberTimedRoleAdd({
-      mod: interaction.user,
-      member,
-      roles: [options.role],
-      time: humanizeDuration(convertedTime),
-      reason: options.reason ?? "",
-    });
-
-    pluginData.state.common.sendSuccessMessage(
+    await actualAddTempRoleCmd(
+      pluginData,
       interaction,
-      `Added role **${options.role.name}** to ${verboseUserMention(member.user)} for **${humanizeDuration(convertedTime)}**!`,
+      modMember,
+      interaction.user,
+      member,
+      role,
+      convertedTime,
+      options.reason,
     );
   },
 });

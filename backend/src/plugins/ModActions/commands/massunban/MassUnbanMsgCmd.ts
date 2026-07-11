@@ -8,7 +8,7 @@ export const MassUnbanMsgCmd = modActionsMsgCmd({
   trigger: "massunban",
   permission: "can_massunban",
   description: "Mass-unban a list of user IDs",
-  usage: "!massunban <userId> [userId2] ... (bot will prompt for reason)",
+  usage: "!massunban <user> [user] ... (bot will prompt for reason)",
 
   signature: [
     {
@@ -26,7 +26,7 @@ export const MassUnbanMsgCmd = modActionsMsgCmd({
     }
 
     const member = await resolveMessageMember(msg);
-    actualMassUnbanCmd(pluginData, msg, args.userIds, member, unbanReasonReply.content, [
+    await actualMassUnbanCmd(pluginData, msg, args.userIds, member, unbanReasonReply.content, [
       ...unbanReasonReply.attachments.values(),
     ]);
   },

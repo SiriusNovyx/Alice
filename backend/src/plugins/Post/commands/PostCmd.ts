@@ -18,6 +18,6 @@ export const PostCmd = postCmd({
   },
 
   async run({ message: msg, args, pluginData }) {
-    actualPostCmd(pluginData, msg, args.channel, { content: args.content }, args);
+    await actualPostCmd(pluginData, msg, msg.author, args.channel, { content: args.content }, args);
   },
 });

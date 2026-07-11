@@ -8,6 +8,7 @@ export const autoReactionsPluginDocs: ZeppelinPluginDocs = {
 
   prettyName: "Auto-reactions",
   description: trimPluginDescription(`
-    Allows setting up automatic reactions to all new messages on a channel
+    Allows setting up automatic reactions to all new messages on a channel.
+    Slash commands live under \`/auto_reactions\`.
   `),
 };

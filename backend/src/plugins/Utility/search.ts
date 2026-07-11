@@ -2,19 +2,21 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  ChatInputCommandInteraction,
   GuildMember,
   Message,
   MessageComponentInteraction,
   OmitPartialGroupDMChannel,
   PermissionsBitField,
   Snowflake,
+  TextBasedChannel,
   User,
 } from "discord.js";
 import escapeStringRegexp from "escape-string-regexp";
 import { ArgsFromSignatureOrArray, GuildPluginData } from "vety";
 import moment from "moment-timezone";
 import { RegExpRunner, allowTimeout } from "../../RegExpRunner.js";
-import { getBaseUrl } from "../../pluginUtils.js";
+import { getBaseUrl, isContextInteraction } from "../../pluginUtils.js";
 import {
   InvalidRegexError,
   MINUTES,
@@ -70,23 +72,37 @@ function getOptimizedRegExpRunner(pluginData: GuildPluginData<UtilityPluginType>
   return pluginData.state.regexRunner.exec.bind(pluginData.state.regexRunner);
 }
 
+type SearchContext = OmitPartialGroupDMChannel<Message> | ChatInputCommandInteraction;
+
+function getSearchAuthor(context: SearchContext): User {
+  return isContextInteraction(context) ? context.user : context.author;
+}
+
+function getSearchChannel(context: SearchContext): TextBasedChannel & { send: (...args: any[]) => Promise<Message> } {
+  const channel = context.channel;
+  if (!channel || !("send" in channel) || typeof channel.send !== "function") {
+    throw new Error("Search requires a sendable channel");
+  }
+  return channel as TextBasedChannel & { send: (...args: any[]) => Promise<Message> };
+}
+
 export async function displaySearch(
   pluginData: GuildPluginData<UtilityPluginType>,
   args: MemberSearchParams,
   searchType: SearchType.MemberSearch,
-  msg: OmitPartialGroupDMChannel<Message>,
+  msg: SearchContext,
 );
 export async function displaySearch(
   pluginData: GuildPluginData<UtilityPluginType>,
   args: BanSearchParams,
   searchType: SearchType.BanSearch,
-  msg: OmitPartialGroupDMChannel<Message>,
+  msg: SearchContext,
 );
 export async function displaySearch(
   pluginData: GuildPluginData<UtilityPluginType>,
   args: MemberSearchParams | BanSearchParams,
   searchType: SearchType,
-  msg: OmitPartialGroupDMChannel<Message>,
+  msg: SearchContext,
 ) {
   // If we're not exporting, load 1 page of search results at a time and allow the user to switch pages with reactions
   let originalSearchMsg: OmitPartialGroupDMChannel<Message>;
@@ -96,6 +112,8 @@ export async function displaySearch(
   let stopCollectionTimeout: Timeout;
 
   const perPage = args.ids ? SEARCH_ID_RESULTS_PER_PAGE : SEARCH_RESULTS_PER_PAGE;
+  const author = getSearchAuthor(msg);
+  const channel = getSearchChannel(msg);
 
   const loadSearchPage = async (page) => {
     if (searching) return;
@@ -107,7 +125,7 @@ export async function displaySearch(
     if (originalSearchMsg) {
       searchMsgPromise = originalSearchMsg.edit("Searching...");
     } else {
-      searchMsgPromise = msg.channel.send("Searching...");
+      searchMsgPromise = channel.send("Searching...");
       searchMsgPromise.then((m) => (originalSearchMsg = m as OmitPartialGroupDMChannel<Message>));
     }
 
@@ -161,12 +179,15 @@ export async function displaySearch(
 
     const searchMsg = await searchMsgPromise;
 
-    const cfg = await pluginData.config.getForUser(msg.author);
+    const cfg = await pluginData.config.getForUser(author);
     if (cfg.info_on_single_result && searchResult.totalResults === 1) {
       const embed = await getUserInfoEmbed(pluginData, searchResult.results[0].id, false);
       if (embed) {
         searchMsg.edit("Only one result:");
-        msg.channel.send({ embeds: [embed] });
+        channel.send({ embeds: [embed] });
+        if (isContextInteraction(msg) && msg.deferred) {
+          await msg.editReply("Posted search result in channel.");
+        }
         return;
       }
     }
@@ -196,7 +217,7 @@ export async function displaySearch(
       const collector = searchMsg.createMessageComponentCollector({ time: 2 * MINUTES });
 
       collector.on("collect", async (interaction: MessageComponentInteraction) => {
-        if (msg.author.id !== interaction.user.id) {
+        if (author.id !== interaction.user.id) {
           interaction
             .reply({ content: `You are not permitted to use these buttons.`, ephemeral: true })
             // tslint:disable-next-line no-console
@@ -231,6 +252,10 @@ export async function displaySearch(
       searchMsg.edit(result);
     }
 
+    if (isContextInteraction(msg) && msg.deferred && page === (args.page || 1)) {
+      await msg.editReply("Search results posted in channel.");
+    }
+
     searching = false;
   };
 
@@ -241,19 +266,19 @@ export async function archiveSearch(
   pluginData: GuildPluginData<UtilityPluginType>,
   args: MemberSearchParams,
   searchType: SearchType.MemberSearch,
-  msg: OmitPartialGroupDMChannel<Message>,
+  msg: SearchContext,
 );
 export async function archiveSearch(
   pluginData: GuildPluginData<UtilityPluginType>,
   args: BanSearchParams,
   searchType: SearchType.BanSearch,
-  msg: OmitPartialGroupDMChannel<Message>,
+  msg: SearchContext,
 );
 export async function archiveSearch(
   pluginData: GuildPluginData<UtilityPluginType>,
   args: MemberSearchParams | BanSearchParams,
   searchType: SearchType,
-  msg: OmitPartialGroupDMChannel<Message>,
+  msg: SearchContext,
 ) {
   let results;
   try {
@@ -297,8 +322,13 @@ export async function archiveSearch(
 
   const baseUrl = getBaseUrl(pluginData);
   const url = await pluginData.state.archives.getUrl(baseUrl, archiveId);
+  const exportMsg = `Exported search results: ${url}`;
 
-  await msg.channel.send(`Exported search results: ${url}`);
+  if (isContextInteraction(msg)) {
+    await msg.editReply(exportMsg);
+  } else {
+    await msg.channel.send(exportMsg);
+  }
 }
 
 async function performMemberSearch(

@@ -1,7 +1,7 @@
 import { ChannelType, GuildMember } from "discord.js";
 import { slashOptions } from "vety";
 import { hasPermission } from "../../../../pluginUtils.js";
-import { UserNotificationMethod, convertDelayStringToMS, resolveMember } from "../../../../utils.js";
+import { UserNotificationMethod, parseSlashDelay, resolveMember } from "../../../../utils.js";
 import { generateAttachmentSlashOptions, retrieveMultipleOptions } from "../../../../utils/multipleSlashOptions.js";
 import { readContactMethodsFromArgs } from "../../functions/readContactMethodsFromArgs.js";
 import { modActionsSlashCmd } from "../../types.js";
@@ -73,13 +73,13 @@ export const BanSlashCmd = modActionsSlashCmd({
       return;
     }
 
-    const convertedTime = options.time ? convertDelayStringToMS(options.time) : null;
+    const convertedTime = options.time ? parseSlashDelay(options.time) : null;
     if (options.time && !convertedTime) {
       pluginData.state.common.sendErrorMessage(interaction, `Could not convert ${options.time} to a delay`);
       return;
     }
 
-    actualBanCmd(
+    await actualBanCmd(
       pluginData,
       interaction,
       options.user,

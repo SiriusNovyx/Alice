@@ -1,11 +1,11 @@
 import { commandTypeHelpers as ct } from "../../../commandTypes.js";
-import { getChannelInfoEmbed } from "../functions/getChannelInfoEmbed.js";
 import { utilityCmd } from "../types.js";
+import { actualChannelInfoCmd } from "./actualInfoCmds.js";
 
 export const ChannelInfoCmd = utilityCmd({
   trigger: ["channel", "channelinfo"],
   description: "Show information about a channel",
-  usage: "!channel 534722016549404673",
+  usage: "!channel <channel>",
   permission: "can_channelinfo",
 
   signature: {
@@ -13,12 +13,6 @@ export const ChannelInfoCmd = utilityCmd({
   },
 
   async run({ message, args, pluginData }) {
-    const embed = await getChannelInfoEmbed(pluginData, args.channel);
-    if (!embed) {
-      void pluginData.state.common.sendErrorMessage(message, "Unknown channel");
-      return;
-    }
-
-    message.channel.send({ embeds: [embed] });
+    await actualChannelInfoCmd(pluginData, message, args.channel);
   },
 });

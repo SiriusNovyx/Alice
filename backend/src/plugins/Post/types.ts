@@ -1,4 +1,10 @@
-import { BasePluginType, guildPluginMessageCommand, pluginUtils } from "vety";
+import {
+  BasePluginType,
+  guildPluginMessageCommand,
+  guildPluginSlashCommand,
+  guildPluginSlashGroup,
+  pluginUtils,
+} from "vety";
 import { z } from "zod";
 import { GuildLogs } from "../../data/GuildLogs.js";
 import { GuildSavedMessages } from "../../data/GuildSavedMessages.js";
@@ -22,3 +28,5 @@ export interface PostPluginType extends BasePluginType {
 }
 
 export const postCmd = guildPluginMessageCommand<PostPluginType>();
+export const postSlashGroup = guildPluginSlashGroup<PostPluginType>();
+export const postSlashCmd = guildPluginSlashCommand<PostPluginType>();

@@ -1,7 +1,7 @@
 import { ChannelType, GuildMember } from "discord.js";
 import { slashOptions } from "vety";
 import { hasPermission } from "../../../../pluginUtils.js";
-import { UserNotificationMethod, convertDelayStringToMS, resolveMember } from "../../../../utils.js";
+import { UserNotificationMethod, parseSlashDelay, resolveMember } from "../../../../utils.js";
 import { generateAttachmentSlashOptions, retrieveMultipleOptions } from "../../../../utils/multipleSlashOptions.js";
 import { readContactMethodsFromArgs } from "../../functions/readContactMethodsFromArgs.js";
 import { modActionsSlashCmd } from "../../types.js";
@@ -68,7 +68,7 @@ export const ForceMuteSlashCmd = modActionsSlashCmd({
       ppId = interaction.user.id;
     }
 
-    const convertedTime = options.time ? (convertDelayStringToMS(options.time) ?? undefined) : undefined;
+    const convertedTime = options.time ? (parseSlashDelay(options.time) ?? undefined) : undefined;
     if (options.time && !convertedTime) {
       pluginData.state.common.sendErrorMessage(interaction, `Could not convert ${options.time} to a delay`);
       return;
@@ -82,9 +82,10 @@ export const ForceMuteSlashCmd = modActionsSlashCmd({
       return;
     }
 
-    actualMuteCmd(
+    await actualMuteCmd(
       pluginData,
       interaction,
+      interaction.member as GuildMember,
       options.user,
       attachments,
       mod,

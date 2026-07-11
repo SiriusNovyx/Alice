@@ -1,4 +1,11 @@
-import { BasePluginType, CooldownManager, guildPluginMessageCommand, pluginUtils } from "vety";
+import {
+  BasePluginType,
+  CooldownManager,
+  guildPluginMessageCommand,
+  guildPluginSlashCommand,
+  guildPluginSlashGroup,
+  pluginUtils,
+} from "vety";
 import { z } from "zod";
 import { zBoundedCharacters, zBoundedRecord } from "../../utils.js";
 import { CommonPlugin } from "../Common/CommonPlugin.js";
@@ -33,3 +40,5 @@ export interface SelfGrantableRolesPluginType extends BasePluginType {
 }
 
 export const selfGrantableRolesCmd = guildPluginMessageCommand<SelfGrantableRolesPluginType>();
+export const selfGrantableRolesSlashGroup = guildPluginSlashGroup<SelfGrantableRolesPluginType>();
+export const selfGrantableRolesSlashCmd = guildPluginSlashCommand<SelfGrantableRolesPluginType>();

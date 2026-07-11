@@ -1,19 +1,11 @@
 import { ChannelType } from "discord.js";
 import { slashOptions } from "vety";
-import { humanizeDuration } from "../../../humanizeDuration.js";
-import { convertDelayStringToMS, DAYS, HOURS, MINUTES } from "../../../utils.js";
-import { getMissingChannelPermissions } from "../../../utils/getMissingChannelPermissions.js";
-import { missingPermissionError } from "../../../utils/missingPermissionError.js";
-import { BOT_SLOWMODE_PERMISSIONS, NATIVE_SLOWMODE_PERMISSIONS } from "../requiredPermissions.js";
-import { disableBotSlowmodeForChannel } from "../util/disableBotSlowmodeForChannel.js";
+import { parseSlashDelay } from "../../../utils.js";
 import { slowmodeSlashCmd } from "../types.js";
-
-const MAX_NATIVE_SLOWMODE = 6 * HOURS;
-const MAX_BOT_SLOWMODE = DAYS * 365 * 100;
-const MIN_BOT_SLOWMODE = 15 * MINUTES;
+import { actualSetSlowmodeCmd } from "../util/actualSetSlowmodeCmd.js";
 
 export const SlowmodeSetSlashCmd = slowmodeSlashCmd({
-  name: "slowmode",
+  name: "set",
   configPermission: "can_manage",
   description: "Set slowmode for a channel (use 0 to disable)",
   allowDms: false,
@@ -25,6 +17,15 @@ export const SlowmodeSetSlashCmd = slowmodeSlashCmd({
       description: "Channel to apply slowmode to (defaults to current)",
       channelTypes: [ChannelType.GuildText, ChannelType.GuildAnnouncement],
       required: false,
+    }),
+    slashOptions.string({
+      name: "mode",
+      description: "Slowmode mode",
+      required: false,
+      choices: [
+        { name: "bot", value: "bot" },
+        { name: "native", value: "native" },
+      ],
     }),
   ],
 
@@ -40,74 +41,12 @@ export const SlowmodeSetSlashCmd = slowmodeSlashCmd({
       return;
     }
 
-    const me = pluginData.guild.members.cache.get(pluginData.client.user!.id) ||
-      pluginData.guild.members.me ||
-      (await pluginData.guild.members.fetchMe());
-
-    const time = convertDelayStringToMS(options.time);
+    const time = parseSlashDelay(options.time);
     if (time === null) {
-      pluginData.state.common.sendErrorMessage(interaction, `Could not convert "${options.time}" to a duration`);
+      pluginData.state.common.sendErrorMessage(interaction, `Could not convert ${options.time} to a delay`);
       return;
     }
 
-    // If time is 0, disable slowmode inline
-    if (time === 0) {
-      const botSlowmode = await pluginData.state.slowmodes.getChannelSlowmode(channel.id);
-      const hasNativeSlowmode = channel.rateLimitPerUser;
-      if (!botSlowmode && !hasNativeSlowmode) {
-        pluginData.state.common.sendErrorMessage(interaction, "Channel is not on slowmode!");
-        return;
-      }
-      if (botSlowmode) await disableBotSlowmodeForChannel(pluginData, channel);
-      if (hasNativeSlowmode) await channel.edit({ rateLimitPerUser: 0 });
-      pluginData.state.common.sendSuccessMessage(interaction, "Slowmode disabled!");
-      return;
-    }
-
-    const config = await pluginData.config.getMatchingConfig({ channelId: channel.id });
-    const useNative = config.use_native_slowmode && time <= MAX_NATIVE_SLOWMODE;
-
-    if (useNative) {
-      const missingPerms = getMissingChannelPermissions(
-        me,
-        channel,
-        NATIVE_SLOWMODE_PERMISSIONS,
-      );
-      if (missingPerms) {
-        pluginData.state.common.sendErrorMessage(interaction, `Unable to set native slowmode. ${missingPermissionError(missingPerms)}`);
-        return;
-      }
-      const existingBot = await pluginData.state.slowmodes.getChannelSlowmode(channel.id);
-      if (existingBot) await disableBotSlowmodeForChannel(pluginData, channel);
-      await channel.setRateLimitPerUser(Math.ceil(time / 1000));
-    } else {
-      if (time > MAX_BOT_SLOWMODE) {
-        pluginData.state.common.sendErrorMessage(interaction, "Bot slowmode cannot exceed 100 years");
-        return;
-      }
-      if (time < MIN_BOT_SLOWMODE) {
-        pluginData.state.common.sendErrorMessage(interaction, "Bot managed slowmode must be 15min or more");
-        return;
-      }
-      const missingPerms = getMissingChannelPermissions(
-        me,
-        channel,
-        BOT_SLOWMODE_PERMISSIONS,
-      );
-      if (missingPerms) {
-        pluginData.state.common.sendErrorMessage(interaction, `Unable to set bot slowmode. ${missingPermissionError(missingPerms)}`);
-        return;
-      }
-      if (channel.rateLimitPerUser) await channel.setRateLimitPerUser(0);
-      await pluginData.state.slowmodes.setChannelSlowmode(channel.id, Math.ceil(time / 1000));
-      const slowmode = await pluginData.state.slowmodes.getChannelSlowmode(channel.id);
-      pluginData.state.channelSlowmodeCache.set(channel.id, slowmode ?? null);
-    }
-
-    const type = useNative ? "native slowmode" : "bot-maintained slowmode";
-    pluginData.state.common.sendSuccessMessage(
-      interaction,
-      `Set ${humanizeDuration(time)} slowmode for <#${channel.id}> (${type})`,
-    );
+    await actualSetSlowmodeCmd(pluginData, interaction, channel, time, options.mode);
   },
 });

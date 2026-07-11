@@ -1,4 +1,4 @@
-import { BasePluginType, guildPluginMessageCommand, pluginUtils } from "vety";
+import { BasePluginType, guildPluginMessageCommand, guildPluginSlashCommand, pluginUtils } from "vety";
 import { z } from "zod";
 import { CommonPlugin } from "../Common/CommonPlugin.js";
 
@@ -12,3 +12,4 @@ export interface ChannelArchiverPluginType extends BasePluginType {
 }
 
 export const channelArchiverCmd = guildPluginMessageCommand<ChannelArchiverPluginType>();
+export const channelArchiverSlashCmd = guildPluginSlashCommand<ChannelArchiverPluginType>();

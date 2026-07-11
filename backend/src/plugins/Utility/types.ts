@@ -1,4 +1,11 @@
-import { BasePluginType, guildPluginEventListener, guildPluginMessageCommand, guildPluginSlashCommand, pluginUtils } from "vety";
+import {
+  BasePluginType,
+  guildPluginEventListener,
+  guildPluginMessageCommand,
+  guildPluginSlashCommand,
+  guildPluginSlashGroup,
+  pluginUtils,
+} from "vety";
 import { z } from "zod";
 import { RegExpRunner } from "../../RegExpRunner.js";
 import { GuildArchives } from "../../data/GuildArchives.js";
@@ -55,5 +62,6 @@ export interface UtilityPluginType extends BasePluginType {
 }
 
 export const utilityCmd = guildPluginMessageCommand<UtilityPluginType>();
+export const utilitySlashGroup = guildPluginSlashGroup<UtilityPluginType>();
 export const utilitySlashCmd = guildPluginSlashCommand<UtilityPluginType>();
 export const utilityEvt = guildPluginEventListener<UtilityPluginType>();

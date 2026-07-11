@@ -15873,6 +15873,10 @@
                   "default": false,
                   "type": "boolean"
                 },
+                "can_assign_temp": {
+                  "default": false,
+                  "type": "boolean"
+                },
                 "can_mass_assign": {
                   "default": false,
                   "type": "boolean"
@@ -16058,6 +16062,10 @@
                     "type": "object",
                     "properties": {
                       "can_assign": {
+                        "default": false,
+                        "type": "boolean"
+                      },
+                      "can_assign_temp": {
                         "default": false,
                         "type": "boolean"
                       },

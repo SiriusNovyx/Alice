@@ -35,7 +35,7 @@ export const MassUnbanSlashCmd = modActionsSlashCmd({
       return;
     }
 
-    actualMassUnbanCmd(
+    await actualMassUnbanCmd(
       pluginData,
       interaction,
       options["user-ids"].split(/[\s,\r\n]+/),

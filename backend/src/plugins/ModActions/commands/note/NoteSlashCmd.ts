@@ -30,6 +30,6 @@ export const NoteSlashCmd = modActionsSlashCmd({
       return;
     }
 
-    actualNoteCmd(pluginData, interaction, interaction.user, attachments, options.user, options.note || "");
+    await actualNoteCmd(pluginData, interaction, interaction.user, attachments, options.user, options.note || "");
   },
 });

@@ -43,6 +43,6 @@ export const UnbanSlashCmd = modActionsSlashCmd({
       mod = (await resolveMember(pluginData.client, pluginData.guild, options.mod.id))!;
     }
 
-    actualUnbanCmd(pluginData, interaction, interaction.user.id, options.user, options.reason ?? "", attachments, mod);
+    await actualUnbanCmd(pluginData, interaction, interaction.user.id, options.user, options.reason ?? "", attachments, mod);
   },
 });

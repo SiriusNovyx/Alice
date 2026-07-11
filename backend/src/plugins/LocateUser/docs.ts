@@ -9,6 +9,7 @@ export const locateUserPluginDocs: ZeppelinPluginDocs = {
     This plugin allows users with access to the commands the following:
     * Instantly receive an invite to the voice channel of a user
     * Be notified as soon as a user switches or joins a voice channel
+    Slash commands live under \`/locate\`.
   `),
   configSchema: zLocateUserConfig,
 };

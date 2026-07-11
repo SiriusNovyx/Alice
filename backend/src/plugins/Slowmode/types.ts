@@ -1,4 +1,11 @@
-import { BasePluginType, guildPluginEventListener, guildPluginMessageCommand, guildPluginSlashCommand, pluginUtils } from "vety";
+import {
+  BasePluginType,
+  guildPluginEventListener,
+  guildPluginMessageCommand,
+  guildPluginSlashCommand,
+  guildPluginSlashGroup,
+  pluginUtils,
+} from "vety";
 import { z } from "zod";
 import { GuildLogs } from "../../data/GuildLogs.js";
 import { GuildSavedMessages } from "../../data/GuildSavedMessages.js";
@@ -29,5 +36,6 @@ export interface SlowmodePluginType extends BasePluginType {
 }
 
 export const slowmodeCmd = guildPluginMessageCommand<SlowmodePluginType>();
+export const slowmodeSlashGroup = guildPluginSlashGroup<SlowmodePluginType>();
 export const slowmodeSlashCmd = guildPluginSlashCommand<SlowmodePluginType>();
 export const slowmodeEvt = guildPluginEventListener<SlowmodePluginType>();

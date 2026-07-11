@@ -1,5 +1,6 @@
 import { GuildPluginData } from "vety";
 import { TempRole } from "../../../data/entities/TempRole.js";
+import { clearExpiringTempRole } from "../../../data/loops/expiringTempRolesLoop.js";
 import { logger } from "../../../logger.js";
 import { UnknownRole } from "../../../utils.js";
 import { LogsPlugin } from "../../Logs/LogsPlugin.js";
@@ -7,6 +8,8 @@ import { RoleManagerPlugin } from "../../RoleManager/RoleManagerPlugin.js";
 import { RolesPluginType } from "../types.js";
 
 export async function clearTempRole(pluginData: GuildPluginData<RolesPluginType>, tempRole: TempRole) {
+  clearExpiringTempRole(tempRole);
+
   const member = await pluginData.guild.members.fetch(tempRole.user_id).catch(() => null);
 
   if (!member) {

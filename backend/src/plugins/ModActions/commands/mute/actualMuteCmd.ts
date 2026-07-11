@@ -3,12 +3,14 @@ import { GuildPluginData } from "vety";
 import { ERRORS, RecoverablePluginError } from "../../../../RecoverablePluginError.js";
 import { humanizeDuration } from "../../../../humanizeDuration.js";
 import { logger } from "../../../../logger.js";
+import { canActOn } from "../../../../pluginUtils.js";
 import {
   UnknownUser,
   UserNotificationMethod,
   asSingleLine,
   isDiscordAPIError,
   renderUsername,
+  resolveMember,
 } from "../../../../utils.js";
 import { MutesPlugin } from "../../../Mutes/MutesPlugin.js";
 import { MuteResult } from "../../../Mutes/types.js";
@@ -26,6 +28,7 @@ import { ModActionsPluginType } from "../../types.js";
 export async function actualMuteCmd(
   pluginData: GuildPluginData<ModActionsPluginType>,
   context: Message | ChatInputCommandInteraction,
+  author: GuildMember,
   user: User | UnknownUser,
   attachments: Attachment[],
   mod: GuildMember,
@@ -35,6 +38,12 @@ export async function actualMuteCmd(
   contactMethods?: UserNotificationMethod[],
 ) {
   if (await handleAttachmentLinkDetectionAndGetRestriction(pluginData, context, reason)) {
+    return;
+  }
+
+  const memberToMute = await resolveMember(pluginData.client, pluginData.guild, user.id);
+  if (memberToMute && !canActOn(pluginData, author, memberToMute)) {
+    pluginData.state.common.sendErrorMessage(context, "Cannot mute: insufficient permissions");
     return;
   }
 
@@ -64,11 +73,6 @@ export async function actualMuteCmd(
       pluginData.state.common.sendErrorMessage(context, "Could not mute the user: unknown member");
     } else {
       logger.error(`Failed to mute user ${user.id}: ${e.stack}`);
-      if (user.id == null) {
-        // FIXME: Debug
-        // tslint:disable-next-line:no-console
-        console.trace("[DEBUG] Null user.id for mute");
-      }
       pluginData.state.common.sendErrorMessage(context, "Could not mute the user");
     }
 

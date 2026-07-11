@@ -1,11 +1,11 @@
 import { commandTypeHelpers as ct } from "../../../commandTypes.js";
-import { getRoleInfoEmbed } from "../functions/getRoleInfoEmbed.js";
 import { utilityCmd } from "../types.js";
+import { actualRoleInfoCmd } from "./actualInfoCmds.js";
 
 export const RoleInfoCmd = utilityCmd({
   trigger: ["roleinfo"],
   description: "Show information about a role",
-  usage: "!role 106391128718245888",
+  usage: "!role <role>",
   permission: "can_roleinfo",
 
   signature: {
@@ -13,7 +13,6 @@ export const RoleInfoCmd = utilityCmd({
   },
 
   async run({ message, args, pluginData }) {
-    const embed = await getRoleInfoEmbed(pluginData, args.role);
-    message.channel.send({ embeds: [embed] });
+    await actualRoleInfoCmd(pluginData, message, args.role);
   },
 });

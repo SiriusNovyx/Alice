@@ -3,8 +3,8 @@ import { guildPluginMessageCommand } from "vety";
 import { waitForReply } from "vety/helpers";
 import { commandTypeHelpers as ct } from "../../../commandTypes.js";
 import { UnknownUser, resolveUser } from "../../../utils.js";
-import { setCounterValue } from "../functions/setCounterValue.js";
 import { CountersPluginType } from "../types.js";
+import { actualResetCounterCmd } from "./actualCountersCmds.js";
 
 export const ResetCounterCmd = guildPluginMessageCommand<CountersPluginType>()({
   trigger: ["counters reset", "counter reset", "resetcounter"],
@@ -37,30 +37,14 @@ export const ResetCounterCmd = guildPluginMessageCommand<CountersPluginType>()({
   async run({ pluginData, message, args }) {
     const config = await pluginData.config.getForMessage(message);
     const counter = config.counters[args.counterName];
-    const counterId = pluginData.state.counterIds[args.counterName];
-    if (!counter || !counterId) {
+    if (!counter || !pluginData.state.counterIds[args.counterName]) {
       void pluginData.state.common.sendErrorMessage(message, `Unknown counter: ${args.counterName}`);
       return;
     }
 
-    if (counter.can_edit === false) {
-      void pluginData.state.common.sendErrorMessage(message, `Missing permissions to reset this counter's value`);
-      return;
-    }
-
-    if (args.channel && !counter.per_channel) {
-      void pluginData.state.common.sendErrorMessage(message, `This counter is not per-channel`);
-      return;
-    }
-
-    if (args.user && !counter.per_user) {
-      void pluginData.state.common.sendErrorMessage(message, `This counter is not per-user`);
-      return;
-    }
-
-    let channel = args.channel;
+    let channel = args.channel ?? null;
     if (!channel && counter.per_channel) {
-      message.channel.send(`Which channel's counter value would you like to reset?`);
+      await message.channel.send(`Which channel's counter value would you like to reset?`);
       const reply = await waitForReply(pluginData.client, message.channel, message.author.id);
       if (!reply || !reply.content) {
         void pluginData.state.common.sendErrorMessage(message, "Cancelling");
@@ -76,9 +60,9 @@ export const ResetCounterCmd = guildPluginMessageCommand<CountersPluginType>()({
       channel = potentialChannel;
     }
 
-    let user = args.user;
+    let user = args.user ?? null;
     if (!user && counter.per_user) {
-      message.channel.send(`Which user's counter value would you like to reset?`);
+      await message.channel.send(`Which user's counter value would you like to reset?`);
       const reply = await waitForReply(pluginData.client, message.channel, message.author.id);
       if (!reply || !reply.content) {
         void pluginData.state.common.sendErrorMessage(message, "Cancelling");
@@ -94,16 +78,6 @@ export const ResetCounterCmd = guildPluginMessageCommand<CountersPluginType>()({
       user = potentialUser;
     }
 
-    await setCounterValue(pluginData, args.counterName, channel?.id ?? null, user?.id ?? null, counter.initial_value);
-
-    if (channel && user) {
-      message.channel.send(`Reset **${args.counterName}** for <@!${user.id}> in <#${channel.id}>`);
-    } else if (channel) {
-      message.channel.send(`Reset **${args.counterName}** in <#${channel.id}>`);
-    } else if (user) {
-      message.channel.send(`Reset **${args.counterName}** for <@!${user.id}>`);
-    } else {
-      message.channel.send(`Reset **${args.counterName}**`);
-    }
+    await actualResetCounterCmd(pluginData, message, args.counterName, channel, user);
   },
 });

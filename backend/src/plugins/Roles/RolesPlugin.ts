@@ -9,14 +9,16 @@ import { AddRoleCmd } from "./commands/AddRoleCmd.js";
 import { AddRoleSlashCmd } from "./commands/AddRoleSlashCmd.js";
 import { AddTempRoleCmd } from "./commands/AddTempRoleCmd.js";
 import { AddTempRoleSlashCmd } from "./commands/AddTempRoleSlashCmd.js";
-import { RemoveRoleSlashCmd } from "./commands/RemoveRoleSlashCmd.js";
 import { MassAddRoleCmd } from "./commands/MassAddRoleCmd.js";
+import { MassAddRoleSlashCmd } from "./commands/MassAddRoleSlashCmd.js";
 import { MassRemoveRoleCmd } from "./commands/MassRemoveRoleCmd.js";
+import { MassRemoveRoleSlashCmd } from "./commands/MassRemoveRoleSlashCmd.js";
 import { RemoveRoleCmd } from "./commands/RemoveRoleCmd.js";
+import { RemoveRoleSlashCmd } from "./commands/RemoveRoleSlashCmd.js";
 import { RemoveTempRoleCmd } from "./commands/RemoveTempRoleCmd.js";
 import { RemoveTempRoleSlashCmd } from "./commands/RemoveTempRoleSlashCmd.js";
 import { clearTempRole } from "./functions/clearTempRole.js";
-import { RolesPluginType, zRolesConfig } from "./types.js";
+import { RolesPluginType, rolesSlashGroup, zRolesConfig } from "./types.js";
 
 export const RolesPlugin = guildPlugin<RolesPluginType>()({
   name: "roles",
@@ -50,10 +52,19 @@ export const RolesPlugin = guildPlugin<RolesPluginType>()({
   ],
 
   slashCommands: [
-    AddRoleSlashCmd,
-    RemoveRoleSlashCmd,
-    AddTempRoleSlashCmd,
-    RemoveTempRoleSlashCmd,
+    rolesSlashGroup({
+      name: "roles",
+      description: "Role assignment commands",
+      defaultMemberPermissions: "0",
+      subcommands: [
+        AddRoleSlashCmd,
+        RemoveRoleSlashCmd,
+        AddTempRoleSlashCmd,
+        RemoveTempRoleSlashCmd,
+        MassAddRoleSlashCmd,
+        MassRemoveRoleSlashCmd,
+      ],
+    }),
   ],
 
   beforeLoad(pluginData) {

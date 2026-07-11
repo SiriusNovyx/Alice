@@ -1,11 +1,10 @@
 import { GuildChannel } from "discord.js";
 import { commandTypeHelpers as ct } from "../../../commandTypes.js";
-import { clearExpiringTempRole } from "../../../data/loops/expiringTempRolesLoop.js";
-import { canActOn, resolveMessageMember } from "../../../pluginUtils.js";
-import { resolveRoleId, verboseUserMention } from "../../../utils.js";
+import { resolveMessageMember } from "../../../pluginUtils.js";
+import { resolveRoleId } from "../../../utils.js";
 import { LogsPlugin } from "../../Logs/LogsPlugin.js";
-import { RoleManagerPlugin } from "../../RoleManager/RoleManagerPlugin.js";
 import { rolesCmd } from "../types.js";
+import { actualRemoveTempRoleCmd } from "./actualRemoveTempRoleCmd.js";
 
 export const RemoveTempRoleCmd = rolesCmd({
   trigger: "untemprole",
@@ -20,13 +19,6 @@ export const RemoveTempRoleCmd = rolesCmd({
 
   async run({ message: msg, args, pluginData }) {
     const authorMember = await resolveMessageMember(msg);
-    if (!canActOn(pluginData, authorMember, args.member, true)) {
-      void pluginData.state.common.sendErrorMessage(
-        msg,
-        "Cannot remove roles from this user: insufficient permissions",
-      );
-      return;
-    }
 
     const roleId = await resolveRoleId(pluginData.client, pluginData.guild.id, args.role);
     if (!roleId) {
@@ -49,33 +41,6 @@ export const RemoveTempRoleCmd = rolesCmd({
       return;
     }
 
-    const existingTempRole = await pluginData.state.tempRoles.findExistingTempRoleForUserIdAndRoleId(
-      args.member.id,
-      roleId,
-    );
-    if (!existingTempRole) {
-      void pluginData.state.common.sendErrorMessage(msg, "That member does not have an active timed role for that role");
-      return;
-    }
-
-    clearExpiringTempRole(existingTempRole);
-
-    if (args.member.roles.cache.has(roleId)) {
-      pluginData.getPlugin(RoleManagerPlugin).removeRole(args.member.id, roleId);
-    }
-
-    await pluginData.state.tempRoles.clear(args.member.id, roleId);
-
-    pluginData.getPlugin(LogsPlugin).logMemberTimedRoleRemove({
-      mod: msg.author,
-      member: args.member,
-      roles: [role],
-      reason: "",
-    });
-
-    void pluginData.state.common.sendSuccessMessage(
-      msg,
-      `Removed timed role **${role.name}** from ${verboseUserMention(args.member.user)}!`,
-    );
+    await actualRemoveTempRoleCmd(pluginData, msg, authorMember, msg.author, args.member, role);
   },
 });

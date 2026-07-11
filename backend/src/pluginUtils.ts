@@ -116,6 +116,13 @@ function flagsWithEphemeral<TFlags extends string, TType extends number | bigint
 export type ContextResponseOptions = MessageCreateOptions & InteractionReplyOptions & InteractionEditReplyOptions;
 export type ContextResponse = Message | InteractionResponse;
 
+/**
+ * Slash command contract:
+ * - Defer first with `interaction.deferReply({ ephemeral: true })` when the command may take >3s
+ *   or will reply via CommonPlugin helpers.
+ * - Always `await` Discord API calls, RoleManager ops, shared `actual*Cmd` cores, and
+ *   sendSuccessMessage / sendErrorMessage / editReply so errors and replies are not lost.
+ */
 export async function sendContextResponse(
   context: GenericCommandSource,
   content: string | ContextResponseOptions,

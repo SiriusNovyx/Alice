@@ -7,6 +7,7 @@ export const starboardPluginDocs: ZeppelinPluginDocs = {
   prettyName: "Starboard",
   description: trimPluginDescription(`
     This plugin allows you to set up starboards on your server. Starboards are like user voted pins where messages with enough reactions get immortalized on a "starboard" channel.
+    Slash commands live under \`/starboard\`.
   `),
   configurationGuide: trimPluginDescription(`
     ### Note on emojis

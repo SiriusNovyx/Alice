@@ -11,6 +11,7 @@ export interface LogMemberRoleAddData {
   mod: User | null;
   member: GuildMember;
   roles: Array<Role | UnknownRole>;
+  reason?: string;
 }
 
 export function logMemberRoleAdd(pluginData: GuildPluginData<LogsPluginType>, data: LogMemberRoleAddData) {
@@ -21,6 +22,7 @@ export function logMemberRoleAdd(pluginData: GuildPluginData<LogsPluginType>, da
       mod: data.mod ? userToTemplateSafeUser(data.mod) : null,
       member: memberToTemplateSafeMember(data.member),
       roles: data.roles.map((r) => r.name).join(", "),
+      reason: data.reason ?? "",
     }),
     {
       userId: data.member.id,

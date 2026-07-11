@@ -1,6 +1,6 @@
 import { commandTypeHelpers as ct } from "../../../commandTypes.js";
-import { getServerInfoEmbed } from "../functions/getServerInfoEmbed.js";
 import { utilityCmd } from "../types.js";
+import { actualServerInfoCmd } from "./actualInfoCmds.js";
 
 export const ServerInfoCmd = utilityCmd({
   trigger: ["server", "serverinfo"],
@@ -13,13 +13,6 @@ export const ServerInfoCmd = utilityCmd({
   },
 
   async run({ message, pluginData, args }) {
-    const serverId = args.serverId || pluginData.guild.id;
-    const serverInfoEmbed = await getServerInfoEmbed(pluginData, serverId);
-    if (!serverInfoEmbed) {
-      void pluginData.state.common.sendErrorMessage(message, "Could not find information for that server");
-      return;
-    }
-
-    message.channel.send({ embeds: [serverInfoEmbed] });
+    await actualServerInfoCmd(pluginData, message, args.serverId || pluginData.guild.id);
   },
 });

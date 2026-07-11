@@ -54,7 +54,7 @@ export const PostEmbedCmd = postCmd({
         let parsed;
         try {
           parsed = JSON.parse(content);
-        } catch (e) {
+        } catch (e: any) {
           void pluginData.state.common.sendErrorMessage(msg, `Syntax error in embed JSON: ${e.message}`);
           return;
         }
@@ -72,15 +72,17 @@ export const PostEmbedCmd = postCmd({
 
     if (args.content) {
       const prefix = pluginData.fullConfig.prefix || "!";
-      msg.channel.send(
-        trimLines(`
+      if (msg.channel.isSendable()) {
+        await msg.channel.send(
+          trimLines(`
         <@!${msg.author.id}> You can now specify an embed's content directly at the end of the command:
         \`${prefix}edit_embed -title "Some title" content goes here\`
         The \`-content\` option will soon be removed in favor of this.
       `),
-      );
+        );
+      }
     }
 
-    actualPostCmd(pluginData, msg, args.channel, { embeds: [embed] }, args);
+    await actualPostCmd(pluginData, msg, msg.author, args.channel, { embeds: [embed] }, args);
   },
 });

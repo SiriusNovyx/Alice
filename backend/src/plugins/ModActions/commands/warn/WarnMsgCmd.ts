@@ -1,5 +1,5 @@
 import { commandTypeHelpers as ct } from "../../../../commandTypes.js";
-import { canActOn, hasPermission, resolveMessageMember } from "../../../../pluginUtils.js";
+import { hasPermission, resolveMessageMember } from "../../../../pluginUtils.js";
 import { errorMessage, resolveMember, resolveUser } from "../../../../utils.js";
 import { isBanned } from "../../functions/isBanned.js";
 import { readContactMethodsFromArgs } from "../../functions/readContactMethodsFromArgs.js";
@@ -42,12 +42,6 @@ export const WarnMsgCmd = modActionsMsgCmd({
       return;
     }
 
-    // Make sure we're allowed to warn this member
-    if (!canActOn(pluginData, authorMember, memberToWarn)) {
-      await pluginData.state.common.sendErrorMessage(msg, "Cannot warn: insufficient permissions");
-      return;
-    }
-
     // The moderator who did the action is the message author or, if used, the specified -mod
     let mod = authorMember;
     if (args.mod) {
@@ -67,10 +61,10 @@ export const WarnMsgCmd = modActionsMsgCmd({
       return;
     }
 
-    actualWarnCmd(
+    await actualWarnCmd(
       pluginData,
       msg,
-      msg.author.id,
+      authorMember,
       mod,
       memberToWarn,
       args.reason,

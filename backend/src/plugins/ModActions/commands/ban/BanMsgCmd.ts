@@ -63,7 +63,7 @@ export const BanMsgCmd = modActionsMsgCmd({
       return;
     }
 
-    actualBanCmd(
+    await actualBanCmd(
       pluginData,
       msg,
       user,

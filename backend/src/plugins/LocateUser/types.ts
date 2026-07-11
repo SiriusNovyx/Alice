@@ -1,4 +1,11 @@
-import { BasePluginType, guildPluginEventListener, guildPluginMessageCommand, pluginUtils } from "vety";
+import {
+  BasePluginType,
+  guildPluginEventListener,
+  guildPluginMessageCommand,
+  guildPluginSlashCommand,
+  guildPluginSlashGroup,
+  pluginUtils,
+} from "vety";
 import { z } from "zod";
 import { GuildVCAlerts } from "../../data/GuildVCAlerts.js";
 import { CommonPlugin } from "../Common/CommonPlugin.js";
@@ -19,4 +26,6 @@ export interface LocateUserPluginType extends BasePluginType {
 }
 
 export const locateUserCmd = guildPluginMessageCommand<LocateUserPluginType>();
+export const locateUserSlashGroup = guildPluginSlashGroup<LocateUserPluginType>();
+export const locateUserSlashCmd = guildPluginSlashCommand<LocateUserPluginType>();
 export const locateUserEvt = guildPluginEventListener<LocateUserPluginType>();

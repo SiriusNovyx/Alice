@@ -9,6 +9,7 @@ export const automodPluginDocs: ZeppelinPluginDocs = {
   prettyName: "Automod",
   description: trimPluginDescription(`
       Allows specifying automated actions in response to triggers. Example use cases include word filtering and spam prevention.
+      Antiraid slash commands live under \`/antiraid\`.
   `),
   configurationGuide: trimPluginDescription(`
       The automod plugin is very customizable. For a full list of available triggers, actions, and their options, see Config schema at the bottom of this page.    

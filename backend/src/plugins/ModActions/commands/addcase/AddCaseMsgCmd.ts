@@ -52,7 +52,7 @@ export const AddCaseMsgCmd = modActionsMsgCmd({
       return;
     }
 
-    actualAddCaseCmd(
+    await actualAddCaseCmd(
       pluginData,
       msg,
       member,

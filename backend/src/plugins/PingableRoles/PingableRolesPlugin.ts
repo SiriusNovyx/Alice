@@ -2,8 +2,10 @@ import { guildPlugin } from "vety";
 import { GuildPingableRoles } from "../../data/GuildPingableRoles.js";
 import { CommonPlugin } from "../Common/CommonPlugin.js";
 import { PingableRoleDisableCmd } from "./commands/PingableRoleDisableCmd.js";
+import { PingableRoleDisableSlashCmd } from "./commands/PingableRoleDisableSlashCmd.js";
 import { PingableRoleEnableCmd } from "./commands/PingableRoleEnableCmd.js";
-import { PingableRolesPluginType, zPingableRolesConfig } from "./types.js";
+import { PingableRoleEnableSlashCmd } from "./commands/PingableRoleEnableSlashCmd.js";
+import { PingableRolesPluginType, pingableRolesSlashGroup, zPingableRolesConfig } from "./types.js";
 
 export const PingableRolesPlugin = guildPlugin<PingableRolesPluginType>()({
   name: "pingable_roles",
@@ -22,6 +24,15 @@ export const PingableRolesPlugin = guildPlugin<PingableRolesPluginType>()({
   messageCommands: [
     PingableRoleEnableCmd,
     PingableRoleDisableCmd,
+  ],
+
+  slashCommands: [
+    pingableRolesSlashGroup({
+      name: "pingable_role",
+      description: "Manage pingable roles",
+      defaultMemberPermissions: "0",
+      subcommands: [PingableRoleEnableSlashCmd, PingableRoleDisableSlashCmd],
+    }),
   ],
 
   // prettier-ignore

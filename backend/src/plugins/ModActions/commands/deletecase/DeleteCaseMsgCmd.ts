@@ -21,6 +21,6 @@ export const DeleteCaseMsgCmd = modActionsMsgCmd({
 
   async run({ pluginData, message, args }) {
     const member = await resolveMessageMember(message);
-    actualDeleteCaseCmd(pluginData, message, member, args.caseNumber, args.force);
+    await actualDeleteCaseCmd(pluginData, message, member, args.caseNumber, args.force);
   },
 });

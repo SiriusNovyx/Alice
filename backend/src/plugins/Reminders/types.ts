@@ -1,4 +1,4 @@
-import { BasePluginType, guildPluginMessageCommand, pluginUtils } from "vety";
+import { BasePluginType, guildPluginMessageCommand, guildPluginSlashCommand, guildPluginSlashGroup, pluginUtils } from "vety";
 import { z } from "zod";
 import { GuildReminders } from "../../data/GuildReminders.js";
 import { CommonPlugin } from "../Common/CommonPlugin.js";
@@ -21,3 +21,5 @@ export interface RemindersPluginType extends BasePluginType {
 }
 
 export const remindersCmd = guildPluginMessageCommand<RemindersPluginType>();
+export const remindersSlashGroup = guildPluginSlashGroup<RemindersPluginType>();
+export const remindersSlashCmd = guildPluginSlashCommand<RemindersPluginType>();

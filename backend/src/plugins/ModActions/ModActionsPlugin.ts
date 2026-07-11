@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { ChatInputCommandInteraction, Message } from "discord.js";
 import { EventEmitter } from "events";
 import { guildPlugin } from "vety";
 import { Queue } from "../../Queue.js";
@@ -38,7 +38,7 @@ import { KickSlashCmd } from "./commands/kick/KickSlashCmd.js";
 import { MassBanMsgCmd } from "./commands/massban/MassBanMsgCmd.js";
 import { MassBanSlashCmd } from "./commands/massban/MassBanSlashCmd.js";
 import { MassMuteMsgCmd } from "./commands/massmute/MassMuteMsgCmd.js";
-import { MassMuteSlashSlashCmd } from "./commands/massmute/MassMuteSlashCmd.js";
+import { MassMuteSlashCmd } from "./commands/massmute/MassMuteSlashCmd.js";
 import { MassUnbanMsgCmd } from "./commands/massunban/MassUnbanMsgCmd.js";
 import { MassUnbanSlashCmd } from "./commands/massunban/MassUnbanSlashCmd.js";
 import { MuteMsgCmd } from "./commands/mute/MuteMsgCmd.js";
@@ -124,7 +124,7 @@ export const ModActionsPlugin = guildPlugin<ModActionsPluginType>()({
         HideCaseSlashCmd,
         KickSlashCmd,
         MassBanSlashCmd,
-        MassMuteSlashSlashCmd,
+        MassMuteSlashCmd,
         MassUnbanSlashCmd,
         MuteSlashCmd,
         NoteSlashCmd,
@@ -166,8 +166,11 @@ export const ModActionsPlugin = guildPlugin<ModActionsPluginType>()({
       warnMember: makePublicFn(pluginData, warnMember),
       kickMember: makePublicFn(pluginData, kickMember),
       banUserId: makePublicFn(pluginData, banUserId),
-      updateCase: (msg: Message, caseNumber: number | null, note: string) =>
-        updateCase(pluginData, msg, msg.author, caseNumber ?? undefined, note, [...msg.attachments.values()]),
+      updateCase: (context: Message | ChatInputCommandInteraction, caseNumber: number | null, note: string) => {
+        const author = context instanceof Message ? context.author : context.user;
+        const attachments = context instanceof Message ? [...context.attachments.values()] : [];
+        return updateCase(pluginData, context, author, caseNumber ?? undefined, note, attachments);
+      },
       hasNotePermission: makePublicFn(pluginData, hasNotePermission),
       hasWarnPermission: makePublicFn(pluginData, hasWarnPermission),
       hasMutePermission: makePublicFn(pluginData, hasMutePermission),

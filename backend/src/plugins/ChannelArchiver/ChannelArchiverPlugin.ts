@@ -2,6 +2,7 @@ import { guildPlugin } from "vety";
 import { CommonPlugin } from "../Common/CommonPlugin.js";
 import { TimeAndDatePlugin } from "../TimeAndDate/TimeAndDatePlugin.js";
 import { ArchiveChannelCmd } from "./commands/ArchiveChannelCmd.js";
+import { ArchiveChannelSlashCmd } from "./commands/ArchiveChannelSlashCmd.js";
 import { ChannelArchiverPluginType, zChannelArchiverPluginConfig } from "./types.js";
 
 export const ChannelArchiverPlugin = guildPlugin<ChannelArchiverPluginType>()({
@@ -14,6 +15,8 @@ export const ChannelArchiverPlugin = guildPlugin<ChannelArchiverPluginType>()({
   messageCommands: [
       ArchiveChannelCmd,
   ],
+
+  slashCommands: [ArchiveChannelSlashCmd],
 
   beforeStart(pluginData) {
     pluginData.state.common = pluginData.getPlugin(CommonPlugin);
