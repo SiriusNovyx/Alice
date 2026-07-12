@@ -55,6 +55,10 @@
             :to="'/dashboard/guilds/' + guild.id + '/config'"
           >Config</router-link>
           <router-link
+            class="gl-btn"
+            :to="'/dashboard/guilds/' + guild.id + '/aio'"
+          >AIO</router-link>
+          <router-link
             v-if="canManageAccess(guild.id)"
             class="gl-btn"
             :to="'/dashboard/guilds/' + guild.id + '/access'"

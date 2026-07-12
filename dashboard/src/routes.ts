@@ -58,6 +58,54 @@ export const router = createRouter({
           component: () => import("./components/docs/Counters.vue"),
         },
         {
+          path: "setup-guides/aio-plugins",
+          component: () => import("./components/docs/AioPlugins.vue"),
+        },
+        {
+          path: "setup-guides/voicemaster",
+          component: () => import("./components/docs/aio/VoiceMasterSetup.vue"),
+        },
+        {
+          path: "setup-guides/tickets",
+          component: () => import("./components/docs/aio/TicketsSetup.vue"),
+        },
+        {
+          path: "setup-guides/giveaways",
+          component: () => import("./components/docs/aio/GiveawaysSetup.vue"),
+        },
+        {
+          path: "setup-guides/leveling",
+          component: () => import("./components/docs/aio/LevelingSetup.vue"),
+        },
+        {
+          path: "setup-guides/verify",
+          component: () => import("./components/docs/aio/VerifySetup.vue"),
+        },
+        {
+          path: "setup-guides/fun-social",
+          component: () => import("./components/docs/aio/FunSocialSetup.vue"),
+        },
+        {
+          path: "setup-guides/modmail",
+          component: () => import("./components/docs/aio/ModmailSetup.vue"),
+        },
+        {
+          path: "setup-guides/antinuke",
+          component: () => import("./components/docs/aio/AntiNukeSetup.vue"),
+        },
+        {
+          path: "setup-guides/economy",
+          component: () => import("./components/docs/aio/EconomySetup.vue"),
+        },
+        {
+          path: "setup-guides/music",
+          component: () => import("./components/docs/aio/MusicSetup.vue"),
+        },
+        {
+          path: "setup-guides/collection-nsfw-booster",
+          component: () => import("./components/docs/aio/CollectionNsfwBoosterSetup.vue"),
+        },
+        {
           path: "plugins/:pluginName/:tab?",
           component: () => import("./components/docs/Plugin.vue"),
         },
@@ -81,6 +129,10 @@ export const router = createRouter({
         {
           path: "guilds/:guildId/config",
           component: () => import("./components/dashboard/GuildConfigEditor.vue"),
+        },
+        {
+          path: "guilds/:guildId/aio",
+          component: () => import("./components/dashboard/GuildAioPlugins.vue"),
         },
         {
           path: "guilds/:guildId/access",

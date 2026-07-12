@@ -126,12 +126,46 @@
           <td><router-link to="/docs/plugins/counters">Counters</router-link></td>
           <td>view, set, reset counters</td>
         </tr>
+        <tr>
+          <td><code>/voicemaster</code></td>
+          <td><router-link to="/docs/plugins/voicemaster">VoiceMaster</router-link></td>
+          <td>temp VC lock/hide/rename/limit/claim</td>
+        </tr>
+        <tr>
+          <td><code>/ticket</code></td>
+          <td><router-link to="/docs/plugins/tickets">Tickets</router-link></td>
+          <td>panel, claim, close, add/remove</td>
+        </tr>
+        <tr>
+          <td><code>/giveaway</code></td>
+          <td><router-link to="/docs/plugins/giveaways">Giveaways</router-link></td>
+          <td>start, end, reroll, list</td>
+        </tr>
+        <tr>
+          <td><code>/level</code></td>
+          <td><router-link to="/docs/plugins/leveling">Leveling</router-link></td>
+          <td>rank, leaderboard, setxp</td>
+        </tr>
+        <tr>
+          <td><code>/economy</code></td>
+          <td><router-link to="/docs/plugins/economy">Economy</router-link></td>
+          <td>balance, work, crime, daily, pay</td>
+        </tr>
+        <tr>
+          <td><code>/modmail</code></td>
+          <td><router-link to="/docs/plugins/modmail">Modmail</router-link></td>
+          <td>reply, areply, close, blacklist</td>
+        </tr>
       </tbody>
     </table>
     <p>
       Other groups exist for plugins such as <code>/names</code>, <code>/starboard</code>,
       <code>/auto_reactions</code>, <code>/reaction_roles</code>, <code>/pingable_role</code>,
-      <code>/message_saver</code>, and <code>/role_buttons</code>. See each plugin page for details.
+      <code>/message_saver</code>, <code>/role_buttons</code>, <code>/music</code>,
+      <code>/collection</code>, <code>/verify</code>, <code>/fun</code>, <code>/social</code>,
+      <code>/antinuke</code>, and <code>/boosterrole</code>.
+      See the <router-link to="/docs/setup-guides/aio-plugins">AIO plugins guide</router-link>
+      and each plugin page for details.
     </p>
   </div>
 </template>

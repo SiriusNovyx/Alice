@@ -87,6 +87,13 @@ const envType = z.object({
       .filter((s) => s !== "")
       .map((s) => Number(s));
   }, z.array(z.number().int()).min(1).max(2)),
+
+  LAVALINK_HOST: z.string().optional(),
+  LAVALINK_PORT: z.preprocess((v) => (v === undefined || v === "" ? undefined : Number(v)), z.number().optional()),
+  LAVALINK_PASSWORD: z.string().optional(),
+  TRANSCRIPT_SERVICE_URL: z.string().optional(),
+  TRANSCRIPT_SECRET: z.string().optional(),
+  PUBLIC_TRANSCRIPT_URL: z.string().optional(),
 });
 
 let toValidate = { ...process.env };

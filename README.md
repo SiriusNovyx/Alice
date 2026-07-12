@@ -176,6 +176,61 @@ All slash commands respect the same permission levels as their `!prefix` counter
 https://discord.com/oauth2/authorize?client_id=YOUR_CLIENT_ID&permissions=8&scope=bot+applications.commands
 ```
 
+**AIO Community Plugins**
+
+ALICE now includes a suite of optional community plugins (native Vety + TypeORM/MySQL), configurable via guild YAML. Enable each module with `enabled: true` and fill channel/role IDs. Setup guides live in the dashboard under **AIO** / **Setup Guides**.
+
+| Plugin | Config key | What it does |
+|---|---|---|
+| VoiceMaster | `voicemaster` | Join-to-create temporary voice channels (lock/hide/rename/claim/transfer) |
+| Tickets | `tickets` | Support panels, categories, claim/close, HTML transcripts |
+| Giveaways | `giveaways` | Timed giveaways with button entry |
+| Leveling | `leveling` | Message XP, cooldowns, multipliers, role rewards |
+| Verify | `verify` | Button or captcha verification gate |
+| Fun | `fun` | Light fun commands (8ball, dice, animal APIs, etc.) |
+| Social | `social` | Social GIF actions (hug, pat, slap, …) |
+| Modmail | `modmail` | User DM ↔ staff threads, snippets, close transcripts |
+| AntiNuke | `antinuke` | Audit-log mass-action rate limits, quarantine, panic mode |
+| Economy | `economy` | Currency, work/crime/shop, hunt/battle, clans, marriage |
+| Music | `music` | Queue/play via Lavalink (`LAVALINK_HOST` / `PORT` / `PASSWORD` in `.env`) |
+| Collection | `collection` | Weighted gacha rolls, inventory, give/trade |
+| Booster roles | `booster_roles` | Custom roles for server boosters |
+
+Starter YAML snippets are also available in:
+- Dashboard → **AIO** hub / setup guides
+- `presetup-configurator` (AIO / Community checkboxes)
+- Default guild config applied on allowlist (`backend/src/data/defaultGuildConfig.ts`)
+
+Example (VoiceMaster + Leveling):
+
+```yaml
+plugins:
+  voicemaster:
+    config:
+      enabled: true
+      hub_channel_id: "YOUR_HUB_VOICE_CHANNEL_ID"
+      category_id: "OPTIONAL_CATEGORY_ID"
+      default_name: "{user}'s Channel"
+  leveling:
+    config:
+      enabled: true
+      min_xp: 15
+      max_xp: 25
+      cooldown_seconds: 60
+```
+
+Music requires a reachable Lavalink node. Set in `.env`:
+
+```env
+LAVALINK_HOST=your.lavalink.host
+LAVALINK_PORT=2333
+LAVALINK_PASSWORD=your_password
+```
+
+After pulling AIO schema changes, run database migrations (e.g. the `migrate` service in `docker-compose.standalone.yml`) before enabling the new plugins.
+
+Plugin authoring checklist: [docs/PLUGIN_SCAFFOLD.md](docs/PLUGIN_SCAFFOLD.md).
+
 ---
 
 ## Main Features
@@ -189,9 +244,11 @@ https://discord.com/oauth2/authorize?client_id=YOUR_CLIENT_ID&permissions=8&scop
 - Tags / custom commands
 - Reaction roles
 - Slash command support + full `!prefix` command support
+- Optional AIO community modules (VoiceMaster, tickets, giveaways, leveling, verify, modmail, economy, music, and more)
 - Tons of utility commands including granular member search
 - Full configuration via a web dashboard
   - Override specific settings and permissions on a per-user, per-channel, or per-permission-level basis
+  - AIO setup guides and guild AIO hub
 - Bot-managed slowmodes
   - Automatically switches between native slowmodes (≤6h) and bot-enforced slowmodes (longer durations)
 - Starboard
