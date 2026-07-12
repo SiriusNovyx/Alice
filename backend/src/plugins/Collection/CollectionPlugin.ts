@@ -1,0 +1,38 @@
+import { guildPlugin } from "vety";
+import { GuildCollectionInventory } from "../../data/GuildCollectionInventory.js";
+import { CommonPlugin } from "../Common/CommonPlugin.js";
+import {
+  GiveCmd,
+  GiveSlashCmd,
+  InvCmd,
+  InvSlashCmd,
+  PullCmd,
+  PullSlashCmd,
+  TradeCmd,
+  TradeSlashCmd,
+} from "./commands/CollectionCmds.js";
+import { CollectionTradeInteractionEvt } from "./events/CollectionTradeInteractionEvt.js";
+import { CollectionPluginType, collectionSlashGroup, zCollectionConfig } from "./types.js";
+
+export const CollectionPlugin = guildPlugin<CollectionPluginType>()({
+  name: "collection",
+  configSchema: zCollectionConfig,
+  messageCommands: [PullCmd, InvCmd, GiveCmd, TradeCmd],
+  slashCommands: [
+    collectionSlashGroup({
+      name: "collection",
+      description: "Collection / gacha",
+      defaultMemberPermissions: "0",
+      subcommands: [PullSlashCmd, InvSlashCmd, GiveSlashCmd, TradeSlashCmd],
+    }),
+  ],
+  events: [CollectionTradeInteractionEvt],
+  beforeLoad(pluginData) {
+    pluginData.state.inventory = GuildCollectionInventory.getGuildInstance(pluginData.guild.id);
+    pluginData.state.rolls = new Map();
+    pluginData.state.pendingTrades = new Map();
+  },
+  beforeStart(pluginData) {
+    pluginData.state.common = pluginData.getPlugin(CommonPlugin);
+  },
+});

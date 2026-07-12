@@ -33,6 +33,18 @@ services:
     volumes:
       - redis-data:/data
 
+  lavalink:
+    image: ghcr.io/lavalink-devs/lavalink:4
+    environment:
+      _JAVA_OPTIONS: "-Xmx512M"
+      SERVER_PORT: 2333
+      LAVALINK_SERVER_PASSWORD: ${LAVALINK_PASSWORD:-youshallnotpass}
+    ports:
+      - "${LAVALINK_PORT:-2333}:2333"
+    volumes:
+      - ./docker/development/lavalink/application.yml:/opt/Lavalink/application.yml:ro
+    profiles: [music]
+
   devenv:
     build:
       context: ./docker/development/devenv

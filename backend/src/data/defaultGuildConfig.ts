@@ -13,6 +13,7 @@ export const DEFAULT_GUILD_CONFIG = `# =========================================
 #    5. logs.channels — create 4 log channels and paste their IDs
 #    6. welcome_message.send_to_channel — welcome channel (or null)
 #    7. automod new_account_join alert channel (uncomment that rule)
+#    8. AIO plugins — set enabled: true + IDs (see Dashboard → AIO)
 # ============================================================
 
 prefix: "!"
@@ -427,4 +428,89 @@ plugins:
       persisted_roles: []
       persist_nicknames: false
       persist_voice_mutes: false
+
+  # ============================================================
+  #  AIO / COMMUNITY (disabled until you fill IDs + enabled: true)
+  #  Dashboard → AIO / Setup Guides for full examples
+  # ============================================================
+
+  voicemaster:
+    config:
+      enabled: false
+      hub_channel_id: null
+      category_id: null
+      default_name: "{user}'s Channel"
+      default_limit: 0
+
+  tickets:
+    config:
+      enabled: false
+      support_role_ids: []
+      log_channel_id: null
+      parent_category_id: null
+      categories: {}
+
+  giveaways:
+    config:
+      enabled: false
+
+  leveling:
+    config:
+      enabled: false
+      min_xp: 15
+      max_xp: 25
+      cooldown_seconds: 60
+
+  verify:
+    config:
+      enabled: false
+      verified_role_id: null
+      unverified_role_id: null
+      channel_id: null
+      mode: button
+
+  fun:
+    config:
+      enabled: true
+      can_use: true
+
+  social:
+    config:
+      enabled: true
+      can_use: true
+
+  modmail:
+    config:
+      enabled: false
+      category_id: null
+      staff_role_ids: []
+      log_channel_id: null
+
+  antinuke:
+    config:
+      enabled: false
+      quarantine_role_id: null
+      log_channel_id: null
+
+  economy:
+    config:
+      enabled: false
+      currency_name: coins
+
+  music:
+    config:
+      enabled: false
+
+  collection:
+    config:
+      enabled: false
+
+  nsfw:
+    config:
+      enabled: false
+
+  booster_roles:
+    config:
+      enabled: false
+      booster_role_id: null
 `;

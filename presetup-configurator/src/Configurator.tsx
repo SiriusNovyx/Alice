@@ -16,6 +16,41 @@ export function Configurator() {
   const [withLogs, setWithLogs] = useState(false);
   const [logChannels, setLogChannels] = useState<LogChannel[]>([]);
 
+  // AIO / community plugins
+  const [withVoiceMaster, setWithVoiceMaster] = useState(false);
+  const [vmHubChannelId, setVmHubChannelId] = useState("");
+  const [vmCategoryId, setVmCategoryId] = useState("");
+
+  const [withTickets, setWithTickets] = useState(false);
+  const [ticketsCategoryId, setTicketsCategoryId] = useState("");
+  const [ticketsLogChannelId, setTicketsLogChannelId] = useState("");
+  const [ticketsSupportRoleId, setTicketsSupportRoleId] = useState("");
+
+  const [withGiveaways, setWithGiveaways] = useState(false);
+  const [withLeveling, setWithLeveling] = useState(false);
+
+  const [withVerify, setWithVerify] = useState(false);
+  const [verifyRoleId, setVerifyRoleId] = useState("");
+  const [verifyChannelId, setVerifyChannelId] = useState("");
+
+  const [withFunSocial, setWithFunSocial] = useState(false);
+
+  const [withModmail, setWithModmail] = useState(false);
+  const [modmailCategoryId, setModmailCategoryId] = useState("");
+  const [modmailStaffRoleId, setModmailStaffRoleId] = useState("");
+
+  const [withAntiNuke, setWithAntiNuke] = useState(false);
+  const [antiNukeQuarantineRoleId, setAntiNukeQuarantineRoleId] = useState("");
+  const [antiNukeLogChannelId, setAntiNukeLogChannelId] = useState("");
+
+  const [withEconomy, setWithEconomy] = useState(false);
+  const [withMusic, setWithMusic] = useState(false);
+  const [withCollection, setWithCollection] = useState(false);
+  const [withNsfw, setWithNsfw] = useState(false);
+
+  const [withBoosterRoles, setWithBoosterRoles] = useState(false);
+  const [boosterRoleId, setBoosterRoleId] = useState("");
+
   const [result, setResult] = useState({});
   useEffect(() => {
     const resultObj: any = {
@@ -80,8 +115,182 @@ export function Configurator() {
       };
     }
 
+    if (withVoiceMaster) {
+      resultObj.plugins.voicemaster = {
+        config: {
+          enabled: true,
+          hub_channel_id: vmHubChannelId || null,
+          category_id: vmCategoryId || null,
+          default_name: "{user}'s Channel",
+          default_limit: 0,
+        },
+      };
+    }
+
+    if (withTickets) {
+      resultObj.plugins.tickets = {
+        config: {
+          enabled: true,
+          parent_category_id: ticketsCategoryId || null,
+          log_channel_id: ticketsLogChannelId || null,
+          support_role_ids: ticketsSupportRoleId ? [ticketsSupportRoleId] : [],
+          categories: {
+            support: {
+              name: "Support",
+              description: "General help",
+            },
+          },
+        },
+      };
+    }
+
+    if (withGiveaways) {
+      resultObj.plugins.giveaways = {
+        config: {
+          enabled: true,
+        },
+      };
+    }
+
+    if (withLeveling) {
+      resultObj.plugins.leveling = {
+        config: {
+          enabled: true,
+          min_xp: 15,
+          max_xp: 25,
+          cooldown_seconds: 60,
+        },
+      };
+    }
+
+    if (withVerify) {
+      resultObj.plugins.verify = {
+        config: {
+          enabled: true,
+          verified_role_id: verifyRoleId || null,
+          channel_id: verifyChannelId || null,
+          mode: "button",
+        },
+      };
+    }
+
+    if (withFunSocial) {
+      resultObj.plugins.fun = {
+        config: {
+          enabled: true,
+          can_use: true,
+        },
+      };
+      resultObj.plugins.social = {
+        config: {
+          enabled: true,
+          can_use: true,
+        },
+      };
+    }
+
+    if (withModmail) {
+      resultObj.plugins.modmail = {
+        config: {
+          enabled: true,
+          category_id: modmailCategoryId || null,
+          staff_role_ids: modmailStaffRoleId ? [modmailStaffRoleId] : [],
+        },
+      };
+    }
+
+    if (withAntiNuke) {
+      resultObj.plugins.antinuke = {
+        config: {
+          enabled: true,
+          quarantine_role_id: antiNukeQuarantineRoleId || null,
+          log_channel_id: antiNukeLogChannelId || null,
+        },
+      };
+    }
+
+    if (withEconomy) {
+      resultObj.plugins.economy = {
+        config: {
+          enabled: true,
+          currency_name: "coins",
+        },
+      };
+    }
+
+    if (withMusic) {
+      resultObj.plugins.music = {
+        config: {
+          enabled: true,
+          can_use: true,
+          stay_247: false,
+          default_volume: 100,
+        },
+      };
+    }
+
+    if (withCollection) {
+      resultObj.plugins.collection = {
+        config: {
+          enabled: true,
+        },
+      };
+    }
+
+    if (withNsfw) {
+      resultObj.plugins.nsfw = {
+        config: {
+          enabled: true,
+          can_use: true,
+        },
+      };
+    }
+
+    if (withBoosterRoles) {
+      resultObj.plugins.booster_roles = {
+        config: {
+          enabled: true,
+          booster_role_id: boosterRoleId || null,
+        },
+      };
+    }
+
     setResult(resultObj);
-  }, [prefix, levels, withModCommands, muteRoleId, caseChannelId, dmModActionReasons, withLogs, logChannels]);
+  }, [
+    prefix,
+    levels,
+    withModCommands,
+    muteRoleId,
+    caseChannelId,
+    dmModActionReasons,
+    withLogs,
+    logChannels,
+    withVoiceMaster,
+    vmHubChannelId,
+    vmCategoryId,
+    withTickets,
+    ticketsCategoryId,
+    ticketsLogChannelId,
+    ticketsSupportRoleId,
+    withGiveaways,
+    withLeveling,
+    withVerify,
+    verifyRoleId,
+    verifyChannelId,
+    withFunSocial,
+    withModmail,
+    modmailCategoryId,
+    modmailStaffRoleId,
+    withAntiNuke,
+    antiNukeQuarantineRoleId,
+    antiNukeLogChannelId,
+    withEconomy,
+    withMusic,
+    withCollection,
+    withNsfw,
+    withBoosterRoles,
+    boosterRoleId,
+  ]);
 
   const [formattedResult, setFormattedResult] = useState("");
   useEffect(() => {
@@ -181,6 +390,169 @@ export function Configurator() {
           </label>
 
           {withLogs && <LogChannels logChannels={logChannels} setLogChannels={setLogChannels} />}
+        </div>
+
+        <h2>AIO / Community</h2>
+        <div className="control">
+          <label>
+            <input
+              type="checkbox"
+              checked={withVoiceMaster}
+              onChange={(e) => setWithVoiceMaster(e.target.checked)}
+            />
+            VoiceMaster (temp voice channels)
+          </label>
+          {withVoiceMaster && (
+            <div>
+              <label>
+                Hub voice channel ID
+                <br />
+                <input value={vmHubChannelId} onChange={(e) => setVmHubChannelId(e.target.value)} />
+              </label>
+              <label>
+                Temp category ID (optional)
+                <br />
+                <input value={vmCategoryId} onChange={(e) => setVmCategoryId(e.target.value)} />
+              </label>
+            </div>
+          )}
+
+          <label>
+            <input type="checkbox" checked={withTickets} onChange={(e) => setWithTickets(e.target.checked)} />
+            Tickets
+          </label>
+          {withTickets && (
+            <div>
+              <label>
+                Ticket parent category ID
+                <br />
+                <input value={ticketsCategoryId} onChange={(e) => setTicketsCategoryId(e.target.value)} />
+              </label>
+              <label>
+                Support role ID (optional)
+                <br />
+                <input value={ticketsSupportRoleId} onChange={(e) => setTicketsSupportRoleId(e.target.value)} />
+              </label>
+              <label>
+                Log channel ID (optional)
+                <br />
+                <input value={ticketsLogChannelId} onChange={(e) => setTicketsLogChannelId(e.target.value)} />
+              </label>
+            </div>
+          )}
+
+          <label>
+            <input type="checkbox" checked={withGiveaways} onChange={(e) => setWithGiveaways(e.target.checked)} />
+            Giveaways
+          </label>
+
+          <label>
+            <input type="checkbox" checked={withLeveling} onChange={(e) => setWithLeveling(e.target.checked)} />
+            Leveling (XP)
+          </label>
+
+          <label>
+            <input type="checkbox" checked={withVerify} onChange={(e) => setWithVerify(e.target.checked)} />
+            Verify (button gate)
+          </label>
+          {withVerify && (
+            <div>
+              <label>
+                Verified role ID
+                <br />
+                <input value={verifyRoleId} onChange={(e) => setVerifyRoleId(e.target.value)} />
+              </label>
+              <label>
+                Verify channel ID
+                <br />
+                <input value={verifyChannelId} onChange={(e) => setVerifyChannelId(e.target.value)} />
+              </label>
+            </div>
+          )}
+
+          <label>
+            <input type="checkbox" checked={withFunSocial} onChange={(e) => setWithFunSocial(e.target.checked)} />
+            Fun + Social
+          </label>
+
+          <label>
+            <input type="checkbox" checked={withModmail} onChange={(e) => setWithModmail(e.target.checked)} />
+            Modmail
+          </label>
+          {withModmail && (
+            <div>
+              <label>
+                Modmail category ID
+                <br />
+                <input value={modmailCategoryId} onChange={(e) => setModmailCategoryId(e.target.value)} />
+              </label>
+              <label>
+                Staff role ID
+                <br />
+                <input value={modmailStaffRoleId} onChange={(e) => setModmailStaffRoleId(e.target.value)} />
+              </label>
+            </div>
+          )}
+
+          <label>
+            <input type="checkbox" checked={withAntiNuke} onChange={(e) => setWithAntiNuke(e.target.checked)} />
+            AntiNuke
+          </label>
+          {withAntiNuke && (
+            <div>
+              <label>
+                Quarantine role ID
+                <br />
+                <input
+                  value={antiNukeQuarantineRoleId}
+                  onChange={(e) => setAntiNukeQuarantineRoleId(e.target.value)}
+                />
+              </label>
+              <label>
+                Log channel ID
+                <br />
+                <input value={antiNukeLogChannelId} onChange={(e) => setAntiNukeLogChannelId(e.target.value)} />
+              </label>
+            </div>
+          )}
+
+          <label>
+            <input type="checkbox" checked={withEconomy} onChange={(e) => setWithEconomy(e.target.checked)} />
+            Economy
+          </label>
+
+          <label>
+            <input type="checkbox" checked={withMusic} onChange={(e) => setWithMusic(e.target.checked)} />
+            Music (requires Lavalink)
+          </label>
+
+          <label>
+            <input type="checkbox" checked={withCollection} onChange={(e) => setWithCollection(e.target.checked)} />
+            Collection (gacha)
+          </label>
+
+          <label>
+            <input type="checkbox" checked={withNsfw} onChange={(e) => setWithNsfw(e.target.checked)} />
+            NSFW (NSFW channels only)
+          </label>
+
+          <label>
+            <input
+              type="checkbox"
+              checked={withBoosterRoles}
+              onChange={(e) => setWithBoosterRoles(e.target.checked)}
+            />
+            Booster roles
+          </label>
+          {withBoosterRoles && (
+            <div>
+              <label>
+                Discord booster role ID
+                <br />
+                <input value={boosterRoleId} onChange={(e) => setBoosterRoleId(e.target.value)} />
+              </label>
+            </div>
+          )}
         </div>
       </div>
 

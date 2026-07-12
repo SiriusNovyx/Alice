@@ -1,0 +1,187 @@
+import { randomBytes } from "crypto";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
+import { GuildPluginData } from "vety";
+import { GenericCommandSource, sendContextResponse } from "../../../pluginUtils.js";
+import { buildCustomId } from "../../../utils/buildCustomId.js";
+import { CollectionPluginType } from "../types.js";
+
+type PoolEntry = { key: string; weight: number; rarity: string };
+
+function getRolls(
+  pluginData: GuildPluginData<CollectionPluginType>,
+  userId: string,
+): { used: number; resetAt: number; left: number } {
+  const config = pluginData.config.get();
+  const now = Date.now();
+  let entry = pluginData.state.rolls.get(userId);
+  if (!entry || entry.resetAt <= now) {
+    entry = { used: 0, resetAt: now + config.reset_hours * 3600_000 };
+    pluginData.state.rolls.set(userId, entry);
+  }
+  return { ...entry, left: Math.max(0, config.rolls_per_reset - entry.used) };
+}
+
+function pickWeighted(pool: PoolEntry[]): PoolEntry {
+  const total = pool.reduce((s, p) => s + p.weight, 0);
+  let roll = Math.random() * total;
+  for (const p of pool) {
+    roll -= p.weight;
+    if (roll <= 0) return p;
+  }
+  return pool[pool.length - 1]!;
+}
+
+export async function actualPull(
+  pluginData: GuildPluginData<CollectionPluginType>,
+  context: GenericCommandSource,
+  userId: string,
+): Promise<void> {
+  const config = pluginData.config.get();
+  if (!config.enabled || config.pool.length === 0) {
+    await pluginData.state.common.sendErrorMessage(context, "Collection is disabled or pool is empty.");
+    return;
+  }
+  const rolls = getRolls(pluginData, userId);
+  if (rolls.left <= 0) {
+    const mins = Math.ceil((rolls.resetAt - Date.now()) / 60_000);
+    await pluginData.state.common.sendErrorMessage(
+      context,
+      `No rolls left. Resets in about **${mins}** minute(s).`,
+    );
+    return;
+  }
+  const item = pickWeighted(config.pool);
+  pluginData.state.rolls.set(userId, { used: rolls.used + 1, resetAt: rolls.resetAt });
+  await pluginData.state.inventory.add(userId, item.key);
+  await pluginData.state.common.sendSuccessMessage(
+    context,
+    `You pulled **${item.key}** (**${item.rarity}**)! Rolls left: **${rolls.left - 1}**.`,
+  );
+}
+
+export async function actualInv(
+  pluginData: GuildPluginData<CollectionPluginType>,
+  context: GenericCommandSource,
+  userId: string,
+): Promise<void> {
+  const items = await pluginData.state.inventory.list(userId);
+  if (!items.length) {
+    await pluginData.state.common.sendSuccessMessage(context, "Inventory empty. Try a pull.");
+    return;
+  }
+  await pluginData.state.common.sendSuccessMessage(
+    context,
+    items.map((i) => `**${i.item_key}** ×${i.quantity}`).join("\n"),
+  );
+}
+
+export async function actualGive(
+  pluginData: GuildPluginData<CollectionPluginType>,
+  context: GenericCommandSource,
+  fromId: string,
+  toId: string,
+  itemKey: string,
+  qty: number,
+): Promise<void> {
+  if (!pluginData.config.get().enabled) {
+    await pluginData.state.common.sendErrorMessage(context, "Collection is disabled.");
+    return;
+  }
+  if (fromId === toId || qty < 1) {
+    await pluginData.state.common.sendErrorMessage(context, "Invalid give.");
+    return;
+  }
+  const ok = await pluginData.state.inventory.transfer(fromId, toId, itemKey, Math.floor(qty));
+  if (!ok) {
+    await pluginData.state.common.sendErrorMessage(context, "You do not have enough of that item.");
+    return;
+  }
+  await pluginData.state.common.sendSuccessMessage(
+    context,
+    `Gave **${itemKey}** ×${Math.floor(qty)} to <@${toId}>.`,
+  );
+}
+
+export async function actualTrade(
+  pluginData: GuildPluginData<CollectionPluginType>,
+  context: GenericCommandSource,
+  userA: string,
+  itemA: string,
+  userB: string,
+  itemB: string,
+): Promise<void> {
+  if (!pluginData.config.get().enabled) {
+    await pluginData.state.common.sendErrorMessage(context, "Collection is disabled.");
+    return;
+  }
+  if (userA === userB) {
+    await pluginData.state.common.sendErrorMessage(context, "You cannot trade with yourself.");
+    return;
+  }
+  const aHas = await pluginData.state.inventory.get(userA, itemA);
+  const bHas = await pluginData.state.inventory.get(userB, itemB);
+  if (!aHas || aHas.quantity < 1 || !bHas || bHas.quantity < 1) {
+    await pluginData.state.common.sendErrorMessage(context, "Both sides must own the listed items.");
+    return;
+  }
+
+  // Partner must explicitly accept — never remove another user's items unilaterally.
+  const offerId = randomBytes(8).toString("hex");
+  pluginData.state.pendingTrades.set(offerId, {
+    fromId: userA,
+    toId: userB,
+    itemA,
+    itemB,
+    expiresAt: Date.now() + 5 * 60_000,
+  });
+
+  const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+    new ButtonBuilder()
+      .setCustomId(buildCustomId("collection", { action: "trade_accept", offerId }))
+      .setLabel("Accept trade")
+      .setStyle(ButtonStyle.Success),
+    new ButtonBuilder()
+      .setCustomId(buildCustomId("collection", { action: "trade_decline", offerId }))
+      .setLabel("Decline")
+      .setStyle(ButtonStyle.Secondary),
+  );
+
+  await sendContextResponse(context, {
+    content:
+      `<@${userB}>, <@${userA}> wants to trade **${itemA}** for your **${itemB}**.\n` +
+      `Only <@${userB}> can accept. Offer expires in 5 minutes.`,
+    components: [row],
+  });
+}
+
+export async function executeAcceptedTrade(
+  pluginData: GuildPluginData<CollectionPluginType>,
+  offerId: string,
+): Promise<{ ok: true; fromId: string; toId: string; itemA: string; itemB: string } | { ok: false; reason: string }> {
+  const offer = pluginData.state.pendingTrades.get(offerId);
+  if (!offer) return { ok: false, reason: "This trade offer is no longer available." };
+  if (Date.now() > offer.expiresAt) {
+    pluginData.state.pendingTrades.delete(offerId);
+    return { ok: false, reason: "This trade offer has expired." };
+  }
+
+  const aHas = await pluginData.state.inventory.get(offer.fromId, offer.itemA);
+  const bHas = await pluginData.state.inventory.get(offer.toId, offer.itemB);
+  if (!aHas || aHas.quantity < 1 || !bHas || bHas.quantity < 1) {
+    pluginData.state.pendingTrades.delete(offerId);
+    return { ok: false, reason: "One or both items are no longer available." };
+  }
+
+  await pluginData.state.inventory.remove(offer.fromId, offer.itemA, 1);
+  await pluginData.state.inventory.remove(offer.toId, offer.itemB, 1);
+  await pluginData.state.inventory.add(offer.fromId, offer.itemB, 1);
+  await pluginData.state.inventory.add(offer.toId, offer.itemA, 1);
+  pluginData.state.pendingTrades.delete(offerId);
+  return {
+    ok: true,
+    fromId: offer.fromId,
+    toId: offer.toId,
+    itemA: offer.itemA,
+    itemB: offer.itemB,
+  };
+}

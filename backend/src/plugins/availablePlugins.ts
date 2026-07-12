@@ -79,6 +79,34 @@ import { WelcomeMessagePlugin } from "./WelcomeMessage/WelcomeMessagePlugin.js";
 import { welcomeMessagePluginDocs } from "./WelcomeMessage/docs.js";
 import { CommandAliasesPlugin } from "./CommandAliases/CommandAliasesPlugin.js";
 import { commandAliasesPluginDocs } from "./CommandAliases/docs.js";
+import { VoiceMasterPlugin } from "./VoiceMaster/VoiceMasterPlugin.js";
+import { voiceMasterPluginDocs } from "./VoiceMaster/docs.js";
+import { TicketsPlugin } from "./Tickets/TicketsPlugin.js";
+import { ticketsPluginDocs } from "./Tickets/docs.js";
+import { GiveawaysPlugin } from "./Giveaways/GiveawaysPlugin.js";
+import { giveawaysPluginDocs } from "./Giveaways/docs.js";
+import { LevelingPlugin } from "./Leveling/LevelingPlugin.js";
+import { levelingPluginDocs } from "./Leveling/docs.js";
+import { VerifyPlugin } from "./Verify/VerifyPlugin.js";
+import { verifyPluginDocs } from "./Verify/docs.js";
+import { FunPlugin } from "./Fun/FunPlugin.js";
+import { funPluginDocs } from "./Fun/docs.js";
+import { SocialPlugin } from "./Social/SocialPlugin.js";
+import { socialPluginDocs } from "./Social/docs.js";
+import { ModmailPlugin } from "./Modmail/ModmailPlugin.js";
+import { modmailPluginDocs } from "./Modmail/docs.js";
+import { AntiNukePlugin } from "./AntiNuke/AntiNukePlugin.js";
+import { antiNukePluginDocs } from "./AntiNuke/docs.js";
+import { EconomyPlugin } from "./Economy/EconomyPlugin.js";
+import { economyPluginDocs } from "./Economy/docs.js";
+import { MusicPlugin } from "./Music/MusicPlugin.js";
+import { musicPluginDocs } from "./Music/docs.js";
+import { CollectionPlugin } from "./Collection/CollectionPlugin.js";
+import { collectionPluginDocs } from "./Collection/docs.js";
+import { NsfwPlugin } from "./Nsfw/NsfwPlugin.js";
+import { nsfwPluginDocs } from "./Nsfw/docs.js";
+import { BoosterRolesPlugin } from "./BoosterRoles/BoosterRolesPlugin.js";
+import { boosterRolesPluginDocs } from "./BoosterRoles/docs.js";
 
 export const availableGuildPlugins: ZeppelinGuildPluginInfo[] = [
   {
@@ -236,6 +264,62 @@ export const availableGuildPlugins: ZeppelinGuildPluginInfo[] = [
   {
     plugin: WelcomeMessagePlugin,
     docs: welcomeMessagePluginDocs,
+  },
+  {
+    plugin: VoiceMasterPlugin,
+    docs: voiceMasterPluginDocs,
+  },
+  {
+    plugin: TicketsPlugin,
+    docs: ticketsPluginDocs,
+  },
+  {
+    plugin: GiveawaysPlugin,
+    docs: giveawaysPluginDocs,
+  },
+  {
+    plugin: LevelingPlugin,
+    docs: levelingPluginDocs,
+  },
+  {
+    plugin: VerifyPlugin,
+    docs: verifyPluginDocs,
+  },
+  {
+    plugin: FunPlugin,
+    docs: funPluginDocs,
+  },
+  {
+    plugin: SocialPlugin,
+    docs: socialPluginDocs,
+  },
+  {
+    plugin: ModmailPlugin,
+    docs: modmailPluginDocs,
+  },
+  {
+    plugin: AntiNukePlugin,
+    docs: antiNukePluginDocs,
+  },
+  {
+    plugin: EconomyPlugin,
+    docs: economyPluginDocs,
+  },
+  {
+    plugin: MusicPlugin,
+    docs: musicPluginDocs,
+  },
+  {
+    plugin: CollectionPlugin,
+    docs: collectionPluginDocs,
+  },
+  {
+    plugin: NsfwPlugin,
+    docs: nsfwPluginDocs,
+  },
+  {
+    plugin: BoosterRolesPlugin,
+    docs: boosterRolesPluginDocs,
   },
   {
     plugin: CommonPlugin,
