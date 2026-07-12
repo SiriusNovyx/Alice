@@ -53,10 +53,16 @@ export const GiveawayInteractionEvt = giveawaysEvt({
       return;
     }
 
-    await pluginData.state.giveaways.addEntrant(row.message_id, member.id);
+    const added = await pluginData.state.giveaways.addEntrant(row.message_id, member.id);
+    if (!added) {
+      await interaction.reply({ ephemeral: true, content: "Could not enter (already entered or giveaway ended)." });
+      return;
+    }
+    const updated = await pluginData.state.giveaways.findByMessageId(row.message_id);
+    const count = updated ? pluginData.state.giveaways.getEntrants(updated).length : entrants.length + 1;
     await interaction.message
       .edit({
-        embeds: [buildGiveawayEmbed(row.prize, row.ends_at, row.winner_count, entrants.length + 1)],
+        embeds: [buildGiveawayEmbed(row.prize, row.ends_at, row.winner_count, count)],
         components: [buildEnterRow()],
       })
       .catch(() => null);

@@ -136,6 +136,7 @@ export async function actualPay(
   toId: string,
   amount: number,
 ): Promise<void> {
+  if (!requireEnabled(pluginData, context)) return;
   if (amount <= 0 || fromId === toId) {
     await pluginData.state.common.sendErrorMessage(context, "Invalid payment.");
     return;

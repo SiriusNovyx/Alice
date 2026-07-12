@@ -62,7 +62,11 @@ export const VerifyInteractionEvt = verifyEvt({
         const ok = await grantVerifiedRole(pluginData, member);
         await interaction.reply({
           ephemeral: true,
-          content: ok ? "You have been verified." : "Verification role is not configured.",
+          content: ok
+            ? "You have been verified."
+            : config.verified_role_id
+              ? "Could not assign the verified role. Ask staff to check the bot's Manage Roles permission and role hierarchy."
+              : "Verification role is not configured.",
         });
         return;
       }
@@ -137,7 +141,11 @@ export const VerifyInteractionEvt = verifyEvt({
       const ok = await grantVerifiedRole(pluginData, member);
       await interaction.reply({
         ephemeral: true,
-        content: ok ? "You have been verified." : "Verification role is not configured.",
+        content: ok
+          ? "You have been verified."
+          : config.verified_role_id
+            ? "Could not assign the verified role. Ask staff to check the bot's Manage Roles permission and role hierarchy."
+            : "Verification role is not configured.",
       });
       return;
     }

@@ -1,5 +1,6 @@
 import {
   BasePluginType,
+  guildPluginEventListener,
   guildPluginMessageCommand,
   guildPluginSlashCommand,
   guildPluginSlashGroup,
@@ -30,6 +31,14 @@ export const zCollectionConfig = z.strictObject({
     ]),
 });
 
+export type PendingCollectionTrade = {
+  fromId: string;
+  toId: string;
+  itemA: string;
+  itemB: string;
+  expiresAt: number;
+};
+
 export interface CollectionPluginType extends BasePluginType {
   configSchema: typeof zCollectionConfig;
   state: {
@@ -37,9 +46,12 @@ export interface CollectionPluginType extends BasePluginType {
     common: pluginUtils.PluginPublicInterface<typeof CommonPlugin>;
     /** userId -> { used, resetAt ms } */
     rolls: Map<string, { used: number; resetAt: number }>;
+    /** offerId -> pending trade awaiting partner accept */
+    pendingTrades: Map<string, PendingCollectionTrade>;
   };
 }
 
 export const collectionCmd = guildPluginMessageCommand<CollectionPluginType>();
 export const collectionSlashGroup = guildPluginSlashGroup<CollectionPluginType>();
 export const collectionSlashCmd = guildPluginSlashCommand<CollectionPluginType>();
+export const collectionEvt = guildPluginEventListener<CollectionPluginType>();

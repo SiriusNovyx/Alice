@@ -21,10 +21,16 @@ export async function grantVerifiedRole(
   const config = pluginData.config.get();
   if (!config.verified_role_id) return false;
 
+  try {
+    await member.roles.add(config.verified_role_id);
+  } catch {
+    // Keep the captcha challenge so the user can retry after permissions are fixed.
+    return false;
+  }
+
   if (config.unverified_role_id && member.roles.cache.has(config.unverified_role_id)) {
     await member.roles.remove(config.unverified_role_id).catch(() => null);
   }
-  await member.roles.add(config.verified_role_id).catch(() => null);
   pluginData.state.challenges.delete(member.id);
   return true;
 }

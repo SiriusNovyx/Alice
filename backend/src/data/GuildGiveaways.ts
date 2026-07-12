@@ -79,27 +79,39 @@ export class GuildGiveaways extends BaseGuildRepository {
   }
 
   async addEntrant(messageId: string, userId: string): Promise<boolean> {
-    const row = await this.findByMessageId(messageId);
-    if (!row || row.status !== "active") return false;
-    const entrants = this.getEntrants(row);
-    if (entrants.includes(userId)) return false;
-    entrants.push(userId);
-    await this.giveaways.update(
-      { guild_id: this.guildId, message_id: messageId },
-      { entrants: JSON.stringify(entrants) },
-    );
-    return true;
+    return dataSource.transaction(async (em) => {
+      const repo = em.getRepository(Giveaway);
+      const row = await repo.findOne({
+        where: { guild_id: this.guildId, message_id: messageId },
+        lock: { mode: "pessimistic_write" },
+      });
+      if (!row || row.status !== "active") return false;
+      const entrants = parseJsonArray(row.entrants);
+      if (entrants.includes(userId)) return false;
+      entrants.push(userId);
+      await repo.update(
+        { guild_id: this.guildId, message_id: messageId },
+        { entrants: JSON.stringify(entrants) },
+      );
+      return true;
+    });
   }
 
   async removeEntrant(messageId: string, userId: string): Promise<boolean> {
-    const row = await this.findByMessageId(messageId);
-    if (!row || row.status !== "active") return false;
-    const entrants = this.getEntrants(row).filter((id) => id !== userId);
-    await this.giveaways.update(
-      { guild_id: this.guildId, message_id: messageId },
-      { entrants: JSON.stringify(entrants) },
-    );
-    return true;
+    return dataSource.transaction(async (em) => {
+      const repo = em.getRepository(Giveaway);
+      const row = await repo.findOne({
+        where: { guild_id: this.guildId, message_id: messageId },
+        lock: { mode: "pessimistic_write" },
+      });
+      if (!row || row.status !== "active") return false;
+      const entrants = parseJsonArray(row.entrants).filter((id) => id !== userId);
+      await repo.update(
+        { guild_id: this.guildId, message_id: messageId },
+        { entrants: JSON.stringify(entrants) },
+      );
+      return true;
+    });
   }
 
   async markEnded(messageId: string, winners: string[]): Promise<void> {

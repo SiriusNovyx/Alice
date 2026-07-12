@@ -1,5 +1,8 @@
+import { randomBytes } from "crypto";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 import { GuildPluginData } from "vety";
-import { GenericCommandSource } from "../../../pluginUtils.js";
+import { GenericCommandSource, sendContextResponse } from "../../../pluginUtils.js";
+import { buildCustomId } from "../../../utils/buildCustomId.js";
 import { CollectionPluginType } from "../types.js";
 
 type PoolEntry = { key: string; weight: number; rarity: string };
@@ -111,18 +114,74 @@ export async function actualTrade(
     await pluginData.state.common.sendErrorMessage(context, "Collection is disabled.");
     return;
   }
+  if (userA === userB) {
+    await pluginData.state.common.sendErrorMessage(context, "You cannot trade with yourself.");
+    return;
+  }
   const aHas = await pluginData.state.inventory.get(userA, itemA);
   const bHas = await pluginData.state.inventory.get(userB, itemB);
   if (!aHas || aHas.quantity < 1 || !bHas || bHas.quantity < 1) {
     await pluginData.state.common.sendErrorMessage(context, "Both sides must own the listed items.");
     return;
   }
-  await pluginData.state.inventory.remove(userA, itemA, 1);
-  await pluginData.state.inventory.remove(userB, itemB, 1);
-  await pluginData.state.inventory.add(userA, itemB, 1);
-  await pluginData.state.inventory.add(userB, itemA, 1);
-  await pluginData.state.common.sendSuccessMessage(
-    context,
-    `Trade complete: <@${userA}> **${itemA}** ↔ <@${userB}> **${itemB}**.`,
+
+  // Partner must explicitly accept — never remove another user's items unilaterally.
+  const offerId = randomBytes(8).toString("hex");
+  pluginData.state.pendingTrades.set(offerId, {
+    fromId: userA,
+    toId: userB,
+    itemA,
+    itemB,
+    expiresAt: Date.now() + 5 * 60_000,
+  });
+
+  const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+    new ButtonBuilder()
+      .setCustomId(buildCustomId("collection", { action: "trade_accept", offerId }))
+      .setLabel("Accept trade")
+      .setStyle(ButtonStyle.Success),
+    new ButtonBuilder()
+      .setCustomId(buildCustomId("collection", { action: "trade_decline", offerId }))
+      .setLabel("Decline")
+      .setStyle(ButtonStyle.Secondary),
   );
+
+  await sendContextResponse(context, {
+    content:
+      `<@${userB}>, <@${userA}> wants to trade **${itemA}** for your **${itemB}**.\n` +
+      `Only <@${userB}> can accept. Offer expires in 5 minutes.`,
+    components: [row],
+  });
+}
+
+export async function executeAcceptedTrade(
+  pluginData: GuildPluginData<CollectionPluginType>,
+  offerId: string,
+): Promise<{ ok: true; fromId: string; toId: string; itemA: string; itemB: string } | { ok: false; reason: string }> {
+  const offer = pluginData.state.pendingTrades.get(offerId);
+  if (!offer) return { ok: false, reason: "This trade offer is no longer available." };
+  if (Date.now() > offer.expiresAt) {
+    pluginData.state.pendingTrades.delete(offerId);
+    return { ok: false, reason: "This trade offer has expired." };
+  }
+
+  const aHas = await pluginData.state.inventory.get(offer.fromId, offer.itemA);
+  const bHas = await pluginData.state.inventory.get(offer.toId, offer.itemB);
+  if (!aHas || aHas.quantity < 1 || !bHas || bHas.quantity < 1) {
+    pluginData.state.pendingTrades.delete(offerId);
+    return { ok: false, reason: "One or both items are no longer available." };
+  }
+
+  await pluginData.state.inventory.remove(offer.fromId, offer.itemA, 1);
+  await pluginData.state.inventory.remove(offer.toId, offer.itemB, 1);
+  await pluginData.state.inventory.add(offer.fromId, offer.itemB, 1);
+  await pluginData.state.inventory.add(offer.toId, offer.itemA, 1);
+  pluginData.state.pendingTrades.delete(offerId);
+  return {
+    ok: true,
+    fromId: offer.fromId,
+    toId: offer.toId,
+    itemA: offer.itemA,
+    itemB: offer.itemB,
+  };
 }

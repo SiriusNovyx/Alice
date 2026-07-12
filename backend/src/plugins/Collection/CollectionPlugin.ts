@@ -11,6 +11,7 @@ import {
   TradeCmd,
   TradeSlashCmd,
 } from "./commands/CollectionCmds.js";
+import { CollectionTradeInteractionEvt } from "./events/CollectionTradeInteractionEvt.js";
 import { CollectionPluginType, collectionSlashGroup, zCollectionConfig } from "./types.js";
 
 export const CollectionPlugin = guildPlugin<CollectionPluginType>()({
@@ -25,9 +26,11 @@ export const CollectionPlugin = guildPlugin<CollectionPluginType>()({
       subcommands: [PullSlashCmd, InvSlashCmd, GiveSlashCmd, TradeSlashCmd],
     }),
   ],
+  events: [CollectionTradeInteractionEvt],
   beforeLoad(pluginData) {
     pluginData.state.inventory = GuildCollectionInventory.getGuildInstance(pluginData.guild.id);
     pluginData.state.rolls = new Map();
+    pluginData.state.pendingTrades = new Map();
   },
   beforeStart(pluginData) {
     pluginData.state.common = pluginData.getPlugin(CommonPlugin);

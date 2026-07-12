@@ -1,5 +1,5 @@
 import { deflateSync } from "zlib";
-import { randomBytes } from "crypto";
+import { randomInt } from "crypto";
 
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
@@ -40,10 +40,9 @@ const GLYPHS: Record<string, number[]> = {
 };
 
 export function generateCaptchaCode(length: number): string {
-  const bytes = randomBytes(length);
   let out = "";
   for (let i = 0; i < length; i++) {
-    out += ALPHABET[bytes[i]! % ALPHABET.length];
+    out += ALPHABET[randomInt(ALPHABET.length)]!;
   }
   return out;
 }
@@ -67,6 +66,11 @@ function pngChunk(type: string, data: Buffer): Buffer {
   const crcBuf = Buffer.alloc(4);
   crcBuf.writeUInt32BE(crc32(Buffer.concat([typeBuf, data])), 0);
   return Buffer.concat([len, typeBuf, data, crcBuf]);
+}
+
+/** Non-crypto PRNG for decorative captcha noise only. */
+function noiseInt(maxExclusive: number): number {
+  return Math.floor(Math.random() * maxExclusive);
 }
 
 /**
@@ -103,20 +107,19 @@ export function renderCaptchaPng(code: string): Buffer {
     }
   }
 
-  // Noise dots
-  const noise = randomBytes(width * height);
+  // Noise dots (decorative — Math.random is fine)
   for (let n = 0; n < 180; n++) {
-    const x = noise[n]! % width;
-    const y = noise[(n + 50) % noise.length]! % height;
-    setPx(x, y, 80 + (noise[n]! % 100), 80 + (noise[(n + 3) % noise.length]! % 100), 120);
+    const x = noiseInt(width);
+    const y = noiseInt(height);
+    setPx(x, y, 80 + noiseInt(100), 80 + noiseInt(100), 120);
   }
 
   // Noise lines
   for (let n = 0; n < 6; n++) {
-    const x0 = noise[(n * 7) % noise.length]! % width;
-    const y0 = noise[(n * 11) % noise.length]! % height;
-    const x1 = noise[(n * 13) % noise.length]! % width;
-    const y1 = noise[(n * 17) % noise.length]! % height;
+    const x0 = noiseInt(width);
+    const y0 = noiseInt(height);
+    const x1 = noiseInt(width);
+    const y1 = noiseInt(height);
     const steps = Math.max(Math.abs(x1 - x0), Math.abs(y1 - y0), 1);
     for (let s = 0; s <= steps; s++) {
       const x = Math.round(x0 + ((x1 - x0) * s) / steps);
@@ -130,10 +133,10 @@ export function renderCaptchaPng(code: string): Buffer {
     const ch = code[ci]!;
     const glyph = GLYPHS[ch];
     if (!glyph) continue;
-    const ox = padX + ci * (glyphW * scale + gap) + (noise[ci]! % 3) - 1;
-    const oy = padY + (noise[(ci + 20) % noise.length]! % 5) - 2;
-    const inkR = 180 + (noise[ci]! % 60);
-    const inkG = 180 + (noise[(ci + 1) % noise.length]! % 60);
+    const ox = padX + ci * (glyphW * scale + gap) + noiseInt(3) - 1;
+    const oy = padY + noiseInt(5) - 2;
+    const inkR = 180 + noiseInt(60);
+    const inkG = 180 + noiseInt(60);
     const inkB = 220;
     for (let gy = 0; gy < glyphH; gy++) {
       const row = glyph[gy]!;

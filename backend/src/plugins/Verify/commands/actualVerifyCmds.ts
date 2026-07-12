@@ -75,8 +75,14 @@ export async function actualSubmitCmd(
   }
 
   const ok = await grantVerifiedRole(pluginData, member);
-  await pluginData.state.common.sendSuccessMessage(
+  if (ok) {
+    await pluginData.state.common.sendSuccessMessage(context, "You have been verified.");
+    return;
+  }
+  await pluginData.state.common.sendErrorMessage(
     context,
-    ok ? "You have been verified." : "Verification role is not configured.",
+    pluginData.config.get().verified_role_id
+      ? "Could not assign the verified role. Ask staff to check the bot's Manage Roles permission and role hierarchy."
+      : "Verification role is not configured.",
   );
 }
