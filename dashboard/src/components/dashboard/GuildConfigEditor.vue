@@ -338,7 +338,7 @@ export default {
           );
           let knownConfigKeys: string[] = [];
           const pluginFromError = String(rawErrors[0] || "").match(
-            /^([a-z][a-z0-9_]*(?:_[a-z0-9_]+)*)\s*:/i,
+            /^([a-z][a-z0-9_]*)\s*:/i,
           );
           if (pluginFromError) {
             const pluginName = pluginFromError[1];

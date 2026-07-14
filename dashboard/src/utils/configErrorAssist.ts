@@ -67,7 +67,7 @@ const RULES: AssistRule[] = [
     docsPath: DOCS_PLUGIN_CONFIG,
   },
   {
-    test: /^([a-z][a-z0-9_]*(?:_[a-z0-9_]+)*):/i,
+    test: /^([a-z][a-z0-9_]*):/i,
     hint: "See that plugin’s docs for valid config / overrides",
     docsPath: (m) => `/docs/plugins/${m[1]}`,
   },
@@ -327,7 +327,7 @@ function fixInvalidPluginOptionsWrapper(
 }
 
 function parsePluginPrefix(message: string): string | null {
-  const m = message.match(/^([a-z][a-z0-9_]*(?:_[a-z0-9_]+)*)\s*:/i);
+  const m = message.match(/^([a-z][a-z0-9_]*)\s*:/i);
   return m ? m[1] : null;
 }
 
@@ -687,7 +687,7 @@ function parsePluginZodJsonIssues(
   // Normal: "mod_actions: [ {...} ]"
   // Override: "censor: Invalid override config: [ {...} ]"
   const m = message.match(
-    /^([a-z][a-z0-9_]*(?:_[a-z0-9_]+)*)\s*:(?:\s*Invalid override config:)?\s*(\[[\s\S]*\])\s*$/i,
+    /^([a-z][a-z0-9_]*)\s*:(?:\s*Invalid override config:)?\s*(\[[\s\S]*\])\s*$/i,
   );
   if (!m) return null;
   try {
@@ -853,12 +853,10 @@ function fixUnquotedSnowflakeValues(
   }
 
   if (!targets.length) {
-    for (const m of message.matchAll(
-      /"path"\s*:\s*\[\s*((?:"[^"]+"\s*,?\s*|\d+\s*,?\s*)+)\]/g,
-    )) {
-      const parts = [...m[1].matchAll(/"([^"]+)"|(\d+)/g)].map((p) => p[1] ?? p[2]);
+    for (const m of message.matchAll(/"path"\s*:\s*\[([^\]]{0,500})\]/g)) {
+      const parts = [...m[1].matchAll(/"([^"]{1,200})"|(\d{1,20})/g)].map((p) => p[1] ?? p[2]!);
       if (!parts.length) continue;
-      const last = parts[parts.length - 1];
+      const last = parts[parts.length - 1]!;
       const list = /^\d+$/.test(last);
       const key = list ? parts[parts.length - 2] : last;
       if (key) targets.push({ key, list });
