@@ -1,8 +1,8 @@
-import { ZeppelinPluginDocs } from "../../types.js";
+import { AlicePluginDocs } from "../../types.js";
 import { trimPluginDescription } from "../../utils.js";
 import { zTimeAndDateConfig } from "./types.js";
 
-export const timeAndDatePluginDocs: ZeppelinPluginDocs = {
+export const timeAndDatePluginDocs: AlicePluginDocs = {
   type: "stable",
   prettyName: "Time and date",
   description: trimPluginDescription(`

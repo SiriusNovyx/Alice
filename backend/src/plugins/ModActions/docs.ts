@@ -1,8 +1,8 @@
-import { ZeppelinPluginDocs } from "../../types.js";
+import { AlicePluginDocs } from "../../types.js";
 import { trimPluginDescription } from "../../utils.js";
 import { zModActionsConfig } from "./types.js";
 
-export const modActionsPluginDocs: ZeppelinPluginDocs = {
+export const modActionsPluginDocs: AlicePluginDocs = {
   prettyName: "Mod actions",
   type: "stable",
   description: trimPluginDescription(`

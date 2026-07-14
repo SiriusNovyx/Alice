@@ -1,5 +1,5 @@
 version: '3'
-name: zeppelin-prod
+name: alice-prod
 volumes:
   transcript_store:
   mysql-data: {}
@@ -9,8 +9,8 @@ services:
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: ${STANDALONE_MYSQL_ROOT_PASSWORD?:Missing STANDALONE_MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: zeppelin
-      MYSQL_USER: zeppelin
+      MYSQL_DATABASE: alice
+      MYSQL_USER: alice
       MYSQL_PASSWORD: ${STANDALONE_MYSQL_PASSWORD?:Missing STANDALONE_MYSQL_PASSWORD}
     ports:
       - 127.0.0.1:${STANDALONE_MYSQL_PORT:?Missing STANDALONE_MYSQL_PORT}:3306
@@ -43,7 +43,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: zeppelin-local
+    image: alice-local
     depends_on:
       mysql:
         condition: service_healthy
@@ -53,9 +53,9 @@ services:
       - TRANSCRIPT_SECRET=${TRANSCRIPT_SECRET:-change-me-in-env}
       - DB_HOST=mysql
       - DB_PORT=3306
-      - DB_USER=zeppelin
+      - DB_USER=alice
       - DB_PASSWORD=${STANDALONE_MYSQL_PASSWORD}
-      - DB_DATABASE=zeppelin
+      - DB_DATABASE=alice
       - API_PATH_PREFIX=/api
     env_file:
       - .env
@@ -63,7 +63,7 @@ services:
     command: ["pnpm", "run", "migrate-prod"]
 
   api:
-    image: zeppelin-local
+    image: alice-local
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -75,7 +75,7 @@ services:
     command: ["pnpm", "run", "start-api-prod"]
 
   bot:
-    image: zeppelin-local
+    image: alice-local
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -99,7 +99,7 @@ services:
       - transcript_store:/app/store/transcripts
 
   dashboard:
-    image: zeppelin-local
+    image: alice-local
     depends_on:
       migrate:
         condition: service_completed_successfully

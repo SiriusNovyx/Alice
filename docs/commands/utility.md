@@ -5,7 +5,7 @@
 
 [← All commands](../COMMANDS.md)
 
-**Slash group:** `/utility`
+**Slash group:** `/utility` · also top-level `/commands`
 
 Syntax: `<required>` · `[optional]` · Prefix defaults to `!` (server-configurable).
 
@@ -13,14 +13,15 @@ Syntax: `<required>` · `[optional]` · Prefix defaults to `!` (server-configura
 
 | Command | Usage | Description | Permission |
 |---|---|---|---|
-| `!about` | `!about` | Show information about Zeppelin's status on the server | `can_about` |
+| `!about` | `!about` | Show information about Alice's status on the server | `can_about` |
 | `!avatar` (aliases: `av`) | `!avatar` | Retrieves a user's profile picture | `can_avatar` |
 | `!bansearch` (aliases: `bs`) | `!bansearch <query>` | Search banned users | `can_search` |
 | `!channel` (aliases: `channelinfo`) | `!channel <channel>` | Show information about a channel | `can_channelinfo` |
 | `!clean` (aliases: `clear`) | `!clean <count>` | Remove a number of recent messages | `can_clean` |
+| `!commands` | `!commands` | Open the Alice Help Center (category grid + select menu) | `can_help` |
 | `!context` | `!context <channelId> <messageId>` | Get a link to the context of the specified message | `can_context` |
 | `!emoji` (aliases: `emojiinfo`) | `!emoji <emoji>` | Show information about an emoji | `can_emojiinfo` |
-| `!help` | `!help <command>` | Show usage information for one or more commands | `can_help` |
+| `!help` | `!help <command>` | Show usage information for one or more commands (prefix + slash) | `can_help` |
 | `!info` | `!info` | Show information about the specified thing | `can_info` |
 | `!invite` (aliases: `inviteinfo`) | `!invite <code>` | Show information about an invite | `can_inviteinfo` |
 | `!jumbo` | `!jumbo` | Makes an emoji jumbo | `can_jumbo` |
@@ -29,7 +30,7 @@ Syntax: `<required>` · `[optional]` · Prefix defaults to `!` (server-configura
 | `!nickname` (aliases: `nick`) | `!nickname <user> <nickname>` | Set a member's nickname | `can_nickname` |
 | `!nickname reset` (aliases: `nick reset`) | `!nickname reset <user>` | Reset a member's nickname to their username | `can_nickname` |
 | `!ping` (aliases: `pong`) | `!ping` | Test the bot's ping to the Discord API | `can_ping` |
-| `!reload_guild` | `!reload_guild` | Reload the Zeppelin configuration and all plugins for the server. This can sometimes fix issues. | `can_reload_guild` |
+| `!reload_guild` | `!reload_guild` | Reload the Alice configuration and all plugins for the server. This can sometimes fix issues. | `can_reload_guild` |
 | `!roleinfo` | `!role <role>` | Show information about a role | `can_roleinfo` |
 | `!roles` | `!roles [search]` | List all roles or roles matching a search | `can_roles` |
 | `!search` (aliases: `s`) | `!search <query>` | Search server members | `can_search` |
@@ -45,7 +46,8 @@ Syntax: `<required>` · `[optional]` · Prefix defaults to `!` (server-configura
 
 | Slash | Description | Permission |
 |---|---|---|
-| `/utility about` | Show information about Zeppelin's status on the server | `can_about` |
+| `/commands` | Open the Alice Help Center (category grid + select menu) | `can_help` |
+| `/utility about` | Show information about Alice's status on the server | `can_about` |
 | `/utility avatar` | Get a user's profile picture | `can_avatar` |
 | `/utility bansearch` | Search banned users | `can_search` |
 | `/utility clean` | Remove a number of recent messages | `can_clean` |
@@ -69,4 +71,4 @@ Syntax: `<required>` · `[optional]` · Prefix defaults to `!` (server-configura
 
 ---
 
-In Discord, run `!help <command>` for live usage for any prefix command.
+In Discord, run `!help <command>` or `/utility help` for live usage. Use `/commands` for the full compact list.

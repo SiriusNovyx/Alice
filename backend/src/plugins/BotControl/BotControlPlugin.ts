@@ -9,6 +9,8 @@ import { AddDashboardUserCmd } from "./commands/AddDashboardUserCmd.js";
 import { AddServerFromInviteCmd } from "./commands/AddServerFromInviteCmd.js";
 import { AllowServerCmd } from "./commands/AllowServerCmd.js";
 import { ChannelToServerCmd } from "./commands/ChannelToServerCmd.js";
+import { DashboardSlashGroup } from "./commands/DashboardSlashCmds.js";
+import { DebugCountersCmd } from "./commands/DebugCountersCmd.js";
 import { DisallowServerCmd } from "./commands/DisallowServerCmd.js";
 import { EligibleCmd } from "./commands/EligibleCmd.js";
 import { LeaveServerCmd } from "./commands/LeaveServerCmd.js";
@@ -22,7 +24,6 @@ import { RemoveDashboardUserCmd } from "./commands/RemoveDashboardUserCmd.js";
 import { RestPerformanceCmd } from "./commands/RestPerformanceCmd.js";
 import { ServersCmd } from "./commands/ServersCmd.js";
 import { BotControlPluginType, zBotControlConfig } from "./types.js";
-import { DebugCountersCmd } from "./commands/DebugCountersCmd.js";
 
 export const BotControlPlugin = globalPlugin<BotControlPluginType>()({
   name: "bot_control",
@@ -48,6 +49,8 @@ export const BotControlPlugin = globalPlugin<BotControlPluginType>()({
     ChannelToServerCmd,
     DebugCountersCmd,
   ],
+
+  slashCommands: [DashboardSlashGroup],
 
   async afterLoad(pluginData) {
     const { state, client } = pluginData;

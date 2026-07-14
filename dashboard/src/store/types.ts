@@ -1,4 +1,4 @@
-import { ApiPermissions } from "@zeppelinbot/shared/apiPermissions.js";
+import { ApiPermissions } from "@alicebot/shared/apiPermissions.js";
 
 export enum LoadStatus {
   None = 1,

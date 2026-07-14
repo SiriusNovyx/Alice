@@ -16,7 +16,7 @@ export async function actualSetTimezoneCmd(
       context,
       trimLines(`
         Invalid timezone: \`${escapeInlineCode(timezone)}\`
-        Zeppelin uses timezone locations rather than specific timezone names.
+        Alice uses timezone locations rather than specific timezone names.
         See the **TZ database name** column at <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones> for a list of valid options.
       `),
     );

@@ -233,6 +233,7 @@ plugins:
               enabled: false
       - level: ">=100"
         config:
+          can_view_antiraid: true
           can_set_antiraid: true
 
   slowmode:

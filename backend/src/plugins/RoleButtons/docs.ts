@@ -1,8 +1,8 @@
-import { ZeppelinPluginDocs } from "../../types.js";
+import { AlicePluginDocs } from "../../types.js";
 import { trimPluginDescription } from "../../utils.js";
 import { zRoleButtonsConfig } from "./types.js";
 
-export const roleButtonsPluginDocs: ZeppelinPluginDocs = {
+export const roleButtonsPluginDocs: AlicePluginDocs = {
   type: "stable",
   prettyName: "Role buttons",
   description: trimPluginDescription(`
@@ -10,7 +10,7 @@ export const roleButtonsPluginDocs: ZeppelinPluginDocs = {
     Slash commands live under \`/role_buttons\`.
   `),
   configurationGuide: trimPluginDescription(`
-    Button roles are entirely config-based; this is in contrast to the old reaction roles. They can either be added to an existing message posted by Zeppelin or posted as a new message.
+    Button roles are entirely config-based; this is in contrast to the old reaction roles. They can either be added to an existing message posted by Alice or posted as a new message.
     
     ## Basic role buttons
     ~~~yml
@@ -52,7 +52,7 @@ export const roleButtonsPluginDocs: ZeppelinPluginDocs = {
     ~~~
     
     ## Role buttons for an existing message
-    This message must be posted by Zeppelin.
+    This message must be posted by Alice.
     ~~~yml
     role_buttons:
       config:

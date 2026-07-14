@@ -22,7 +22,7 @@ export const HelpSlashCmd = utilitySlashCmd({
 export const AboutSlashCmd = utilitySlashCmd({
   name: "about",
   configPermission: "can_about",
-  description: "Show information about Zeppelin's status on the server",
+  description: "Show information about Alice's status on the server",
   allowDms: false,
 
   signature: [],

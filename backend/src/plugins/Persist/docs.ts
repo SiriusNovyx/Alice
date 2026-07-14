@@ -1,8 +1,8 @@
-import { ZeppelinPluginDocs } from "../../types.js";
+import { AlicePluginDocs } from "../../types.js";
 import { trimPluginDescription } from "../../utils.js";
 import { zPersistConfig } from "./types.js";
 
-export const persistPluginDocs: ZeppelinPluginDocs = {
+export const persistPluginDocs: AlicePluginDocs = {
   prettyName: "Persist",
   description: trimPluginDescription(`
     Re-apply roles or nicknames for users when they rejoin the server.

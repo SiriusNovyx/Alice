@@ -1,6 +1,6 @@
 # Guild plugin scaffold checklist
 
-Use this when adding a new Alice/Zeppelin guild plugin. Follow existing plugins such as `Reminders` and `Starboard`.
+Use this when adding a new Alice guild plugin. Follow existing plugins such as `Reminders` and `Starboard`.
 
 ## Steps
 
@@ -10,7 +10,7 @@ Use this when adding a new Alice/Zeppelin guild plugin. Follow existing plugins 
    - Export command/event helpers (`guildPluginMessageCommand`, slash group/cmd, event listener)
 
 2. **Docs** — `backend/src/plugins/<Name>/docs.ts`
-   - `ZeppelinPluginDocs` with `prettyName`, `description`, `configSchema`, `type` (`stable` / `legacy` / etc.)
+   - `AlicePluginDocs` with `prettyName`, `description`, `configSchema`, `type` (`stable` / `legacy` / etc.)
 
 3. **Plugin entry** — `backend/src/plugins/<Name>/<Name>Plugin.ts`
    - `guildPlugin()({ name, configSchema, defaultOverrides, messageCommands, slashCommands, events, lifecycle hooks })`

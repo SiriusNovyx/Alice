@@ -1,5 +1,5 @@
 {
-  "name": "zeppelin-presetup-configurator",
+  "name": "alice-presetup-configurator",
   "private": true,
   "type": "module",
   "scripts": {

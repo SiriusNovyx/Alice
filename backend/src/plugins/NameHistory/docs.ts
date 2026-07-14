@@ -1,7 +1,7 @@
-import { ZeppelinPluginDocs } from "../../types.js";
+import { AlicePluginDocs } from "../../types.js";
 import { zNameHistoryConfig } from "./types.js";
 
-export const nameHistoryPluginDocs: ZeppelinPluginDocs = {
+export const nameHistoryPluginDocs: AlicePluginDocs = {
   prettyName: "Name history",
   type: "internal",
   description: "Track username and nickname history. Slash commands live under `/names`.",

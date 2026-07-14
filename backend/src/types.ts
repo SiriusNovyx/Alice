@@ -2,7 +2,7 @@ import { GlobalPluginBlueprint, GuildPluginBlueprint } from "vety";
 import { z } from "zod";
 import { zSnowflake } from "./utils.js";
 
-export const zZeppelinGuildConfig = z.strictObject({
+export const zAliceGuildConfig = z.strictObject({
   // From BaseConfig
   prefix: z.string().optional(),
   levels: z.record(zSnowflake, z.number()).optional(),
@@ -14,20 +14,20 @@ export const zZeppelinGuildConfig = z.strictObject({
  */
 export type TMarkdown = string;
 
-export interface ZeppelinGuildPluginInfo {
+export interface AliceGuildPluginInfo {
   plugin: GuildPluginBlueprint<any, any>;
-  docs: ZeppelinPluginDocs;
+  docs: AlicePluginDocs;
   autoload?: boolean;
 }
 
-export interface ZeppelinGlobalPluginInfo {
+export interface AliceGlobalPluginInfo {
   plugin: GlobalPluginBlueprint<any, any>;
-  docs: ZeppelinPluginDocs;
+  docs: AlicePluginDocs;
 }
 
 export type DocsPluginType = "stable" | "legacy" | "internal";
 
-export interface ZeppelinPluginDocs {
+export interface AlicePluginDocs {
   type: DocsPluginType;
   configSchema: z.ZodType;
 

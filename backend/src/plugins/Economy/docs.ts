@@ -1,8 +1,8 @@
-import { ZeppelinPluginDocs } from "../../types.js";
+import { AlicePluginDocs } from "../../types.js";
 import { trimPluginDescription } from "../../utils.js";
 import { zEconomyConfig } from "./types.js";
 
-export const economyPluginDocs: ZeppelinPluginDocs = {
+export const economyPluginDocs: AlicePluginDocs = {
   type: "stable",
   prettyName: "Economy",
   description: trimPluginDescription(`

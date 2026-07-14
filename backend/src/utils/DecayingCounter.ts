@@ -1,5 +1,5 @@
 /**
- * This is not related to Zeppelin's counters feature
+ * This is not related to Alice's counters feature
  */
 export class DecayingCounter {
   protected value = 0;

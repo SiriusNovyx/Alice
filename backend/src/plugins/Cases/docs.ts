@@ -1,8 +1,8 @@
-import { ZeppelinPluginDocs } from "../../types.js";
+import { AlicePluginDocs } from "../../types.js";
 import { trimPluginDescription } from "../../utils.js";
 import { zCasesConfig } from "./types.js";
 
-export const casesPluginDocs: ZeppelinPluginDocs = {
+export const casesPluginDocs: AlicePluginDocs = {
   type: "stable",
   configSchema: zCasesConfig,
 

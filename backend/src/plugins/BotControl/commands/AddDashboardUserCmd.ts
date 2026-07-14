@@ -1,4 +1,4 @@
-import { ApiPermissions } from "@zeppelinbot/shared/apiPermissions.js";
+import { ApiPermissions } from "@alicebot/shared/apiPermissions.js";
 import { commandTypeHelpers as ct } from "../../../commandTypes.js";
 import { isStaffPreFilter } from "../../../pluginUtils.js";
 import { renderUsername } from "../../../utils.js";
@@ -19,7 +19,7 @@ export const AddDashboardUserCmd = botControlCmd({
   async run({ pluginData, message: msg, args }) {
     const guild = await pluginData.state.allowedGuilds.find(args.guildId);
     if (!guild) {
-      void msg.channel.send("Server is not using Zeppelin");
+      void msg.channel.send("Server is not using Alice");
       return;
     }
 

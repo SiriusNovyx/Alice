@@ -67,8 +67,8 @@ export async function actualAboutCmd(
       .join(" ");
 
     aboutEmbed.fields!.push({
-      name: "Zeppelin supporters 🎉",
-      value: "These amazing people have supported Zeppelin development:\n\n" + formattedSupporters,
+      name: "Alice supporters 🎉",
+      value: "These amazing people have supported Alice development:\n\n" + formattedSupporters,
       inline: false,
     });
   }

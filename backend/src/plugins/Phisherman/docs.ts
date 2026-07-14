@@ -1,8 +1,8 @@
-import { ZeppelinPluginDocs } from "../../types.js";
+import { AlicePluginDocs } from "../../types.js";
 import { trimPluginDescription } from "../../utils.js";
 import { zPhishermanConfig } from "./types.js";
 
-export const phishermanPluginDocs: ZeppelinPluginDocs = {
+export const phishermanPluginDocs: AlicePluginDocs = {
   prettyName: "Phisherman",
   type: "legacy",
   description: trimPluginDescription(`

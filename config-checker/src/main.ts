@@ -29,7 +29,7 @@ initialModel.updateOptions({ tabSize: 2 });
 const editorRoot = document.getElementById("editor")!;
 const errorsRoot = document.getElementById("errors")!;
 
-monaco.editor.defineTheme("zeppelin", {
+monaco.editor.defineTheme("alice", {
   base: "vs-dark",
   inherit: true,
   rules: [],
@@ -48,7 +48,7 @@ monaco.editor.create(editorRoot, {
     comments: true,
     strings: true,
   },
-  theme: "zeppelin",
+  theme: "alice",
   minimap: {
     enabled: false,
   },

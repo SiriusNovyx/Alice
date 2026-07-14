@@ -1,7 +1,7 @@
 import { BaseConfig, ConfigValidationError, GuildPluginBlueprint, PluginConfigManager } from "vety";
 import { z, ZodError } from "zod";
 import { availableGuildPlugins } from "./plugins/availablePlugins.js";
-import { zZeppelinGuildConfig } from "./types.js";
+import { zAliceGuildConfig } from "./types.js";
 import { formatZodIssue } from "./utils/formatZodIssue.js";
 
 const pluginNameToPlugin = new Map<string, GuildPluginBlueprint<any, any>>();
@@ -10,7 +10,7 @@ for (const pluginInfo of availableGuildPlugins) {
 }
 
 export async function validateGuildConfig(config: any): Promise<string | null> {
-  const validationResult = zZeppelinGuildConfig.safeParse(config);
+  const validationResult = zAliceGuildConfig.safeParse(config);
   if (!validationResult.success) {
     return validationResult.error.issues.map(formatZodIssue).join("\n");
   }

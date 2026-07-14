@@ -1,4 +1,10 @@
-import { BasePluginType, globalPluginEventListener, globalPluginMessageCommand } from "vety";
+import {
+  BasePluginType,
+  globalPluginEventListener,
+  globalPluginMessageCommand,
+  globalPluginSlashCommand,
+  globalPluginSlashGroup,
+} from "vety";
 import { z } from "zod";
 import { AllowedGuilds } from "../../data/AllowedGuilds.js";
 import { ApiPermissionAssignments } from "../../data/ApiPermissionAssignments.js";
@@ -27,3 +33,5 @@ export interface BotControlPluginType extends BasePluginType {
 
 export const botControlCmd = globalPluginMessageCommand<BotControlPluginType>();
 export const botControlEvt = globalPluginEventListener<BotControlPluginType>();
+export const botControlSlashCmd = globalPluginSlashCommand<BotControlPluginType>();
+export const botControlSlashGroup = globalPluginSlashGroup<BotControlPluginType>();

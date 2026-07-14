@@ -1,8 +1,8 @@
-import { ZeppelinPluginDocs } from "../../types.js";
+import { AlicePluginDocs } from "../../types.js";
 import { trimPluginDescription } from "../../utils.js";
 import { zStarboardConfig } from "./types.js";
 
-export const starboardPluginDocs: ZeppelinPluginDocs = {
+export const starboardPluginDocs: AlicePluginDocs = {
   type: "stable",
   prettyName: "Starboard",
   description: trimPluginDescription(`

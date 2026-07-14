@@ -7,7 +7,18 @@
 
 These commands are run by **mentioning the bot** in a channel it can see (not with the server prefix). Example: `@Alice allow_server <id>`.
 
+**Slash group (staff tools):** `/dashboard`
+
 Syntax: `<required>` · `[optional]` · Prefix defaults to `!` (server-configurable).
+
+## Slash commands (staff)
+
+| Slash | Description | Permission |
+|---|---|---|
+| `/dashboard add_user` | Grant dashboard access for a server | staff |
+| `/dashboard remove_user` | Revoke dashboard access for a server | staff |
+| `/dashboard list_users` | List users with dashboard access for a server | `can_list_dashboard_perms` |
+| `/dashboard list_perms` | List dashboard permission assignments | `can_list_dashboard_perms` |
 
 ## Mention commands (staff)
 

@@ -13,7 +13,7 @@ Syntax: `<required>` · `[optional]` · Prefix defaults to `!` (server-configura
 
 | Command | Usage | Description | Permission |
 |---|---|---|---|
-| `!role_buttons reset` | `!role_buttons reset <name>` | In case of issues, you can run this command to have Zeppelin 'forget' about specific role buttons and re-apply them. This will also repost the message, if not targeting an existing message. | `can_reset` |
+| `!role_buttons reset` | `!role_buttons reset <name>` | In case of issues, you can run this command to have Alice 'forget' about specific role buttons and re-apply them. This will also repost the message, if not targeting an existing message. | `can_reset` |
 
 ## Slash commands
 

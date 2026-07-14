@@ -1,8 +1,8 @@
-import { ZeppelinPluginDocs } from "../../types.js";
+import { AlicePluginDocs } from "../../types.js";
 import { trimPluginDescription } from "../../utils.js";
 import { zRolesConfig } from "./types.js";
 
-export const rolesPluginDocs: ZeppelinPluginDocs = {
+export const rolesPluginDocs: AlicePluginDocs = {
   type: "stable",
   prettyName: "Roles",
   description: trimPluginDescription(`

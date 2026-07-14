@@ -15,7 +15,7 @@ async function checkGuild(pluginData: GlobalPluginData<GuildAccessMonitorPluginT
 }
 
 /**
- * Global plugin to monitor if Zeppelin is invited to a non-whitelisted server, and leave it
+ * Global plugin to monitor if Alice is invited to a non-whitelisted server, and leave it
  */
 export const GuildAccessMonitorPlugin = globalPlugin<GuildAccessMonitorPluginType>()({
   name: "guild_access_monitor",

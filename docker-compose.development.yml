@@ -1,4 +1,4 @@
-name: zeppelin-dev
+name: alice-dev
 volumes:
   home: {}
   mysql-data: {}
@@ -16,8 +16,8 @@ services:
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: ${DEVELOPMENT_MYSQL_ROOT_PASSWORD?:Missing DEVELOPMENT_MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: zeppelin
-      MYSQL_USER: zeppelin
+      MYSQL_DATABASE: alice
+      MYSQL_USER: alice
       MYSQL_PASSWORD: ${DEVELOPMENT_MYSQL_PASSWORD?:Missing DEVELOPMENT_MYSQL_PASSWORD}
     ports:
       - ${DEVELOPMENT_MYSQL_PORT:?Missing DEVELOPMENT_MYSQL_PORT}:3306
@@ -55,7 +55,7 @@ services:
       - "${DEVELOPMENT_SSH_PORT:?Missing DEVELOPMENT_SSH_PORT}:22"
     volumes:
       - home:/home/ubuntu
-      - ./:/workspace/zeppelin
+      - ./:/workspace/alice
 
   cftunnel:
     profiles: [cftunnel]
