@@ -1,7 +1,7 @@
-import { ZeppelinPluginDocs } from "../../types.js";
+import { AlicePluginDocs } from "../../types.js";
 import { zInternalPosterConfig } from "./types.js";
 
-export const internalPosterPluginDocs: ZeppelinPluginDocs = {
+export const internalPosterPluginDocs: AlicePluginDocs = {
   prettyName: "Internal poster",
   type: "internal",
   configSchema: zInternalPosterConfig,

@@ -1,8 +1,8 @@
-import { ZeppelinPluginDocs } from "../../types.js";
+import { AlicePluginDocs } from "../../types.js";
 import { trimPluginDescription } from "../../utils.js";
 import { zNsfwConfig } from "./types.js";
 
-export const nsfwPluginDocs: ZeppelinPluginDocs = {
+export const nsfwPluginDocs: AlicePluginDocs = {
   type: "stable",
   prettyName: "Nsfw",
   description: trimPluginDescription(`

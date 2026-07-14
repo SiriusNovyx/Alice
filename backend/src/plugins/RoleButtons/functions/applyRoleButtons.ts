@@ -101,7 +101,7 @@ export async function applyRoleButtons(
 
   if (message.author.id !== pluginData.client.user?.id) {
     pluginData.getPlugin(LogsPlugin).logBotAlert({
-      body: `Error applying role buttons for role_buttons/${configName}: target message must be posted by Zeppelin`,
+      body: `Error applying role buttons for role_buttons/${configName}: target message must be posted by Alice`,
     });
     return null;
   }

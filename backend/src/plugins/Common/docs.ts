@@ -1,7 +1,7 @@
-import { ZeppelinPluginDocs } from "../../types.js";
+import { AlicePluginDocs } from "../../types.js";
 import { zCommonConfig } from "./types.js";
 
-export const commonPluginDocs: ZeppelinPluginDocs = {
+export const commonPluginDocs: AlicePluginDocs = {
   type: "stable",
   configSchema: zCommonConfig,
 

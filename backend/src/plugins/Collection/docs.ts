@@ -1,8 +1,8 @@
-import { ZeppelinPluginDocs } from "../../types.js";
+import { AlicePluginDocs } from "../../types.js";
 import { trimPluginDescription } from "../../utils.js";
 import { zCollectionConfig } from "./types.js";
 
-export const collectionPluginDocs: ZeppelinPluginDocs = {
+export const collectionPluginDocs: AlicePluginDocs = {
   type: "stable",
   prettyName: "Collection",
   description: trimPluginDescription(`

@@ -5,7 +5,7 @@ import { actualResetButtonsCmd } from "./actualResetButtonsCmd.js";
 export const ResetButtonsCmd = roleButtonsCmd({
   trigger: "role_buttons reset",
   description:
-    "In case of issues, you can run this command to have Zeppelin 'forget' about specific role buttons and re-apply them. This will also repost the message, if not targeting an existing message.",
+    "In case of issues, you can run this command to have Alice 'forget' about specific role buttons and re-apply them. This will also repost the message, if not targeting an existing message.",
   usage: "!role_buttons reset <name>",
   permission: "can_reset",
   signature: {

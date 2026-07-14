@@ -72,7 +72,8 @@ export const AutomodPlugin = guildPlugin<AutomodPluginType>()({
     // Messages use message events from SavedMessages, see onLoad below
   ],
 
-  messageCommands: [AntiraidClearCmd, SetAntiraidCmd, ViewAntiraidCmd, DebugAutomodCmd],
+  // View before Set so bare `!antiraid` / `!antiraid view` resolve to view; Set keeps `!antiraid <level>`.
+  messageCommands: [AntiraidClearCmd, ViewAntiraidCmd, SetAntiraidCmd, DebugAutomodCmd],
 
   slashCommands: [
     automodSlashGroup({

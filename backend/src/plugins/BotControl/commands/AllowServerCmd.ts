@@ -1,4 +1,4 @@
-import { ApiPermissions } from "@zeppelinbot/shared/apiPermissions.js";
+import { ApiPermissions } from "@alicebot/shared/apiPermissions.js";
 import moment from "moment-timezone";
 import { commandTypeHelpers as ct } from "../../../commandTypes.js";
 import { DEFAULT_GUILD_CONFIG } from "../../../data/defaultGuildConfig.js";

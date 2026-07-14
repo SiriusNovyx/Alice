@@ -1,8 +1,8 @@
-import { ZeppelinPluginDocs } from "../../types.js";
+import { AlicePluginDocs } from "../../types.js";
 import { trimPluginDescription } from "../../utils.js";
 import { zModmailConfig } from "./types.js";
 
-export const modmailPluginDocs: ZeppelinPluginDocs = {
+export const modmailPluginDocs: AlicePluginDocs = {
   type: "stable",
   prettyName: "Modmail",
   description: trimPluginDescription(`

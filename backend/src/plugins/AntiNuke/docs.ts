@@ -1,8 +1,8 @@
-import { ZeppelinPluginDocs } from "../../types.js";
+import { AlicePluginDocs } from "../../types.js";
 import { trimPluginDescription } from "../../utils.js";
 import { zAntiNukeConfig } from "./types.js";
 
-export const antiNukePluginDocs: ZeppelinPluginDocs = {
+export const antiNukePluginDocs: AlicePluginDocs = {
   type: "stable",
   prettyName: "AntiNuke",
   description: trimPluginDescription(`

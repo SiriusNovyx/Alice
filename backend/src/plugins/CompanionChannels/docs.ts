@@ -1,8 +1,8 @@
-import { ZeppelinPluginDocs } from "../../types.js";
+import { AlicePluginDocs } from "../../types.js";
 import { trimPluginDescription } from "../../utils.js";
 import { zCompanionChannelsConfig } from "./types.js";
 
-export const companionChannelsPluginDocs: ZeppelinPluginDocs = {
+export const companionChannelsPluginDocs: AlicePluginDocs = {
   type: "stable",
   configSchema: zCompanionChannelsConfig,
 

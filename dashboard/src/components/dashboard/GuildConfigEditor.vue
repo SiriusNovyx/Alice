@@ -45,7 +45,35 @@
           <span class="error-panel-title">Config errors — fix these before saving</span>
           <button class="error-panel-close" @click="errors = []">✕</button>
         </div>
-        <pre v-for="(error, i) in errors" :key="i" class="error-item">{{ error }}</pre>
+        <div v-for="(error, i) in errors" :key="i" class="error-block">
+          <pre class="error-item">{{ error.message }}</pre>
+          <p v-if="error.hint" class="error-hint">{{ error.hint }}</p>
+          <div v-if="error.docsPath || error.line" class="error-actions">
+            <router-link
+              v-if="error.docsPath"
+              class="error-docs-link"
+              :to="error.docsPath"
+            >Open docs</router-link>
+            <button
+              v-if="error.line"
+              type="button"
+              class="error-goto-line"
+              @click="goToErrorLine(error.line)"
+            >Go to line {{ error.line }}</button>
+          </div>
+          <div v-if="error.fix" class="error-fix">
+            <p class="error-fix-desc">{{ error.fix.description }}</p>
+            <pre class="error-fix-preview">{{ fixPreview(error.fix.proposedYaml) }}</pre>
+            <div class="error-fix-actions">
+              <button type="button" class="error-fix-apply" @click="applyFix(i)">
+                Apply fix
+              </button>
+              <button type="button" class="error-fix-dismiss" @click="dismissFix(i)">
+                Dismiss
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </transition>
 
@@ -85,6 +113,7 @@
 import { mapState } from "vuex";
 import { ApiError } from "../../api";
 import { GuildState } from "../../store/types";
+import { assistConfigError, ConfigErrorAssist } from "../../utils/configErrorAssist";
 import { VAceEditor } from "vue3-ace-editor";
 
 import "ace-builds/src-noconflict/ext-language_tools";
@@ -134,7 +163,7 @@ export default {
       saving: false,
       saved: false,
       editableConfig: null,
-      errors: [],
+      errors: [] as ConfigErrorAssist[],
       editorWidth: 900,
       editorHeight: 600,
       savedTimeout: null,
@@ -204,6 +233,57 @@ export default {
         this.$refs.aceEditor?.getAceInstance().resize();
       });
     },
+    goToErrorLine(line: number) {
+      const ace = this.$refs.aceEditor?.getAceInstance();
+      if (!ace || !line) return;
+      ace.gotoLine(line, 0, true);
+      ace.focus();
+    },
+    fixPreview(proposedYaml: string) {
+      const max = 280;
+      const trimmed = (proposedYaml || "").trimEnd();
+      if (trimmed.length <= max) return trimmed;
+      return trimmed.slice(0, max) + "…";
+    },
+    applyFix(index: number) {
+      const error = this.errors[index];
+      if (!error?.fix?.proposedYaml) return;
+      const beforeLen = (this.editableConfig || "").length;
+      const proposedLen = error.fix.proposedYaml.length;
+      this.editableConfig = error.fix.proposedYaml;
+      // #region agent log
+      fetch("http://127.0.0.1:7479/ingest/baa7822e-5ee3-4e53-8db8-46db577342c6", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Debug-Session-Id": "38d402",
+        },
+        body: JSON.stringify({
+          sessionId: "38d402",
+          runId: "pre-fix",
+          hypothesisId: "C",
+          location: "GuildConfigEditor.vue:applyFix",
+          message: "applyFix applied",
+          data: {
+            index,
+            beforeLen,
+            proposedLen,
+            afterLen: (this.editableConfig || "").length,
+            description: error.fix.description,
+            editorUpdated: this.editableConfig === error.fix.proposedYaml,
+          },
+          timestamp: Date.now(),
+        }),
+      }).catch(() => {});
+      // #endregion
+      this.errors = [];
+    },
+    dismissFix(index: number) {
+      const error = this.errors[index];
+      if (!error) return;
+      // Clear just this proposal; keep the error row for manual fixing
+      this.errors.splice(index, 1, { ...error, fix: null });
+    },
     async save() {
       if (this.saving) return;
       this.saved = false;
@@ -223,9 +303,89 @@ export default {
         this.saving = false;
         this.saved = true;
         this.savedTimeout = setTimeout(() => (this.saved = false), 3000);
+        // #region agent log
+        fetch("http://127.0.0.1:7479/ingest/baa7822e-5ee3-4e53-8db8-46db577342c6", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Debug-Session-Id": "38d402",
+          },
+          body: JSON.stringify({
+            sessionId: "38d402",
+            runId: "pre-fix",
+            hypothesisId: "E",
+            location: "GuildConfigEditor.vue:save",
+            message: "save succeeded",
+            data: { configLen: (this.editableConfig || "").length },
+            timestamp: Date.now(),
+          }),
+        }).catch(() => {});
+        // #endregion
       } catch (e) {
         if (e instanceof ApiError && (e.status === 400 || e.status === 422)) {
-          this.errors = e.body.errors || ['Error while saving config'];
+          const rawErrors = e.body.errors || ["Error while saving config"];
+          let pluginLoadOk = false;
+          let pluginLoadError: string | null = null;
+          try {
+            await this.$store.dispatch("docs/loadAllPlugins");
+            pluginLoadOk = true;
+          } catch (loadErr: any) {
+            // Plugin names are optional for fuzzy rename; continue without them
+            pluginLoadError = String(loadErr?.message || loadErr);
+          }
+          const knownPluginNames = (this.$store.state.docs?.allPlugins || []).map(
+            (p: { name: string }) => p.name,
+          );
+          let knownConfigKeys: string[] = [];
+          const pluginFromError = String(rawErrors[0] || "").match(
+            /^([a-z][a-z0-9_]*)\s*:/i,
+          );
+          if (pluginFromError) {
+            const pluginName = pluginFromError[1];
+            try {
+              await this.$store.dispatch("docs/loadPluginData", pluginName);
+              const defaults =
+                this.$store.state.docs?.plugins?.[pluginName]?.defaultOptions || {};
+              knownConfigKeys = Object.keys(defaults);
+            } catch {
+              // optional — Did-you-mean for config keys degrades without it
+            }
+          }
+          this.errors = rawErrors.map((err: string) =>
+            assistConfigError(err, this.editableConfig, knownPluginNames, knownConfigKeys),
+          );
+          // #region agent log
+          fetch("http://127.0.0.1:7479/ingest/baa7822e-5ee3-4e53-8db8-46db577342c6", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Debug-Session-Id": "38d402",
+            },
+            body: JSON.stringify({
+              sessionId: "38d402",
+              runId: "post-fix",
+              hypothesisId: "F",
+              location: "GuildConfigEditor.vue:save",
+              message: "save validation failed; assist built",
+              data: {
+                status: e.status,
+                rawErrors: rawErrors.map((r: string) => String(r).slice(0, 200)),
+                pluginLoadOk,
+                pluginLoadError,
+                knownPluginCount: knownPluginNames.length,
+                knownConfigKeyCount: knownConfigKeys.length,
+                knownConfigKeySample: knownConfigKeys.slice(0, 8),
+                assisted: this.errors.map((a: ConfigErrorAssist) => ({
+                  hasHint: Boolean(a.hint),
+                  hasFix: Boolean(a.fix),
+                  fixDescription: a.fix?.description ?? null,
+                  line: a.line,
+                })),
+              },
+              timestamp: Date.now(),
+            }),
+          }).catch(() => {});
+          // #endregion
           this.saving = false;
           return;
         }
@@ -378,14 +538,123 @@ html.dark .save-btn {
   color: var(--color-text-1);
 }
 
+.error-block {
+  padding: 0.25rem 0;
+}
+
+.error-block + .error-block {
+  margin-top: 0.5rem;
+  border-top: 1px solid color-mix(in srgb, var(--color-danger) 18%, transparent);
+  padding-top: 0.5rem;
+}
+
 .error-item {
   font-family: var(--font-mono);
   font-size: 0.8rem;
   color: var(--color-danger);
   margin: 0;
-  padding: 0.25rem 0;
+  padding: 0;
   white-space: pre-wrap;
   word-break: break-all;
+}
+
+.error-hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.8rem;
+  color: var(--color-text-3);
+  line-height: 1.35;
+}
+
+.error-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.4rem;
+}
+
+.error-docs-link {
+  font-size: 0.78rem;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.error-docs-link:hover {
+  text-decoration: underline;
+}
+
+.error-goto-line {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 0.78rem;
+  color: var(--color-accent);
+  cursor: pointer;
+}
+
+.error-goto-line:hover {
+  text-decoration: underline;
+}
+
+.error-fix {
+  margin-top: 0.55rem;
+  padding-top: 0.45rem;
+  border-top: 1px dashed color-mix(in srgb, var(--color-danger) 16%, transparent);
+}
+
+.error-fix-desc {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--color-text-2);
+  line-height: 1.35;
+}
+
+.error-fix-preview {
+  margin: 0.35rem 0 0;
+  padding: 0.4rem 0.55rem;
+  max-height: 5.5rem;
+  overflow: auto;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: var(--color-text-3);
+  background: color-mix(in srgb, var(--color-surface-2) 80%, transparent);
+  border-radius: var(--radius-sm);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.error-fix-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 0.45rem;
+}
+
+.error-fix-apply,
+.error-fix-dismiss {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.error-fix-apply {
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+.error-fix-apply:hover,
+.error-fix-dismiss:hover {
+  text-decoration: underline;
+}
+
+.error-fix-dismiss {
+  color: var(--color-text-4);
 }
 
 .editor-shell {

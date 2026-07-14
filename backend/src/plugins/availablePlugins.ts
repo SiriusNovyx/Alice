@@ -1,4 +1,4 @@
-import { ZeppelinGlobalPluginInfo, ZeppelinGuildPluginInfo } from "../types.js";
+import { AliceGlobalPluginInfo, AliceGuildPluginInfo } from "../types.js";
 import { AutoDeletePlugin } from "./AutoDelete/AutoDeletePlugin.js";
 import { autoDeletePluginDocs } from "./AutoDelete/docs.js";
 import { AutoReactionsPlugin } from "./AutoReactions/AutoReactionsPlugin.js";
@@ -108,7 +108,7 @@ import { nsfwPluginDocs } from "./Nsfw/docs.js";
 import { BoosterRolesPlugin } from "./BoosterRoles/BoosterRolesPlugin.js";
 import { boosterRolesPluginDocs } from "./BoosterRoles/docs.js";
 
-export const availableGuildPlugins: ZeppelinGuildPluginInfo[] = [
+export const availableGuildPlugins: AliceGuildPluginInfo[] = [
   {
     plugin: AutoDeletePlugin,
     docs: autoDeletePluginDocs,
@@ -328,7 +328,7 @@ export const availableGuildPlugins: ZeppelinGuildPluginInfo[] = [
   },
 ];
 
-export const availableGlobalPlugins: ZeppelinGlobalPluginInfo[] = [
+export const availableGlobalPlugins: AliceGlobalPluginInfo[] = [
   {
     plugin: GuildConfigReloaderPlugin,
     docs: guildConfigReloaderPluginDocs,

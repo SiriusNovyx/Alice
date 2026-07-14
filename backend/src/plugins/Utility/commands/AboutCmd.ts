@@ -3,7 +3,7 @@ import { actualAboutCmd } from "./actualAboutCmd.js";
 
 export const AboutCmd = utilityCmd({
   trigger: "about",
-  description: "Show information about Zeppelin's status on the server",
+  description: "Show information about Alice's status on the server",
   permission: "can_about",
 
   async run({ message: msg, pluginData }) {

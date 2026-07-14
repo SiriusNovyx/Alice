@@ -1,8 +1,8 @@
-import { ZeppelinPluginDocs } from "../../types.js";
+import { AlicePluginDocs } from "../../types.js";
 import { trimPluginDescription } from "../../utils.js";
 import { zLocateUserConfig } from "./types.js";
 
-export const locateUserPluginDocs: ZeppelinPluginDocs = {
+export const locateUserPluginDocs: AlicePluginDocs = {
   prettyName: "Locate user",
   type: "stable",
   description: trimPluginDescription(`

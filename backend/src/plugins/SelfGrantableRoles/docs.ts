@@ -1,8 +1,8 @@
-import { ZeppelinPluginDocs } from "../../types.js";
+import { AlicePluginDocs } from "../../types.js";
 import { trimPluginDescription } from "../../utils.js";
 import { zSelfGrantableRolesConfig } from "./types.js";
 
-export const selfGrantableRolesPluginDocs: ZeppelinPluginDocs = {
+export const selfGrantableRolesPluginDocs: AlicePluginDocs = {
   type: "stable",
   prettyName: "Self-grantable roles",
   description: trimPluginDescription(`

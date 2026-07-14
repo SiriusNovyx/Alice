@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import { z } from "zod";
 import { availableGuildPlugins } from "./plugins/availablePlugins.js";
-import { zZeppelinGuildConfig } from "./types.js";
+import { zAliceGuildConfig } from "./types.js";
 import { deepPartial } from "./utils/zodDeepPartial.js";
 
 const basePluginOverrideCriteriaSchema = z.strictObject({
@@ -82,7 +82,7 @@ const pluginSchemaMap = availableGuildPlugins.reduce((map, pluginInfo) => {
   return map;
 }, {});
 
-const fullSchema = zZeppelinGuildConfig.omit({ plugins: true }).extend({
+const fullSchema = zAliceGuildConfig.omit({ plugins: true }).extend({
   plugins: z.strictObject(pluginSchemaMap).partial().optional(),
 });
 

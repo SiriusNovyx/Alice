@@ -1,8 +1,8 @@
-import { ZeppelinPluginDocs } from "../../types.js";
+import { AlicePluginDocs } from "../../types.js";
 import { trimPluginDescription } from "../../utils.js";
 import { zAutomodConfig } from "./types.js";
 
-export const automodPluginDocs: ZeppelinPluginDocs = {
+export const automodPluginDocs: AlicePluginDocs = {
   type: "stable",
   configSchema: zAutomodConfig,
 

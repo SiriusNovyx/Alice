@@ -47,7 +47,7 @@ export async function muteUser(
   const muteExpiresAt = muteTime ? Date.now() + muteTime : null;
   const timeoutUntil = getTimeoutExpiryTime(muteExpiresAt);
 
-  // No mod specified -> mark Zeppelin as the mod
+  // No mod specified -> mark Alice as the mod
   if (!muteOptions.caseArgs?.modId) {
     muteOptions.caseArgs = muteOptions.caseArgs ?? {};
     muteOptions.caseArgs.modId = pluginData.client.user!.id;
@@ -111,9 +111,9 @@ export async function muteUser(
       if (zepRoles.size === 0 || !zepRoles.some((zepRole) => zepRole.position > actualMuteRole.position)) {
         lock.unlock();
         logs.logBotAlert({
-          body: `Cannot mute user, specified mute role is above Zeppelin in the role hierarchy`,
+          body: `Cannot mute user, specified mute role is above Alice in the role hierarchy`,
         });
-        throw new RecoverablePluginError(ERRORS.MUTE_ROLE_ABOVE_ZEP, pluginData.guild);
+        throw new RecoverablePluginError(ERRORS.MUTE_ROLE_ABOVE_ALICE, pluginData.guild);
       }
 
       if (!currentUserRoles.includes(muteRole!)) {
@@ -123,9 +123,9 @@ export async function muteUser(
       if (!member.manageable) {
         lock.unlock();
         logs.logBotAlert({
-          body: `Cannot mute user, specified user is above Zeppelin in the role hierarchy`,
+          body: `Cannot mute user, specified user is above Alice in the role hierarchy`,
         });
-        throw new RecoverablePluginError(ERRORS.USER_ABOVE_ZEP, pluginData.guild);
+        throw new RecoverablePluginError(ERRORS.USER_ABOVE_ALICE, pluginData.guild);
       }
 
       if (!member.moderatable) {

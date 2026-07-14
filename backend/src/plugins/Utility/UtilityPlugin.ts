@@ -21,6 +21,8 @@ import { CleanCmd } from "./commands/CleanCmd.js";
 import { CleanSlashCmd } from "./commands/CleanSlashCmd.js";
 import { ContextCmd } from "./commands/ContextCmd.js";
 import { EmojiInfoCmd } from "./commands/EmojiInfoCmd.js";
+import { CommandsCmd } from "./commands/CommandsCmd.js";
+import { CommandsSlashCmd } from "./commands/CommandsSlashCmd.js";
 import { HelpCmd } from "./commands/HelpCmd.js";
 import { InfoCmd } from "./commands/InfoCmd.js";
 import {
@@ -128,6 +130,7 @@ export const UtilityPlugin = guildPlugin<UtilityPluginType>()({
     VcdisconnectCmd,
     VcmoveAllCmd,
     HelpCmd,
+    CommandsCmd,
     AboutCmd,
     ReloadGuildCmd,
     JumboCmd,
@@ -143,6 +146,7 @@ export const UtilityPlugin = guildPlugin<UtilityPluginType>()({
   ],
 
   slashCommands: [
+    CommandsSlashCmd,
     utilitySlashGroup({
       name: "utility",
       description: "Utility commands",

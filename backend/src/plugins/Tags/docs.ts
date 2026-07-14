@@ -1,9 +1,9 @@
-import { ZeppelinPluginDocs } from "../../types.js";
+import { AlicePluginDocs } from "../../types.js";
 import { trimPluginDescription } from "../../utils.js";
 import { TemplateFunctions } from "./templateFunctions.js";
 import { TemplateFunction, zTagsConfig } from "./types.js";
 
-export const tagsPluginDocs: ZeppelinPluginDocs = {
+export const tagsPluginDocs: AlicePluginDocs = {
   type: "stable",
   prettyName: "Tags",
   description: "Tags are a way to store and reuse information. Slash commands live under `/tag`.",

@@ -76,7 +76,7 @@
 
 <script lang="ts">
 import { mapState } from "vuex";
-import { ApiPermissions, hasPermission } from "@zeppelinbot/shared/apiPermissions.js";
+import { ApiPermissions, hasPermission } from "@alicebot/shared/apiPermissions.js";
 import { AuthState, GuildState } from "../../store/types";
 
 export default {

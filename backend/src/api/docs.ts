@@ -2,7 +2,7 @@ import express from "express";
 import { z } from "zod";
 import { $ZodPipeDef } from "zod/v4/core";
 import { availableGuildPlugins } from "../plugins/availablePlugins.js";
-import { ZeppelinGuildPluginInfo } from "../types.js";
+import { AliceGuildPluginInfo } from "../types.js";
 import { indentLines } from "../utils.js";
 import { notFound } from "./responses.js";
 
@@ -97,7 +97,7 @@ function formatZodConfigSchema(schema: z.ZodType) {
   return "unknown";
 }
 
-const availableGuildPluginsByName = availableGuildPlugins.reduce<Record<string, ZeppelinGuildPluginInfo>>(
+const availableGuildPluginsByName = availableGuildPlugins.reduce<Record<string, AliceGuildPluginInfo>>(
   (map, obj) => {
     map[obj.plugin.name] = obj;
     return map;

@@ -1,5 +1,5 @@
 version: '3'
-name: zeppelin-lightweight
+name: alice-lightweight
 services:
   migrate:
     build: &build
@@ -17,7 +17,7 @@ services:
       - API_PATH_PREFIX=${LIGHTWEIGHT_API_PATH_PREFIX}
     env_file:
       - .env
-    working_dir: /zeppelin/backend
+    working_dir: /alice/backend
     command: ["npm", "run", "migrate-prod"]
 
   api:
@@ -31,7 +31,7 @@ services:
       - .env
     ports:
       - "${LIGHTWEIGHT_API_PORT}:3001"
-    working_dir: /zeppelin/backend
+    working_dir: /alice/backend
     command: ["npm", "run", "start-api-prod"]
 
   bot:
@@ -43,7 +43,7 @@ services:
     environment: *env
     env_file:
       - .env
-    working_dir: /zeppelin/backend
+    working_dir: /alice/backend
     command: ["npm", "run", "start-bot-prod"]
   
   dashboard:
@@ -57,5 +57,5 @@ services:
       - .env
     ports:
       - "${LIGHTWEIGHT_DASHBOARD_PORT}:3002"
-    working_dir: /zeppelin/dashboard
+    working_dir: /alice/dashboard
     command: ["node", "serve.js"]

@@ -1,8 +1,8 @@
-import { ZeppelinPluginDocs } from "../../types.js";
+import { AlicePluginDocs } from "../../types.js";
 import { trimPluginDescription } from "../../utils.js";
 import { zVoiceMasterConfig } from "./types.js";
 
-export const voiceMasterPluginDocs: ZeppelinPluginDocs = {
+export const voiceMasterPluginDocs: AlicePluginDocs = {
   type: "stable",
   prettyName: "VoiceMaster",
   description: trimPluginDescription(`

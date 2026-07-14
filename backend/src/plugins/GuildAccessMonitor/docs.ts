@@ -1,8 +1,8 @@
-import { ZeppelinPluginDocs } from "../../types.js";
+import { AlicePluginDocs } from "../../types.js";
 import { trimPluginDescription } from "../../utils.js";
 import { zGuildAccessMonitorConfig } from "./types.js";
 
-export const guildAccessMonitorPluginDocs: ZeppelinPluginDocs = {
+export const guildAccessMonitorPluginDocs: AlicePluginDocs = {
   type: "stable",
   configSchema: zGuildAccessMonitorConfig,
 

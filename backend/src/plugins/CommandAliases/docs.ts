@@ -1,7 +1,7 @@
-import { ZeppelinPluginDocs } from "../../types.js";
+import { AlicePluginDocs } from "../../types.js";
 import { zCommandAliasesConfig } from "./types.js";
 
-export const commandAliasesPluginDocs: ZeppelinPluginDocs = {
+export const commandAliasesPluginDocs: AlicePluginDocs = {
   type: "stable",
   prettyName: "Command Aliases",
   configSchema: zCommandAliasesConfig,
