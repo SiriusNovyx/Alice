@@ -8,7 +8,8 @@ import {
 } from "./actualLevelCmds.js";
 
 export const RankCmd = levelingCmd({
-  trigger: ["rank", "level", "xp"],
+  // Do not use "level" — UtilityPlugin owns !level (permission level).
+  trigger: ["rank", "xp"],
   usage: "!rank [user]",
   permission: "can_check",
   signature: {

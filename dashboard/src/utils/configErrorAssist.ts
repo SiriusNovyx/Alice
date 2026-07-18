@@ -1108,33 +1108,6 @@ export function proposeConfigFix(
     }
   }
 
-  // #region agent log
-  fetch("http://127.0.0.1:7479/ingest/baa7822e-5ee3-4e53-8db8-46db577342c6", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Debug-Session-Id": "38d402",
-    },
-    body: JSON.stringify({
-      sessionId: "38d402",
-      runId: "post-fix",
-      hypothesisId: "F",
-      location: "configErrorAssist.ts:proposeConfigFix",
-      message: "proposeConfigFix result",
-      data: {
-        matchedFixer,
-        hasFix: Boolean(result),
-        fixDescription: result?.description ?? null,
-        errorPreview: message.slice(0, 160),
-        yamlLen: yamlText.length,
-        knownPluginCount: knownPluginNames?.length ?? 0,
-        knownConfigKeyCount: knownConfigKeys?.length ?? 0,
-      },
-      timestamp: Date.now(),
-    }),
-  }).catch(() => {});
-  // #endregion
-
   return result;
 }
 

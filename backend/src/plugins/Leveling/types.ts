@@ -23,7 +23,7 @@ const zMultiplier = z.strictObject({
 });
 
 export const zLevelingConfig = z.strictObject({
-  enabled: z.boolean().default(false),
+  enabled: z.boolean().default(true),
   min_xp: z.number().int().min(1).max(1000).default(15),
   max_xp: z.number().int().min(1).max(1000).default(25),
   cooldown_seconds: z.number().int().min(0).max(3600).default(60),

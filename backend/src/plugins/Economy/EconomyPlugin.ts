@@ -98,7 +98,6 @@ export const EconomyPlugin = guildPlugin<EconomyPluginType>()({
     economySlashGroup({
       name: "economy",
       description: "Economy",
-      defaultMemberPermissions: "0",
       subcommands: [
         BalanceSlashCmd,
         WorkSlashCmd,

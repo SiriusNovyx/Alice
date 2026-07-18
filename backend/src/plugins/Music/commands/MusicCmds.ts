@@ -4,6 +4,8 @@ import { musicCmd, musicSlashCmd } from "../types.js";
 import {
   actual247,
   actualFilters,
+  actualJoin,
+  actualLeave,
   actualNowPlaying,
   actualPause,
   actualPlay,
@@ -54,12 +56,32 @@ export const QueueCmd = musicCmd({
 });
 
 export const StopCmd = musicCmd({
-  trigger: ["stop", "leave"],
+  trigger: "stop",
   usage: "!stop",
   permission: "can_use",
   signature: {},
   async run({ message: msg, pluginData }) {
     await actualStop(pluginData, msg);
+  },
+});
+
+export const JoinCmd = musicCmd({
+  trigger: "join",
+  usage: "!join",
+  permission: "can_use",
+  signature: {},
+  async run({ message: msg, pluginData }) {
+    await actualJoin(pluginData, msg, voiceChannelId(msg.member));
+  },
+});
+
+export const LeaveCmd = musicCmd({
+  trigger: "leave",
+  usage: "!leave",
+  permission: "can_use",
+  signature: {},
+  async run({ message: msg, pluginData }) {
+    await actualLeave(pluginData, msg);
   },
 });
 
@@ -95,7 +117,7 @@ export const VolumeCmd = musicCmd({
 
 export const FiltersCmd = musicCmd({
   trigger: ["filter", "filters"],
-  usage: "!filter <bassboost|nightcore|vaporwave|off>",
+  usage: "!filter <bassboost|nightcore|vaporwave|daycore|doubletime|slowmo|8d|karaoke|tremolo|vibrato|soft|pop|treblebass|off>",
   permission: "can_use",
   signature: { filter: ct.string() },
   async run({ message: msg, args, pluginData }) {
@@ -180,6 +202,31 @@ export const StopSlashCmd = musicSlashCmd({
   },
 });
 
+export const JoinSlashCmd = musicSlashCmd({
+  name: "join",
+  configPermission: "can_use",
+  description: "Join your voice channel",
+  allowDms: false,
+  signature: [],
+  async run({ interaction, pluginData }) {
+    await interaction.deferReply();
+    const member = await pluginData.guild.members.fetch(interaction.user.id).catch(() => null);
+    await actualJoin(pluginData, interaction, voiceChannelId(member));
+  },
+});
+
+export const LeaveSlashCmd = musicSlashCmd({
+  name: "leave",
+  configPermission: "can_use",
+  description: "Leave the voice channel",
+  allowDms: false,
+  signature: [],
+  async run({ interaction, pluginData }) {
+    await interaction.deferReply();
+    await actualLeave(pluginData, interaction);
+  },
+});
+
 export const PauseSlashCmd = musicSlashCmd({
   name: "pause",
   configPermission: "can_use",
@@ -219,12 +266,34 @@ export const VolumeSlashCmd = musicSlashCmd({
 export const FiltersSlashCmd = musicSlashCmd({
   name: "filter",
   configPermission: "can_use",
-  description: "Toggle audio filter (bassboost|nightcore|vaporwave|off)",
+  description: "Toggle an audio filter preset",
   allowDms: false,
-  signature: [slashOptions.string({ name: "name", description: "Filter name", required: true })],
+  signature: [
+    slashOptions.string({
+      name: "options",
+      description: "Filter option to toggle",
+      required: true,
+      choices: [
+        { name: "Off (clear all)", value: "off" },
+        { name: "Bassboost", value: "bassboost" },
+        { name: "Nightcore", value: "nightcore" },
+        { name: "Vaporwave", value: "vaporwave" },
+        { name: "Daycore", value: "daycore" },
+        { name: "Doubletime", value: "doubletime" },
+        { name: "Slowmo", value: "slowmo" },
+        { name: "8D", value: "8d" },
+        { name: "Karaoke", value: "karaoke" },
+        { name: "Tremolo", value: "tremolo" },
+        { name: "Vibrato", value: "vibrato" },
+        { name: "Soft", value: "soft" },
+        { name: "Pop", value: "pop" },
+        { name: "Treblebass", value: "treblebass" },
+      ],
+    }),
+  ],
   async run({ interaction, options, pluginData }) {
     await interaction.deferReply();
-    await actualFilters(pluginData, interaction, options.name);
+    await actualFilters(pluginData, interaction, options.options);
   },
 });
 

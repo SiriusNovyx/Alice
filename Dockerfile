@@ -19,6 +19,8 @@ RUN mkdir /alice/shared
 COPY --chown=node:node shared/package.json /alice/shared
 RUN mkdir /alice/dashboard
 COPY --chown=node:node dashboard/package.json /alice/dashboard
+# pnpm patchedDependencies needs the patch file during install (before full source COPY)
+COPY --chown=node:node patches /alice/patches
 
 WORKDIR /alice
 RUN CI=true pnpm install

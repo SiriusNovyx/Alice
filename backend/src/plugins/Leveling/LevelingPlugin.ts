@@ -31,7 +31,6 @@ export const LevelingPlugin = guildPlugin<LevelingPluginType>()({
     levelingSlashGroup({
       name: "level",
       description: "Leveling and XP",
-      defaultMemberPermissions: "0",
       subcommands: [RankSlashCmd, LeaderboardSlashCmd, SetXpSlashCmd, ResetSlashCmd],
     }),
   ],

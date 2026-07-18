@@ -5,7 +5,6 @@ export const CommandsSlashCmd = utilitySlashCmd({
   name: "commands",
   configPermission: "can_help",
   description: "Open the Alice Help Center with categorized commands",
-  defaultMemberPermissions: "0",
   allowDms: false,
 
   signature: [],

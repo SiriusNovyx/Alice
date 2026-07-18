@@ -37,7 +37,6 @@ export const RemindersPlugin = guildPlugin<RemindersPluginType>()({
     remindersSlashGroup({
       name: "remind",
       description: "Reminders",
-      defaultMemberPermissions: "0",
       subcommands: [RemindCreateSlashCmd, RemindListSlashCmd, RemindDeleteSlashCmd],
     }),
   ],

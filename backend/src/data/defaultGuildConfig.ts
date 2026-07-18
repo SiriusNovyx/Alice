@@ -419,10 +419,18 @@ plugins:
 
   welcome_message:
     config:
+      enabled: true
       send_dm: false
-      send_to_channel: null   # SET: welcome channel ID, or leave null
-      message: "Welcome to the server, {userMention(member)}! 👋"
+      send_to_channel: null   # SET: welcome channel ID, or leave null / use !greet setup
       send_dm_delay: 3000
+      delete_after: null      # seconds to auto-delete channel welcome (null = keep)
+      message: null           # classic string/embed; ignored when embed_* fields below are set
+      content: "{member.mention}"
+      embed_title: "Welcome!"
+      embed_description: "Hey {member.mention}, welcome to **{guild.name}**!\nYou are member **#{memberCount}**. Enjoy your stay."
+      embed_color: "#5865F2"
+      embed_thumbnail: "{member.avatarURL}"
+      # Or plain text only: message: "Welcome {userMention(member)}! 👋" (clear embed_* fields)
 
   persist:
     config:
@@ -457,7 +465,7 @@ plugins:
 
   leveling:
     config:
-      enabled: false
+      enabled: true
       min_xp: 15
       max_xp: 25
       cooldown_seconds: 60
@@ -514,4 +522,12 @@ plugins:
     config:
       enabled: false
       booster_role_id: null
+
+  bot_profile:
+    config:
+      enabled: false
+
+  tracker:
+    config:
+      enabled: true
 `;

@@ -7,6 +7,7 @@ volumes:
 services:
   mysql:
     image: mysql:8.0
+    restart: on-failure
     environment:
       MYSQL_ROOT_PASSWORD: ${STANDALONE_MYSQL_ROOT_PASSWORD?:Missing STANDALONE_MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: alice
@@ -29,6 +30,7 @@ services:
 
   redis:
     image: redis:8.2.3
+    restart: on-failure
     volumes:
       - redis-data:/data
 
@@ -36,6 +38,7 @@ services:
     build:
       context: .
       dockerfile: docker/production/nginx/Dockerfile
+    restart: on-failure
     ports:
       - "${STANDALONE_WEB_PORT:?Missing STANDALONE_WEB_PORT}:443"
 

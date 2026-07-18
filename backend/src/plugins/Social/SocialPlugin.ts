@@ -55,7 +55,6 @@ export const SocialPlugin = guildPlugin<SocialPluginType>()({
     socialSlashGroup({
       name: "social",
       description: "Social GIF commands",
-      defaultMemberPermissions: "0",
       subcommands: [
         HugSlashCmd,
         PatSlashCmd,

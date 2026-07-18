@@ -107,6 +107,10 @@ import { NsfwPlugin } from "./Nsfw/NsfwPlugin.js";
 import { nsfwPluginDocs } from "./Nsfw/docs.js";
 import { BoosterRolesPlugin } from "./BoosterRoles/BoosterRolesPlugin.js";
 import { boosterRolesPluginDocs } from "./BoosterRoles/docs.js";
+import { BotProfilePlugin } from "./BotProfile/BotProfilePlugin.js";
+import { botProfilePluginDocs } from "./BotProfile/docs.js";
+import { TrackerPlugin } from "./Tracker/TrackerPlugin.js";
+import { trackerPluginDocs } from "./Tracker/docs.js";
 
 export const availableGuildPlugins: AliceGuildPluginInfo[] = [
   {
@@ -320,6 +324,14 @@ export const availableGuildPlugins: AliceGuildPluginInfo[] = [
   {
     plugin: BoosterRolesPlugin,
     docs: boosterRolesPluginDocs,
+  },
+  {
+    plugin: BotProfilePlugin,
+    docs: botProfilePluginDocs,
+  },
+  {
+    plugin: TrackerPlugin,
+    docs: trackerPluginDocs,
   },
   {
     plugin: CommonPlugin,

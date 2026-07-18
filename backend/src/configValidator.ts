@@ -5,8 +5,15 @@ import { zAliceGuildConfig } from "./types.js";
 import { formatZodIssue } from "./utils/formatZodIssue.js";
 
 const pluginNameToPlugin = new Map<string, GuildPluginBlueprint<any, any>>();
-for (const pluginInfo of availableGuildPlugins) {
-  pluginNameToPlugin.set(pluginInfo.plugin.name, pluginInfo.plugin);
+
+function ensurePluginNameMap(): Map<string, GuildPluginBlueprint<any, any>> {
+  if (pluginNameToPlugin.size > 0) {
+    return pluginNameToPlugin;
+  }
+  for (const pluginInfo of availableGuildPlugins) {
+    pluginNameToPlugin.set(pluginInfo.plugin.name, pluginInfo.plugin);
+  }
+  return pluginNameToPlugin;
 }
 
 export async function validateGuildConfig(config: any): Promise<string | null> {
@@ -18,8 +25,9 @@ export async function validateGuildConfig(config: any): Promise<string | null> {
   const guildConfig = config as BaseConfig;
 
   if (guildConfig.plugins) {
+    const nameMap = ensurePluginNameMap();
     for (const [pluginName, pluginOptions] of Object.entries(guildConfig.plugins)) {
-      if (!pluginNameToPlugin.has(pluginName)) {
+      if (!nameMap.has(pluginName)) {
         return `Unknown plugin: ${pluginName}`;
       }
 
@@ -27,7 +35,7 @@ export async function validateGuildConfig(config: any): Promise<string | null> {
         return `Invalid options specified for plugin ${pluginName}`;
       }
 
-      const plugin = pluginNameToPlugin.get(pluginName)!;
+      const plugin = nameMap.get(pluginName)!;
       const configManager = new PluginConfigManager(pluginOptions, {
         configSchema: plugin.configSchema,
         defaultOverrides: plugin.defaultOverrides ?? [],

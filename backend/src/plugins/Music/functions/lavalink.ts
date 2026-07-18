@@ -25,7 +25,68 @@ export type MusicFilters = {
   bassboost: boolean;
   nightcore: boolean;
   vaporwave: boolean;
+  daycore: boolean;
+  doubletime: boolean;
+  slowmo: boolean;
+  eightD: boolean;
+  karaoke: boolean;
+  tremolo: boolean;
+  vibrato: boolean;
+  soft: boolean;
+  pop: boolean;
+  treblebass: boolean;
 };
+
+export const MUSIC_FILTER_KEYS = [
+  "bassboost",
+  "nightcore",
+  "vaporwave",
+  "daycore",
+  "doubletime",
+  "slowmo",
+  "eightD",
+  "karaoke",
+  "tremolo",
+  "vibrato",
+  "soft",
+  "pop",
+  "treblebass",
+] as const satisfies ReadonlyArray<keyof MusicFilters>;
+
+export type MusicFilterKey = (typeof MUSIC_FILTER_KEYS)[number];
+
+const TIMESCALE_FILTERS: ReadonlyArray<MusicFilterKey> = [
+  "nightcore",
+  "vaporwave",
+  "daycore",
+  "doubletime",
+  "slowmo",
+];
+
+const EQUALIZER_FILTERS: ReadonlyArray<MusicFilterKey> = [
+  "bassboost",
+  "vaporwave",
+  "pop",
+  "treblebass",
+];
+
+export function createEmptyFilters(): MusicFilters {
+  return {
+    bassboost: false,
+    nightcore: false,
+    vaporwave: false,
+    daycore: false,
+    doubletime: false,
+    slowmo: false,
+    eightD: false,
+    karaoke: false,
+    tremolo: false,
+    vibrato: false,
+    soft: false,
+    pop: false,
+    treblebass: false,
+  };
+}
 
 export type GuildMusicQueueState = {
   queue: LavalinkTrack[];
@@ -47,8 +108,22 @@ export function createEmptyQueueState(): GuildMusicQueueState {
     stay247: false,
     textChannelId: null,
     voiceChannelId: null,
-    filters: { bassboost: false, nightcore: false, vaporwave: false },
+    filters: createEmptyFilters(),
   };
+}
+
+/** Clear exclusive groups when enabling a timescale/eq preset. */
+export function applyFilterToggle(filters: MusicFilters, key: MusicFilterKey): void {
+  const enabling = !filters[key];
+  if (enabling) {
+    if (TIMESCALE_FILTERS.includes(key)) {
+      for (const k of TIMESCALE_FILTERS) filters[k] = false;
+    }
+    if (EQUALIZER_FILTERS.includes(key)) {
+      for (const k of EQUALIZER_FILTERS) filters[k] = false;
+    }
+  }
+  filters[key] = enabling;
 }
 
 export function getLavalinkConfig(): { host: string; port: number; password: string } | null {
@@ -147,26 +222,100 @@ export async function loadTracks(query: string): Promise<LoadResult> {
   }
 }
 
-/** Build Lavalink v4 filters payload from local toggle state. */
+/** Build Lavalink v4 filters payload from local toggle state. Null clears inactive filters. */
 export function buildFiltersPayload(filters: MusicFilters): Record<string, unknown> {
-  const payload: Record<string, unknown> = {};
+  const payload: Record<string, unknown> = {
+    equalizer: null,
+    timescale: null,
+    rotation: null,
+    karaoke: null,
+    tremolo: null,
+    vibrato: null,
+    lowPass: null,
+  };
+
   if (filters.bassboost) {
     payload.equalizer = [
       { band: 0, gain: 0.6 },
       { band: 1, gain: 0.45 },
       { band: 2, gain: 0.25 },
     ];
-  }
-  if (filters.nightcore) {
-    payload.timescale = { speed: 1.2, pitch: 1.2, rate: 1 };
-  }
-  if (filters.vaporwave) {
-    payload.timescale = { speed: 0.85, pitch: 0.85, rate: 1 };
+  } else if (filters.pop) {
+    payload.equalizer = [
+      { band: 0, gain: -0.25 },
+      { band: 1, gain: 0.48 },
+      { band: 2, gain: 0.59 },
+      { band: 3, gain: 0.72 },
+      { band: 4, gain: 0.56 },
+      { band: 5, gain: 0.22 },
+      { band: 6, gain: -0.18 },
+      { band: 7, gain: -0.24 },
+      { band: 8, gain: -0.26 },
+      { band: 9, gain: -0.16 },
+      { band: 10, gain: -0.16 },
+      { band: 11, gain: 0 },
+      { band: 12, gain: 0 },
+      { band: 13, gain: 0 },
+      { band: 14, gain: 0 },
+    ];
+  } else if (filters.treblebass) {
+    payload.equalizer = [
+      { band: 0, gain: 0.6 },
+      { band: 1, gain: 0.67 },
+      { band: 2, gain: 0.67 },
+      { band: 3, gain: 0 },
+      { band: 4, gain: -0.5 },
+      { band: 5, gain: 0.15 },
+      { band: 6, gain: -0.45 },
+      { band: 7, gain: 0.23 },
+      { band: 8, gain: 0.35 },
+      { band: 9, gain: 0.45 },
+      { band: 10, gain: 0.55 },
+      { band: 11, gain: 0.6 },
+      { band: 12, gain: 0.55 },
+      { band: 13, gain: 0 },
+      { band: 14, gain: 0 },
+    ];
+  } else if (filters.vaporwave) {
     payload.equalizer = [
       { band: 0, gain: 0.3 },
       { band: 1, gain: 0.2 },
     ];
   }
+
+  if (filters.nightcore) {
+    payload.timescale = { speed: 1.2, pitch: 1.2, rate: 1 };
+  } else if (filters.vaporwave) {
+    payload.timescale = { speed: 0.85, pitch: 0.85, rate: 1 };
+  } else if (filters.daycore) {
+    payload.timescale = { speed: 0.8, pitch: 0.8, rate: 1 };
+  } else if (filters.doubletime) {
+    payload.timescale = { speed: 1.5, pitch: 1, rate: 1 };
+  } else if (filters.slowmo) {
+    payload.timescale = { speed: 0.7, pitch: 1, rate: 1 };
+  }
+
+  if (filters.eightD) {
+    payload.rotation = { rotationHz: 0.2 };
+  }
+  if (filters.karaoke) {
+    payload.karaoke = {
+      level: 1.0,
+      monoLevel: 1.0,
+      filterBand: 220.0,
+      filterWidth: 100.0,
+    };
+  }
+  if (filters.tremolo) {
+    payload.tremolo = { frequency: 4.0, depth: 0.75 };
+  }
+  if (filters.vibrato) {
+    payload.vibrato = { frequency: 4.0, depth: 0.75 };
+  }
+  if (filters.soft) {
+    payload.lowPass = { smoothing: 20.0 };
+  }
+
   return payload;
 }
 

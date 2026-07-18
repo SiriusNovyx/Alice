@@ -56,7 +56,6 @@ export const TagsPlugin = guildPlugin<TagsPluginType>()({
     tagsSlashGroup({
       name: "tag",
       description: "Tag management",
-      defaultMemberPermissions: "0",
       subcommands: [TagCreateSlashCmd, TagGetSlashCmd, TagListSlashCmd, TagDeleteSlashCmd, TagEvalSlashCmd],
     }),
   ],

@@ -3,6 +3,10 @@ import { CommonPlugin } from "../Common/CommonPlugin.js";
 import {
   FiltersCmd,
   FiltersSlashCmd,
+  JoinCmd,
+  JoinSlashCmd,
+  LeaveCmd,
+  LeaveSlashCmd,
   NowPlayingCmd,
   NowPlayingSlashCmd,
   PauseCmd,
@@ -22,7 +26,14 @@ import {
   VolumeCmd,
   VolumeSlashCmd,
 } from "./commands/MusicCmds.js";
+import { handleTrackFinished } from "./commands/actualMusicCmds.js";
 import { createEmptyQueueState } from "./functions/lavalink.js";
+import {
+  destroyLavalinkPlayer,
+  registerTrackEndHandler,
+  unregisterTrackEndHandler,
+} from "./functions/lavalinkNode.js";
+import { leaveVoiceChannel } from "./functions/voiceConnection.js";
 import { MusicPluginType, musicSlashGroup, zMusicConfig } from "./types.js";
 
 export const MusicPlugin = guildPlugin<MusicPluginType>()({
@@ -30,6 +41,8 @@ export const MusicPlugin = guildPlugin<MusicPluginType>()({
   configSchema: zMusicConfig,
   messageCommands: [
     PlayCmd,
+    JoinCmd,
+    LeaveCmd,
     SkipCmd,
     QueueCmd,
     StopCmd,
@@ -44,9 +57,10 @@ export const MusicPlugin = guildPlugin<MusicPluginType>()({
     musicSlashGroup({
       name: "music",
       description: "Music (Lavalink)",
-      defaultMemberPermissions: "0",
       subcommands: [
         PlaySlashCmd,
+        JoinSlashCmd,
+        LeaveSlashCmd,
         SkipSlashCmd,
         QueueSlashCmd,
         StopSlashCmd,
@@ -68,5 +82,17 @@ export const MusicPlugin = guildPlugin<MusicPluginType>()({
   },
   beforeStart(pluginData) {
     pluginData.state.common = pluginData.getPlugin(CommonPlugin);
+    registerTrackEndHandler(pluginData.guild.id, (_guildId, reason) => {
+      if (reason !== "finished") return;
+      void handleTrackFinished(pluginData);
+    });
+  },
+  beforeUnload(pluginData) {
+    unregisterTrackEndHandler(pluginData.guild.id);
+    const userId = pluginData.client.user?.id;
+    if (userId) {
+      void destroyLavalinkPlayer(pluginData.guild.id, userId);
+    }
+    leaveVoiceChannel(pluginData.guild);
   },
 });

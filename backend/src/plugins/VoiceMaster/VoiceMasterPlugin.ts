@@ -47,7 +47,6 @@ export const VoiceMasterPlugin = guildPlugin<VoiceMasterPluginType>()({
     voiceMasterSlashGroup({
       name: "voicemaster",
       description: "Temporary voice channel controls",
-      defaultMemberPermissions: "0",
       subcommands: [
         VmSetupSlashCmd,
         VmLockSlashCmd,
