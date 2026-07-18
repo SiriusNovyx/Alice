@@ -1,3 +1,4 @@
+import { isSnowflake } from "../../../utils.js";
 import { getLavalinkConfig } from "./lavalink.js";
 
 export type LavalinkPlayerUpdate = {
@@ -16,7 +17,6 @@ type NodeState = {
   userId: string | null;
   connecting: Promise<string> | null;
   trackEndHandlers: Map<string, LavalinkTrackEndHandler>;
-  playerEventWaiters: Map<string, Set<(type: string) => void>>;
 };
 
 const node: NodeState = {
@@ -25,7 +25,6 @@ const node: NodeState = {
   userId: null,
   connecting: null,
   trackEndHandlers: new Map(),
-  playerEventWaiters: new Map(),
 };
 
 function restBase(): string {
@@ -59,17 +58,14 @@ function handleMessage(raw: string): void {
     node.sessionId = msg.sessionId;
     return;
   }
-  if (msg.op === "event" && typeof msg.guildId === "string" && typeof msg.type === "string") {
-    const waiters = node.playerEventWaiters.get(msg.guildId);
-    if (waiters?.size) {
-      for (const waiter of [...waiters]) waiter(msg.type);
-    }
-  }
-  if (msg.op === "event" && msg.type === "TrackEndEvent" && typeof msg.guildId === "string") {
-    const reason = String(msg.reason ?? "");
-    const handler = node.trackEndHandlers.get(msg.guildId);
-    handler?.(msg.guildId, reason);
-  }
+  // Lavalink v4 event types: TrackStart/End/Exception/Stuck, WebSocketClosed — not dynamic dispatch.
+  if (msg.op !== "event" || msg.type !== "TrackEndEvent") return;
+  if (typeof msg.guildId !== "string" || !isSnowflake(msg.guildId)) return;
+
+  const reason = typeof msg.reason === "string" ? msg.reason : "";
+  const handler = node.trackEndHandlers.get(msg.guildId);
+  if (handler === undefined) return;
+  handler(msg.guildId, reason);
 }
 
 export function registerTrackEndHandler(guildId: string, handler: LavalinkTrackEndHandler): void {
@@ -78,41 +74,6 @@ export function registerTrackEndHandler(guildId: string, handler: LavalinkTrackE
 
 export function unregisterTrackEndHandler(guildId: string): void {
   node.trackEndHandlers.delete(guildId);
-}
-
-/** Wait until Lavalink emits a player event of the given type for this guild. */
-export function waitForPlayerEvent(
-  guildId: string,
-  eventType: string,
-  timeoutMs = 8000,
-): Promise<void> {
-  return new Promise((resolve, reject) => {
-    let settled = false;
-    const waiters = node.playerEventWaiters.get(guildId) ?? new Set();
-    node.playerEventWaiters.set(guildId, waiters);
-
-    const cleanup = () => {
-      waiters.delete(onEvent);
-      if (waiters.size === 0) node.playerEventWaiters.delete(guildId);
-    };
-
-    const timer = setTimeout(() => {
-      if (settled) return;
-      settled = true;
-      cleanup();
-      reject(new Error(`Timed out waiting for Lavalink ${eventType}.`));
-    }, timeoutMs);
-
-    const onEvent = (type: string) => {
-      if (settled || type !== eventType) return;
-      settled = true;
-      clearTimeout(timer);
-      cleanup();
-      resolve();
-    };
-
-    waiters.add(onEvent);
-  });
 }
 
 export async function ensureLavalinkSession(userId: string): Promise<string> {

@@ -12,11 +12,7 @@ import {
   type LavalinkTrack,
   type MusicFilterKey,
 } from "../functions/lavalink.js";
-import {
-  destroyLavalinkPlayer,
-  updateLavalinkPlayer,
-  waitForPlayerEvent,
-} from "../functions/lavalinkNode.js";
+import { destroyLavalinkPlayer, updateLavalinkPlayer } from "../functions/lavalinkNode.js";
 import {
   joinVoiceChannel,
   leaveVoiceChannel,
@@ -80,8 +76,7 @@ async function ensureVoiceAndLavalink(
   // Re-sending voice while already connected restarts playback on many Lavalink nodes.
   if (reused) return;
 
-  // Register waiter before PATCH so we cannot miss a fast PlayerConnectedEvent.
-  const connected = waitForPlayerEvent(guildId, "PlayerConnectedEvent");
+  // Lavalink v4 has no PlayerConnectedEvent; a successful voice PATCH is sufficient.
   await updateLavalinkPlayer(guildId, userId, {
     voice: {
       token: credentials.token,
@@ -90,7 +85,6 @@ async function ensureVoiceAndLavalink(
     },
     volume: pluginData.state.player.volume,
   });
-  await connected;
 }
 
 async function playCurrentOnNode(pluginData: GuildPluginData<MusicPluginType>): Promise<void> {
