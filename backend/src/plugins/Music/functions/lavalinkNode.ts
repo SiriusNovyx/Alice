@@ -62,10 +62,14 @@ function handleMessage(raw: string): void {
   if (msg.op !== "event" || msg.type !== "TrackEndEvent") return;
   if (typeof msg.guildId !== "string" || !isSnowflake(msg.guildId)) return;
 
+  const guildId = msg.guildId;
+  // CodeQL js/unvalidated-dynamic-method-call: require Map.has + typeof function before invoke.
+  if (!node.trackEndHandlers.has(guildId)) return;
+  const handler = node.trackEndHandlers.get(guildId);
+  if (typeof handler !== "function") return;
+
   const reason = typeof msg.reason === "string" ? msg.reason : "";
-  const handler = node.trackEndHandlers.get(msg.guildId);
-  if (handler === undefined) return;
-  handler(msg.guildId, reason);
+  handler(guildId, reason);
 }
 
 export function registerTrackEndHandler(guildId: string, handler: LavalinkTrackEndHandler): void {
