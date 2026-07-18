@@ -102,7 +102,7 @@ export const EcoLbCmd = economyCmd({
 });
 
 export const GambleCmd = economyCmd({
-  trigger: ["gamble", "coinflip"],
+  trigger: ["gamble"],
   usage: "!gamble <amount>",
   permission: "can_use",
   signature: { amount: ct.number() },

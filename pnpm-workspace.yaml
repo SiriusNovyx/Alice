@@ -56,3 +56,6 @@ overrides:
   js-yaml@<4.2.0: "4.2.0"
   ws@>=8.0.0 <8.21.0: "8.21.0"
   diff@>=4.0.0 <4.0.4: "4.0.4"
+
+patchedDependencies:
+  vety@1.0.0-rc2: patches/vety@1.0.0-rc2.patch

@@ -62,6 +62,7 @@ import { VcdisconnectCmd } from "./commands/VcdisconnectCmd.js";
 import { VcmoveAllCmd, VcmoveCmd } from "./commands/VcmoveCmd.js";
 import { VcdisconnectSlashCmd, VcmoveAllSlashCmd, VcmoveSlashCmd } from "./commands/VcmoveSlashCmd.js";
 import { AutoJoinThreadEvt, AutoJoinThreadSyncEvt } from "./events/AutoJoinThreadEvt.js";
+import { MentionReplyEvt } from "./events/MentionReplyEvt.js";
 import { cleanMessages } from "./functions/cleanMessages.js";
 import { fetchChannelMessagesToClean } from "./functions/fetchChannelMessagesToClean.js";
 import { getUserInfoEmbed } from "./functions/getUserInfoEmbed.js";
@@ -150,7 +151,6 @@ export const UtilityPlugin = guildPlugin<UtilityPluginType>()({
     utilitySlashGroup({
       name: "utility",
       description: "Utility commands",
-      defaultMemberPermissions: "0",
       subcommands: [
         AvatarSlashCmd,
         CleanSlashCmd,
@@ -181,6 +181,7 @@ export const UtilityPlugin = guildPlugin<UtilityPluginType>()({
   events: [
     AutoJoinThreadEvt,
     AutoJoinThreadSyncEvt,
+    MentionReplyEvt,
   ],
 
   public(pluginData) {

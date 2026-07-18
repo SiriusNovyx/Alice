@@ -22,7 +22,6 @@ export const BoosterRolesPlugin = guildPlugin<BoosterRolesPluginType>()({
     boosterRolesSlashGroup({
       name: "boosterrole",
       description: "Booster personal roles",
-      defaultMemberPermissions: "0",
       subcommands: [BoosterCreateSlashCmd, BoosterNameSlashCmd, BoosterColorSlashCmd, BoosterDeleteSlashCmd],
     }),
   ],

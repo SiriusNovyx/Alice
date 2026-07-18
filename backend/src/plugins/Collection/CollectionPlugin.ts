@@ -22,7 +22,6 @@ export const CollectionPlugin = guildPlugin<CollectionPluginType>()({
     collectionSlashGroup({
       name: "collection",
       description: "Collection / gacha",
-      defaultMemberPermissions: "0",
       subcommands: [PullSlashCmd, InvSlashCmd, GiveSlashCmd, TradeSlashCmd],
     }),
   ],

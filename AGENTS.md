@@ -19,3 +19,16 @@ Available plugins are specified in `src/plugins/availablePlugins.ts`.
 Alice's data layer uses TypeORM. Entities are located in `src/data/entities`, while repositories are in `src/data`. If the repository name is prefixed with "Guild", it's a guild-specific repository. If it's prefixed with "User", it's a user-specific repository. If it has no prefix, it's a global repository.
 
 Environment variables are parsed in `src/env.ts`.
+
+# Non-profit & external references
+
+Alice is **non-profit and free for all guilds**. There is no premium tier, slot system, expiry, or paywall for bot features.
+
+When using another bot (notably **XEON**) as inspiration:
+
+- Treat it as a **feature/UI reference only** — rewrite in TypeScript on the Vety/Discord.js stack. Do not copy-paste Python runtime, aiosqlite schemas, or hard-coded emoji ID packs.
+- **Never port** monetization or gating: `addprem`, slots, `activate`, expiry timers, paywalls, or “Prime”/paid branding.
+- Voluntary supporter credits (e.g. About) are acknowledgement-only, not a paid feature unlock.
+- Discord Boost Level 2 for **banners** is a Discord platform limit, not an Alice premium gate.
+
+Shared panel helpers under `backend/src/utils/` (embed + ActionRow) mirror XEON-style hierarchy for consistency; Components V2 can replace the renderer later without changing call sites.

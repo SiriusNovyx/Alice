@@ -1,0 +1,60 @@
+diff --git a/dist/commands/registerApplicationCommands.js b/dist/commands/registerApplicationCommands.js
+index c3b1d49e66389648da127b447adbb41c6d6e8fbe..a79553b0400df4fe22a1239991bcd82a3b065e7f 100644
+--- a/dist/commands/registerApplicationCommands.js
++++ b/dist/commands/registerApplicationCommands.js
+@@ -122,8 +122,13 @@ function slashGroupToAPIData(blueprint, depth = 1) {
+         description_localizations: blueprint.descriptionLocalizations,
+         ...(depth === 1
+             ? {
+-                // Only included on the top level, not in a nested subcommand group
+-                default_member_permissions: blueprint.defaultMemberPermissions ?? "0",
++                // Only included on the top level, not in a nested subcommand group.
++                // Omit / null => Discord "available to everyone" (JSON null).
++                // Explicit "0" => Administrator-only. Do not coalesce null/undefined to "0".
++                default_member_permissions:
++                    blueprint.defaultMemberPermissions === undefined
++                        ? null
++                        : blueprint.defaultMemberPermissions,
+                 dm_permission: Boolean(blueprint.allowDms),
+             }
+             : {}),
+@@ -152,8 +157,13 @@ function slashCommandToAPIData(blueprint, depth = 1) {
+         description_localizations: blueprint.descriptionLocalizations,
+         ...(depth === 1
+             ? {
+-                // Only included on the top level, not in subcommands
+-                default_member_permissions: blueprint.defaultMemberPermissions ?? "0",
++                // Only included on the top level, not in subcommands.
++                // Omit / null => Discord "available to everyone" (JSON null).
++                // Explicit "0" => Administrator-only. Do not coalesce null/undefined to "0".
++                default_member_permissions:
++                    blueprint.defaultMemberPermissions === undefined
++                        ? null
++                        : blueprint.defaultMemberPermissions,
+                 dm_permission: Boolean(blueprint.allowDms),
+             }
+             : {}),
+@@ -177,7 +187,10 @@ function messageContextMenuCommandToAPIData(blueprint) {
+         name: blueprint.name,
+         name_localizations: blueprint.nameLocalizations,
+         description_localizations: blueprint.descriptionLocalizations,
+-        default_member_permissions: blueprint.defaultMemberPermissions ?? "0",
++        default_member_permissions:
++            blueprint.defaultMemberPermissions === undefined
++                ? null
++                : blueprint.defaultMemberPermissions,
+         dm_permission: Boolean(blueprint.allowDms),
+     };
+ }
+@@ -187,7 +200,10 @@ function userContextMenuCommandToAPIData(blueprint) {
+         name: blueprint.name,
+         name_localizations: blueprint.nameLocalizations,
+         description_localizations: blueprint.descriptionLocalizations,
+-        default_member_permissions: blueprint.defaultMemberPermissions ?? "0",
++        default_member_permissions:
++            blueprint.defaultMemberPermissions === undefined
++                ? null
++                : blueprint.defaultMemberPermissions,
+         dm_permission: Boolean(blueprint.allowDms),
+     };
+ }

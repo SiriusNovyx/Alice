@@ -9,6 +9,13 @@ export async function actualRankCmd(
   context: GenericCommandSource,
   userId: string,
 ): Promise<void> {
+  if (!pluginData.config.get().enabled) {
+    await pluginData.state.common.sendErrorMessage(
+      context,
+      "Leveling XP is disabled. Set `leveling.config.enabled: true` in the guild config.",
+    );
+    return;
+  }
   const row = await pluginData.state.userLevels.getOrCreate(userId);
   const next = xpForLevel(row.level + 1);
   const rank = await pluginData.state.userLevels.getRank(userId);

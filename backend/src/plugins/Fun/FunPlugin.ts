@@ -43,7 +43,6 @@ export const FunPlugin = guildPlugin<FunPluginType>()({
     funSlashGroup({
       name: "fun",
       description: "Fun commands",
-      defaultMemberPermissions: "0",
       subcommands: [
         EightBallSlashCmd,
         CoinflipSlashCmd,

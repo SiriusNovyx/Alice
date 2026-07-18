@@ -231,7 +231,8 @@ connect().then(async () => {
       ...Options.DefaultMakeCacheSettings,
       MessageManager: 1,
       // GuildMemberManager: 15000,
-      GuildInviteManager: 0,
+      // Raised from 0 so Tracker (and similar) can attribute joins via invite cache
+      GuildInviteManager: Infinity,
     }),
 
     rest: {

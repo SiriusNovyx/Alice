@@ -24,7 +24,6 @@ export const SelfGrantableRolesPlugin = guildPlugin<SelfGrantableRolesPluginType
     selfGrantableRolesSlashGroup({
       name: "srole",
       description: "Self-grantable roles",
-      defaultMemberPermissions: "0",
       subcommands: [RoleAddSlashCmd, RoleRemoveSlashCmd, RoleHelpSlashCmd],
     }),
   ],

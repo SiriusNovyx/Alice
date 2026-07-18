@@ -6,8 +6,9 @@ export const musicPluginDocs: AlicePluginDocs = {
   type: "stable",
   prettyName: "Music",
   description: trimPluginDescription(`
-    Lavalink-backed music: play/queue/skip/pause/volume/filters/247.
-    Soft-fails when Lavalink is missing or unreachable.
+    Lavalink-backed music: play/join/leave/queue/skip/pause/volume/filters/247.
+    \`/music filter\` uses an options menu (bassboost, nightcore, vaporwave, daycore, doubletime, slowmo, 8d, karaoke, tremolo, vibrato, soft, pop, treblebass, off).
+    Play auto-joins the requester's voice channel. Soft-fails when Lavalink is missing or unreachable.
     Set \`LAVALINK_HOST\`, \`LAVALINK_PORT\`, and \`LAVALINK_PASSWORD\`.
     Dev: \`docker compose --profile music up lavalink\`.
   `),

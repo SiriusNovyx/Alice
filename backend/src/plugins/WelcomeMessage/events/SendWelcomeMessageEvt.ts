@@ -2,11 +2,11 @@ import { PermissionsBitField, Snowflake, TextChannel } from "discord.js";
 import { TemplateParseError, TemplateSafeValueContainer, renderTemplate } from "../../../templateFormatter.js";
 import {
   createChunkedMessage,
+  MessageContent,
   renderRecursively,
   verboseChannelMention,
-  verboseUserMention
+  verboseUserMention,
 } from "../../../utils.js";
-import { MessageContent } from "../../../utils.js";
 import { hasDiscordPermissions } from "../../../utils/hasDiscordPermissions.js";
 import { sendDM } from "../../../utils/sendDM.js";
 import {
@@ -15,6 +15,7 @@ import {
   userToTemplateSafeUser,
 } from "../../../utils/templateSafeObjects.js";
 import { LogsPlugin } from "../../Logs/LogsPlugin.js";
+import { resolveWelcomeContent } from "../functions/resolveWelcomeContent.js";
 import { welcomeMessageEvt } from "../types.js";
 
 export const SendWelcomeMessageEvt = welcomeMessageEvt({
@@ -25,7 +26,10 @@ export const SendWelcomeMessageEvt = welcomeMessageEvt({
     const member = meta.args.member;
 
     const config = pluginData.config.get();
-    if (!config.message) return;
+    if (!config.enabled) return;
+
+    const rawMessage = resolveWelcomeContent(config);
+    if (!rawMessage) return;
     if (!config.send_dm && !config.send_to_channel) return;
 
     // Only send welcome messages once per user (even if they rejoin) until the plugin is reloaded
@@ -39,6 +43,13 @@ export const SendWelcomeMessageEvt = welcomeMessageEvt({
       member: memberToTemplateSafeMember(member),
       user: userToTemplateSafeUser(member.user),
       guild: guildToTemplateSafeGuild(member.guild),
+      memberCount: member.guild.memberCount ?? 0,
+      userMention: (input: unknown) => {
+        if (input && typeof input === "object" && "mention" in input) {
+          return String((input as { mention: string }).mention);
+        }
+        return "";
+      },
     });
 
     const renderMessageText = (str: string) => renderTemplate(str, templateValues);
@@ -46,9 +57,10 @@ export const SendWelcomeMessageEvt = welcomeMessageEvt({
     let formatted: MessageContent;
 
     try {
-      formatted = typeof config.message === "string"
-        ? await renderMessageText(config.message)
-        : ((await renderRecursively(config.message, renderMessageText)) as MessageContent);
+      formatted =
+        typeof rawMessage === "string"
+          ? await renderMessageText(rawMessage)
+          : ((await renderRecursively(rawMessage, renderMessageText)) as MessageContent);
     } catch (e) {
       if (e instanceof TemplateParseError) {
         pluginData.getPlugin(LogsPlugin).logBotAlert({
@@ -91,7 +103,9 @@ export const SendWelcomeMessageEvt = welcomeMessageEvt({
       }
 
       if (
-        typeof formatted === "object" && formatted.embeds && formatted.embeds.length > 0 &&
+        typeof formatted === "object" &&
+        formatted.embeds &&
+        formatted.embeds.length > 0 &&
         !hasDiscordPermissions(
           channel.permissionsFor(pluginData.client.user!.id),
           PermissionsBitField.Flags.EmbedLinks,
@@ -104,17 +118,32 @@ export const SendWelcomeMessageEvt = welcomeMessageEvt({
       }
 
       try {
+        let sentMessage = null as Awaited<ReturnType<TextChannel["send"]>> | null;
         if (typeof formatted === "string") {
-          await createChunkedMessage(channel, formatted, {
-            parse: ["users"],
-          });
+          if (formatted.length <= 2000) {
+            sentMessage = await channel.send({
+              content: formatted,
+              allowedMentions: { parse: ["users"] },
+            });
+          } else {
+            await createChunkedMessage(channel, formatted, {
+              parse: ["users"],
+            });
+          }
         } else {
-          await channel.send({
+          sentMessage = await channel.send({
             ...formatted,
             allowedMentions: {
               parse: ["users"],
             },
           });
+        }
+
+        const deleteAfter = config.delete_after;
+        if (deleteAfter && deleteAfter > 0 && sentMessage) {
+          setTimeout(() => {
+            void sentMessage!.delete().catch(() => null);
+          }, deleteAfter * 1000);
         }
       } catch {
         pluginData.getPlugin(LogsPlugin).logBotAlert({
