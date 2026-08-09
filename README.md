@@ -1,4 +1,7 @@
 ![Alice Banner](assets/ALICEbanner.png)
+# Warning ⚠️ 
+This project has been archived, indicating that no further vulnerability resolutions or security updates will be provided.
+
 # Alice
 Forked from Zeppelin
 
